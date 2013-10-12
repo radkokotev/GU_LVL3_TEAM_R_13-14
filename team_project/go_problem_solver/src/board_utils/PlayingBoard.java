@@ -1,25 +1,25 @@
 package board_utils;
 
 /**
- * An interface to specify expected generic behaviour of a playing board
+ * An abstract class to specify expected generic behaviour of a playing board
  *
  * @param <E>
  */
-public interface PlayingBoard<E> {
+public abstract class PlayingBoard<E> {
 	/**
 	 * @return the width of the playing board
 	 */
-	public int getWidth();
+	public abstract int getWidth();
 	
 	/**
 	 * @return the height of the playing board
 	 */
-	public int getHeight();
+	public abstract int getHeight();
 	
 	/**
 	 * @return the number of pieces currently on the board
 	 */
-	public int getPiecesOnBoard();
+	public abstract int getPiecesOnBoard();
 	
 	/**
 	 * Performs a move by placing the given piece on the playing board.
@@ -28,5 +28,5 @@ public interface PlayingBoard<E> {
 	 * @param piece the piece to be placed at the specified cell position
 	 * @return true if move is possible, false - otherwise.
 	 */
-	boolean move(int horizontalCoord, int verticalCoord, E piece);
+	public abstract boolean move(int horizontalCoord, int verticalCoord, E piece);
 }

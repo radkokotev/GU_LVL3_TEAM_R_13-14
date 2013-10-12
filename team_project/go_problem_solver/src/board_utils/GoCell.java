@@ -3,31 +3,21 @@ package board_utils;
 /**
  * A  Go specific representation of a cell 
  */
-public class GoCell implements Cell<Stone> {
-	private int x_coord;
-	private int y_coord;
+public class GoCell extends Cell<Stone> {
 	private Stone stone;
 	
 	/**
-	 * Constructor for the specified cell with no stone in it.
-	 * @param x_coord horizontal coordinate
-	 * @param y_coord vertical coordinate
+	 * Constructor a cell with no stone in it.
 	 */
-	public GoCell(int x_coord, int y_coord) {
-		this.x_coord = x_coord;
-		this.y_coord = y_coord;
+	public GoCell() {
 		this.stone = Stone.NONE;
 	}
 	
 	/**
-	 * Constructor for the specified cell by placing the given stone
-	 * @param x_coord horizontal coordinate
-	 * @param y_coord vertical coordinate
-	 * @param stone the stone to be placed in that cell
+	 * Constructor for a cell containing the given stone
+	 * @param the stone to be placed in that cell
 	 */
-	public GoCell(int x_coord, int y_coord, Stone stone) {
-		this.x_coord = x_coord;
-		this.y_coord = y_coord;
+	public GoCell(Stone stone) {
 		this.stone = stone;
 	}
 
@@ -48,16 +38,23 @@ public class GoCell implements Cell<Stone> {
 	public void setContent(Stone stone) {
 		this.stone = stone;
 	}
-
+	
 	@Override
-	public int horizontalCoord() {
-		return this.x_coord;
+	public String toString() {
+		return stone.name();
 	}
-
+	
 	@Override
-	public int verticalCoord() {
-		return this.y_coord;
+	public boolean equals(Object obj) {
+		if (obj == null) { 
+			return false;
+		}
+		if (!obj.getClass().equals(this.getClass())) {
+			return false;
+		}
+		
+		GoCell other = (GoCell) obj;
+		return this.stone == other.stone;
 	}
-
 
 }
