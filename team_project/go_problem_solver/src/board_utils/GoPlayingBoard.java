@@ -7,10 +7,10 @@ import java.util.Scanner;
 import custom_java_utils.CheckFailException;
 import custom_java_utils.CheckUtils;
 
-public class GoPlayingBoard extends PlayingBoard<Stone> {
+public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	private GoCell[][] board;
 	private Stone toPlayNext;
-	private int piecesOnBoard;
+	private int countPiecesOnBoard;
 	
 	// Board constants
 	private static final int WIDTH = 19;
@@ -32,7 +32,7 @@ public class GoPlayingBoard extends PlayingBoard<Stone> {
 			}
 		}
 		this.toPlayNext = Stone.BLACK;
-		this.piecesOnBoard = 0;
+		this.countPiecesOnBoard = 0;
 	}
 	
 	/**
@@ -55,8 +55,8 @@ public class GoPlayingBoard extends PlayingBoard<Stone> {
 			for (int j = 0; j < WIDTH; j++) {
 				Stone stone;
 				switch (line.charAt(j)) {
-					case (BLACK) : stone = Stone.BLACK; break;
-					case (WHITE) : stone = Stone.WHITE; break;
+					case (BLACK) : stone = Stone.BLACK; countPiecesOnBoard++; break;
+					case (WHITE) : stone = Stone.WHITE; countPiecesOnBoard++; break;
 					case (NONE) : stone = Stone.NONE; break;
 					default : stone = Stone.INNER_BORDER;
 				}
@@ -83,14 +83,23 @@ public class GoPlayingBoard extends PlayingBoard<Stone> {
 	}
 
 	@Override
-	public int getPiecesOnBoard() {
-		return this.piecesOnBoard;
+	public int getCountPiecesOnBoard() {
+		return this.countPiecesOnBoard;
 	}
 
 	@Override
-	public boolean move(int horizontalCoord, int verticalCoord, Stone piece) {
-		// TODO implement this
-		return false;
+	public GoCell getCellAt(int x, int y) {
+		return this.board[x][y].clone();
+	}
+	
+	@Override
+	public void setCellAt(int x, int y, GoCell content) {
+		if (this.board[x][y].isEmpty() && !content.isEmpty()) {
+			this.countPiecesOnBoard++;
+		} else if (!this.board[x][y].isEmpty() && content.isEmpty()) {
+			this.countPiecesOnBoard--;
+		}
+		this.board[x][y] = content.clone();
 	}
 	
 	@Override
@@ -124,6 +133,6 @@ public class GoPlayingBoard extends PlayingBoard<Stone> {
 		}
 		
 		return this.toPlayNext.equals(other.toPlayNext) &&
-				this.piecesOnBoard == other.piecesOnBoard;
+				this.countPiecesOnBoard == other.countPiecesOnBoard;
 	}
 }

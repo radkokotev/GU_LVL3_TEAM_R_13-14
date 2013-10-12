@@ -5,7 +5,7 @@ package board_utils;
  *
  * @param <E>
  */
-public abstract class PlayingBoard<E> {
+public abstract class PlayingBoard<E extends Cell<?>> {
 	/**
 	 * @return the width of the playing board
 	 */
@@ -19,14 +19,23 @@ public abstract class PlayingBoard<E> {
 	/**
 	 * @return the number of pieces currently on the board
 	 */
-	public abstract int getPiecesOnBoard();
+	public abstract int getCountPiecesOnBoard();
 	
 	/**
-	 * Performs a move by placing the given piece on the playing board.
-	 * @param horizontalCoord x coordinates of the cell
-	 * @param verticalCoord y coordinates of the cell
-	 * @param piece the piece to be placed at the specified cell position
-	 * @return true if move is possible, false - otherwise.
+	 * A method to access the content of a given cell
+	 * @param x horizontal coordinates of the cell
+	 * @param y vertical coordinates of the cell
+	 * @return the content of the specified cell
 	 */
-	public abstract boolean move(int horizontalCoord, int verticalCoord, E piece);
+	public abstract E getCellAt(int x, int y);
+	
+	/**
+	 * A method to update the content of the given cell
+	 * @param x horizontal coordinates of the cell
+	 * @param y vertical coordinates of the cell
+	 * @param content the content of the specified cell
+	 */
+	public abstract void setCellAt(int x, int y, E content);
+	
+	// TODO add a method to update the board (e.g. complete changes or just a simple move) 
 }

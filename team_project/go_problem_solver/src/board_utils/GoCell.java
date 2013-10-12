@@ -23,7 +23,8 @@ public class GoCell extends Cell<Stone> {
 
 	@Override
 	public boolean isEmpty() {
-		return this.stone == Stone.NONE;
+		return this.stone == Stone.NONE || 
+				this.stone == Stone.INNER_BORDER;
 	}
 
 	@Override
@@ -55,6 +56,11 @@ public class GoCell extends Cell<Stone> {
 		
 		GoCell other = (GoCell) obj;
 		return this.stone == other.stone;
+	}
+	
+	@Override
+	public GoCell clone(){
+		return new GoCell(this.stone);
 	}
 
 }
