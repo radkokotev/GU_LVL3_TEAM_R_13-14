@@ -19,7 +19,7 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	// Characters used for representing types of stones in a text file 
 	private static final char BLACK = 'x';
 	private static final char WHITE = 'o';
-	private static final char NONE = ' ';
+	private static final char NONE = '-';
 	
 	/**
 	 * Creates an empty Go playing board
@@ -63,10 +63,11 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 				this.board[i][j].setContent(stone);
 			}
 		}
+		fileScanner.close();
 	}
 	
 	/**
-	 * @return the color of the stone to be placed next.
+	 * @return the colour of the stone to be placed next.
 	 */
 	public Stone toPlayNext() {
 		return this.toPlayNext;
@@ -134,5 +135,18 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 		
 		return this.toPlayNext.equals(other.toPlayNext) &&
 				this.countPiecesOnBoard == other.countPiecesOnBoard;
+	}
+	
+	@Override
+	public GoPlayingBoard clone() {
+		GoPlayingBoard other = new GoPlayingBoard();
+		for (int i = 0; i < HEIGHT; i++) {
+			for (int j = 0; j < WIDTH; j++) {
+				other.board[i][j] =this.board[i][j];
+			}
+		}
+		other.countPiecesOnBoard = this.countPiecesOnBoard;
+		other.toPlayNext = this.toPlayNext;
+		return other;
 	}
 }

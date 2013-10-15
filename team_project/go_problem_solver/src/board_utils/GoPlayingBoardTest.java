@@ -1,8 +1,9 @@
 package board_utils;
 
-import java.io.FileNotFoundException;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import junit.framework.Assert;
+import java.io.FileNotFoundException;
 
 import org.junit.Test;
 
@@ -17,18 +18,18 @@ public class GoPlayingBoardTest {
 		for (int i = 0; i < 10; i++) {
 			board.setCellAt(0, i, new GoCell(Stone.BLACK));
 			expectedCountPlaced++;
-			Assert.assertEquals(expectedCountPlaced, board.getCountPiecesOnBoard());
+			assertEquals(expectedCountPlaced, board.getCountPiecesOnBoard());
 		}
 		for (int i = 0; i < 5; i++) {
 			board.setCellAt(0, i, new GoCell(Stone.NONE));
 			expectedCountPlaced--;
-			Assert.assertEquals(expectedCountPlaced, board.getCountPiecesOnBoard());
+			assertEquals(expectedCountPlaced, board.getCountPiecesOnBoard());
 		}
 		
 		// only replace empty with empty
 		for (int i = 0; i < 5; i++) {
 			board.setCellAt(0, i, new GoCell(Stone.NONE));
-			Assert.assertEquals(expectedCountPlaced, board.getCountPiecesOnBoard());
+			assertEquals(expectedCountPlaced, board.getCountPiecesOnBoard());
 		}
 	}
 
@@ -40,7 +41,7 @@ public class GoPlayingBoardTest {
 				new GoPlayingBoard("src/board_utils/test_data/empty_board");
 		for (int i = 0; i < 19; i++) {
 			for (int j = 0; j < 19; j++) {
-				Assert.assertTrue(board.getCellAt(i, j).isEmpty());
+				assertTrue(board.getCellAt(i, j).isEmpty());
 			}
 		}
 		
@@ -49,13 +50,13 @@ public class GoPlayingBoardTest {
 		for (int i = 0; i < 19; i++) {
 			for (int j = 0; j < 19; j++) {
 				if (i == j && i % 2 == 0) {
-					Assert.assertEquals(
+					assertEquals(
 							new GoCell(Stone.BLACK), board.getCellAt(i, j));
 				} else if (i == j && i % 2 != 0) {
-					Assert.assertEquals(
+					assertEquals(
 							new GoCell(Stone.WHITE), board.getCellAt(i, j));
 				} else {
-					Assert.assertTrue(board.getCellAt(i, j).isEmpty());
+					assertTrue(board.getCellAt(i, j).isEmpty());
 				}
 			}
 		}
@@ -72,7 +73,7 @@ public class GoPlayingBoardTest {
 		// Empty board
 		GoPlayingBoard board = new GoPlayingBoard();
 		
-		Assert.assertEquals(board, 
+		assertEquals(board, 
 				new GoPlayingBoard("src/board_utils/test_data/empty_board"));
 		
 		// Make board the diagonal board represented in test_data
@@ -86,7 +87,7 @@ public class GoPlayingBoardTest {
 			}
 		}
 		
-		Assert.assertEquals(board, 
+		assertEquals(board, 
 				new GoPlayingBoard("src/board_utils/test_data/diagonal_board"));
 		
 	}

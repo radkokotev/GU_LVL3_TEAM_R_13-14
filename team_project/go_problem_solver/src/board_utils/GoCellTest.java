@@ -6,7 +6,6 @@ package board_utils;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import junit.framework.Assert;
 
 import org.junit.Test;
 
@@ -37,11 +36,11 @@ public class GoCellTest {
 	public void testToString() {
 		GoCell cell;
 		cell = new GoCell(Stone.NONE);
-		Assert.assertEquals("NONE", cell.toString());
+		assertEquals("NONE", cell.toString());
 		cell = new GoCell(Stone.BLACK);
-		Assert.assertEquals("BLACK", cell.toString());
+		assertEquals("BLACK", cell.toString());
 		cell = new GoCell(Stone.WHITE);
-		Assert.assertEquals("WHITE", cell.toString());
+		assertEquals("WHITE", cell.toString());
 		cell = new GoCell(Stone.INNER_BORDER);
 		assertEquals("INNER_BORDER", cell.toString());
 	}
