@@ -34,13 +34,13 @@ public class BoardHistoryTest {
 		BoardHistory history = BoardHistory.getSingleton();
 		GoPlayingBoard board1 = new GoPlayingBoard();
 		
-		board1.setCellAt(0, 0, new GoCell(Stone.BLACK));
-		board1.setCellAt(0, 1, new GoCell(Stone.WHITE));
+		board1.setCellAt(0, 0, new GoCell(Stone.BLACK, 0, 0));
+		board1.setCellAt(0, 1, new GoCell(Stone.WHITE, 0, 1));
 		history.add(board1);
 		
 		GoPlayingBoard board2 = new GoPlayingBoard();
-		board2.setCellAt(1, 1, new GoCell(Stone.BLACK));
-		board2.setCellAt(1, 2, new GoCell(Stone.WHITE));
+		board2.setCellAt(1, 1, new GoCell(Stone.BLACK, 1, 1));
+		board2.setCellAt(1, 2, new GoCell(Stone.WHITE, 1, 1));
 		assertFalse(history.hasBeenPlayed(board2));
 	}
 	
@@ -51,17 +51,17 @@ public class BoardHistoryTest {
 	public void testCollidingMoves() {
 		BoardHistory history = BoardHistory.getSingleton();
 		GoPlayingBoard board1 = new GoPlayingBoard();
-		board1.setCellAt(0, 0, new GoCell(Stone.BLACK));
+		board1.setCellAt(0, 0, new GoCell(Stone.BLACK, 0, 0));
 		history.add(board1);
 		
-		board1.setCellAt(0, 1, new GoCell(Stone.WHITE));
+		board1.setCellAt(0, 1, new GoCell(Stone.WHITE, 0, 1));
 		history.add(board1);
 		
 		GoPlayingBoard board2 = new GoPlayingBoard();
-		board2.setCellAt(0, 0, new GoCell(Stone.BLACK));
+		board2.setCellAt(0, 0, new GoCell(Stone.BLACK, 0, 0));
 		assertTrue(history.hasBeenPlayed(board2));
 		
-		board2.setCellAt(0, 1, new GoCell(Stone.WHITE));
+		board2.setCellAt(0, 1, new GoCell(Stone.WHITE, 0, 1));
 		assertTrue(history.hasBeenPlayed(board2));
 	}
 }

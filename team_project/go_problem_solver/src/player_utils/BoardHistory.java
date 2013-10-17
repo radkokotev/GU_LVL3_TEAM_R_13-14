@@ -48,6 +48,9 @@ public class BoardHistory {
 	 * @return true if the given board is in the history, false - otherwise
 	 */
 	public boolean hasBeenPlayed(GoPlayingBoard board) {
+		if (!boards.containsKey(board.getCountPiecesOnBoard())) {
+			return false;
+		}
 		for (GoPlayingBoard one : boards.get(board.getCountPiecesOnBoard())) {
 			if (one.equals(board)) {
 				return true;

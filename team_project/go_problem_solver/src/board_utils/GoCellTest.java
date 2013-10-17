@@ -35,13 +35,13 @@ public class GoCellTest {
 	@Test
 	public void testToString() {
 		GoCell cell;
-		cell = new GoCell(Stone.NONE);
+		cell = new GoCell(Stone.NONE, 0, 0);
 		assertEquals("NONE", cell.toString());
-		cell = new GoCell(Stone.BLACK);
+		cell = new GoCell(Stone.BLACK, 0, 0);
 		assertEquals("BLACK", cell.toString());
-		cell = new GoCell(Stone.WHITE);
+		cell = new GoCell(Stone.WHITE, 0, 0);
 		assertEquals("WHITE", cell.toString());
-		cell = new GoCell(Stone.INNER_BORDER);
+		cell = new GoCell(Stone.INNER_BORDER, 0, 0);
 		assertEquals("INNER_BORDER", cell.toString());
 	}
 
@@ -53,9 +53,9 @@ public class GoCellTest {
 		GoCell other;
 		
 		// Testing equality
-		other = new GoCell(Stone.NONE);
+		other = new GoCell(Stone.NONE, 0, 0);
 		GoCell one;
-		one = new GoCell(Stone.NONE);
+		one = new GoCell(Stone.NONE, 0, 0);
 		assertTrue(one.equals(other));
 		other.setContent(Stone.BLACK);
 		one.setContent(Stone.BLACK);
@@ -63,7 +63,7 @@ public class GoCellTest {
 		other.setContent(Stone.WHITE);
 		one.setContent(Stone.WHITE);
 		assertTrue(one.equals(other));
-		other = new GoCell(Stone.INNER_BORDER);
+		other = new GoCell(Stone.INNER_BORDER, 0, 0);
 		one.setContent(Stone.INNER_BORDER);
 		assertTrue(one.equals(other));
 		

@@ -16,19 +16,19 @@ public class GoPlayingBoardTest {
 		GoPlayingBoard board = new GoPlayingBoard();
 		int expectedCountPlaced = 0;
 		for (int i = 0; i < 10; i++) {
-			board.setCellAt(0, i, new GoCell(Stone.BLACK));
+			board.setCellAt(0, i, new GoCell(Stone.BLACK, 0, i));
 			expectedCountPlaced++;
 			assertEquals(expectedCountPlaced, board.getCountPiecesOnBoard());
 		}
 		for (int i = 0; i < 5; i++) {
-			board.setCellAt(0, i, new GoCell(Stone.NONE));
+			board.setCellAt(0, i, new GoCell(Stone.NONE, 0, i));
 			expectedCountPlaced--;
 			assertEquals(expectedCountPlaced, board.getCountPiecesOnBoard());
 		}
 		
 		// only replace empty with empty
 		for (int i = 0; i < 5; i++) {
-			board.setCellAt(0, i, new GoCell(Stone.NONE));
+			board.setCellAt(0, i, new GoCell(Stone.NONE, 0, i));
 			assertEquals(expectedCountPlaced, board.getCountPiecesOnBoard());
 		}
 	}
@@ -51,10 +51,10 @@ public class GoPlayingBoardTest {
 			for (int j = 0; j < 19; j++) {
 				if (i == j && i % 2 == 0) {
 					assertEquals(
-							new GoCell(Stone.BLACK), board.getCellAt(i, j));
+							new GoCell(Stone.BLACK, i, j), board.getCellAt(i, j));
 				} else if (i == j && i % 2 != 0) {
 					assertEquals(
-							new GoCell(Stone.WHITE), board.getCellAt(i, j));
+							new GoCell(Stone.WHITE, i, j), board.getCellAt(i, j));
 				} else {
 					assertTrue(board.getCellAt(i, j).isEmpty());
 				}
@@ -80,9 +80,9 @@ public class GoPlayingBoardTest {
 		for (int i = 0; i < 19; i++) {
 			for (int j = 0; j < 19; j++) {
 				if (i == j && i % 2 == 0) {
-					board.setCellAt(i, j, new GoCell(Stone.BLACK));
+					board.setCellAt(i, j, new GoCell(Stone.BLACK, i, j));
 				} else if (i == j && i % 2 != 0) {
-					board.setCellAt(i, j, new GoCell(Stone.WHITE));
+					board.setCellAt(i, j, new GoCell(Stone.WHITE, i, j));
 				}
 			}
 		}

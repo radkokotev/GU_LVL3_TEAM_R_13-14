@@ -28,7 +28,7 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 		this.board = new GoCell[HEIGHT][WIDTH];
 		for (int i = 0; i < HEIGHT; i++) {
 			for (int j = 0; j < WIDTH; j++) {
-				this.board[i][j] = new GoCell();
+				this.board[i][j] = new GoCell(Stone.NONE, i, j);
 			}
 		}
 		this.toPlayNext = Stone.BLACK;
@@ -72,6 +72,21 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	public Stone toPlayNext() {
 		return this.toPlayNext;
 	}
+	
+	/**
+	 * Gets the neighbouring cells to the given one
+	 * @param cell the central cell
+	 * @return array of 4 cells, that may contain null values if some 
+	 * cell is out of bounds
+	 */
+	public GoCell[] getNeighboursOf(GoCell cell) {
+		GoCell[] neighbours = new GoCell[4];
+		neighbours[0] = this.getCellAt(cell.x() - 1, cell.y());
+		neighbours[1] = this.getCellAt(cell.x() + 1, cell.y());
+		neighbours[2] = this.getCellAt(cell.x(), cell.y() - 1);
+		neighbours[3] = this.getCellAt(cell.x(), cell.y() + 1);
+		return neighbours;
+	}
 
 	@Override
 	public int getWidth() {
@@ -90,6 +105,9 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 
 	@Override
 	public GoCell getCellAt(int x, int y) {
+		if (x < 0 || x >= HEIGHT || y < 0 || y >= WIDTH) {
+			return null;
+		}
 		return this.board[x][y].clone();
 	}
 	
