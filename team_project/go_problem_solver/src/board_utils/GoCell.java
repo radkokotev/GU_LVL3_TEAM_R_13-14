@@ -55,8 +55,7 @@ public class GoCell extends Cell<Stone> implements Comparable<GoCell> {
 	
 	@Override
 	public boolean isEmpty() {
-		return this.stone == Stone.NONE || 
-				this.stone == Stone.INNER_BORDER;
+		return this.stone == Stone.NONE;
 	}
 
 	@Override

@@ -25,6 +25,8 @@ public class GoCellTest {
 		cell.setContent(Stone.BLACK);
 		assertFalse(cell.isEmpty());
 		cell.setContent(Stone.INNER_BORDER);
+		assertFalse(cell.isEmpty());
+		cell.setContent(Stone.NONE);
 		assertTrue(cell.isEmpty());
 	}
 

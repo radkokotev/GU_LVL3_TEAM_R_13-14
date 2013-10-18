@@ -51,7 +51,7 @@ public class LegalMovesCheckerTest {
 		checker = new LegalMovesChecker(board);
 		assertNotNull(checker.isMoveLegal(new GoCell(Stone.WHITE, 4, 4)));
 		checker = new LegalMovesChecker(board);
-		assertNotNull(checker.isMoveLegal(new GoCell(Stone.WHITE, 15, 15)));
+		assertNotNull(checker.isMoveLegal(new GoCell(Stone.WHITE, 12, 12)));
 		checker = new LegalMovesChecker(board);
 		assertNull(checker.isMoveLegal(new GoCell(Stone.BLACK, 0, 18)));
 		checker = new LegalMovesChecker(board);
@@ -68,5 +68,46 @@ public class LegalMovesCheckerTest {
 		history.add(board); 
 		assertNotNull(checker.isMoveLegal(new GoCell(Stone.BLACK, 14, 1)));
 		assertNull(checker.isMoveLegal(new GoCell(Stone.WHITE, 14, 0)));
+	}
+	
+	@Test
+	public void testIsMoveLegalPrint() throws FileNotFoundException, CheckFailException {
+		GoPlayingBoard board = new GoPlayingBoard("src/player_utils/test_data/liberties_board");
+		LegalMovesChecker checker;
+		
+		// this 
+		String expected_result = 
+				"NYYYYYYYYYYYYYYYYNN\n" + 
+				"YYYYYYYYYYYYYYYYYYN\n" +
+				"YYNNNYYYYYYYYYYYYYY\n" +
+				"YYYYYYYYYYYYYYYYYYY\n" +
+				"YYYYYNNYYYYYYYYYYYY\n" +
+				"YYYNNNNNYYYYYYYYYYY\n" +
+				"YYYYNNNYYYYYYYYYYYY\n" +
+				"YYYYYYYYYYYYYYYYYYY\n" +
+				"YYYYYYYYNNYYYYYYYYY\n" +
+				"YYYYYYYNNNNYYYYYYYY\n" +
+				"YYYYYYYYNNYYYYYYYYY\n" +
+				"YYYYYYYYYYYYYYYYYYY\n" +
+				"YYYYYYYYYYYYYYYNNNN\n" +
+				"NNYYYYYYYYYYYYYNYYN\n" +
+				"NYNYYYYYYYYYYYYNYNN\n" +
+				"NNYYYYYYYYYYYYYNNNN\n" +
+				"YYYYYYYYYYYYYYYYYYY\n" +
+				"NYYYYYYYYYYYYYNNNNN\n" +
+				"NNYYYYYYYYYYYNNNNNN\n";
+		String result = "";
+		for (int i = 0; i < 19; i++) {
+			for (int j = 0; j < 19; j++) {
+				checker= new LegalMovesChecker(board);
+				if (checker.isMoveLegal(new GoCell(Stone.BLACK, i, j)) == null) {
+					result += "N";
+				} else {
+					result += "Y";
+				}
+			}
+			result += "\n";
+		}
+		assertEquals(expected_result, result);
 	}
 }
