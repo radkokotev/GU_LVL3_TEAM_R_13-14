@@ -47,17 +47,17 @@ public class LegalMovesCheckerTest {
 	public void testIsMoveLegalNoKo() throws FileNotFoundException, CheckFailException {
 		GoPlayingBoard board = new GoPlayingBoard("src/player_utils/test_data/liberties_board");
 		LegalMovesChecker checker = new LegalMovesChecker(board);
-		assertNotNull(checker.isMoveLegal(new GoCell(Stone.BLACK, 0, 1)));
+		assertTrue(checker.isMoveLegal(new GoCell(Stone.BLACK, 0, 1)));
 		checker = new LegalMovesChecker(board);
-		assertNotNull(checker.isMoveLegal(new GoCell(Stone.WHITE, 4, 4)));
+		assertTrue(checker.isMoveLegal(new GoCell(Stone.WHITE, 4, 4)));
 		checker = new LegalMovesChecker(board);
-		assertNotNull(checker.isMoveLegal(new GoCell(Stone.WHITE, 12, 12)));
+		assertTrue(checker.isMoveLegal(new GoCell(Stone.WHITE, 12, 12)));
 		checker = new LegalMovesChecker(board);
-		assertNull(checker.isMoveLegal(new GoCell(Stone.BLACK, 0, 18)));
+		assertFalse(checker.isMoveLegal(new GoCell(Stone.BLACK, 0, 18)));
 		checker = new LegalMovesChecker(board);
-		assertNotNull(checker.isMoveLegal(new GoCell(Stone.WHITE, 0, 18)));
+		assertTrue(checker.isMoveLegal(new GoCell(Stone.WHITE, 0, 18)));
 		checker = new LegalMovesChecker(board);
-		assertNull(checker.isMoveLegal(new GoCell(Stone.BLACK, 0, 0)));
+		assertFalse(checker.isMoveLegal(new GoCell(Stone.BLACK, 0, 0)));
 	}
 
 	@Test
@@ -66,8 +66,8 @@ public class LegalMovesCheckerTest {
 		LegalMovesChecker checker = new LegalMovesChecker(board);
 		BoardHistory history = BoardHistory.getSingleton();
 		history.add(board); 
-		assertNotNull(checker.isMoveLegal(new GoCell(Stone.BLACK, 14, 1)));
-		assertNull(checker.isMoveLegal(new GoCell(Stone.WHITE, 14, 0)));
+		assertTrue(checker.isMoveLegal(new GoCell(Stone.BLACK, 14, 1)));
+		assertFalse(checker.isMoveLegal(new GoCell(Stone.WHITE, 14, 0)));
 	}
 	
 	@Test
@@ -100,7 +100,7 @@ public class LegalMovesCheckerTest {
 		for (int i = 0; i < 19; i++) {
 			for (int j = 0; j < 19; j++) {
 				checker= new LegalMovesChecker(board);
-				if (checker.isMoveLegal(new GoCell(Stone.BLACK, i, j)) == null) {
+				if (!checker.isMoveLegal(new GoCell(Stone.BLACK, i, j))) {
 					result += "N";
 				} else {
 					result += "Y";

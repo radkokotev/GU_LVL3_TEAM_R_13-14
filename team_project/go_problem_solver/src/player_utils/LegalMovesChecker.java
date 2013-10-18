@@ -33,20 +33,20 @@ public class LegalMovesChecker {
 	 * @param cell the move to be made
 	 * @return null if the move is illegal, the new board otherwise.
 	 */
-	public GoPlayingBoard isMoveLegal(GoCell cell) {
+	public boolean isMoveLegal(GoCell cell) {
 		if (!newBoard.getCellAt(cell.x(), cell.y()).isEmpty()) {
-			return null;
+			return false;
 		}
 		newBoard.setCellAt(cell.x(), cell.y(), cell);
 		if (!captureOponent(cell)) {
 			if (getLiberties(cell) == 0) {
-				return null;
+				return false;
 			}
 		}
 		if (this.history.hasBeenPlayed(newBoard)) {
-			return null;
+			return false;
 		}
-		return newBoard;
+		return true;
 	}
 
 	/**
