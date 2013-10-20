@@ -1,17 +1,25 @@
 package gui;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.geom.*;
-import java.util.Random;
 
 import javax.swing.*;
 
 public class Board extends JPanel implements MouseListener {
+	
+	public class DrawStone {
+		
+		public boolean draw;
+		public int x;
+		public int y;
+		public Color color;
+		
+		public DrawStone(){
+			draw = false;		
+		}
+
+	}
 	
 	final static int MARGIN = 50;
 	final static int BOARDSIZE = 19;
@@ -45,6 +53,10 @@ public class Board extends JPanel implements MouseListener {
 				to.y = i;
 				squares.moveTo(from.x, from.y);
 				squares.lineTo(to.x, to.y);
+				
+				//This is drawing coordinate letters at the top and bottom of the board. 
+				//Works with some glitches so commented for now.
+				
 				//String index = String.valueOf((i - MARGIN)/sqWidth + 1);
 				//g2.drawString(index, 5, from.y + sqWidth/4);
 				//g2.drawString(index, to.x + sqWidth, to.y + sqWidth/4);
@@ -59,6 +71,10 @@ public class Board extends JPanel implements MouseListener {
 				to.x = i;
 				squares.moveTo(from.x, from.y);
 				squares.lineTo(to.x, to.y);	
+				
+				//This is drawing coordinate numbers at the left and right of the board. 
+				//Works with some glitches so commented for now.
+				
 				//g2.drawString(String.valueOf(index), from.x - sqWidth/4, from.y - sqWidth);
 				//g2.drawString(String.valueOf(index), to.x - sqWidth/4, to.y + sqWidth * 5/4);
 				//index++;
@@ -91,7 +107,6 @@ public class Board extends JPanel implements MouseListener {
 	public void mouseClicked(MouseEvent e) {
 		for(int i = 0; i < BOARDSIZE; i++)	
 			for(int j = 0; j < BOARDSIZE; j++) {
-				System.out.println(intersections[i][j].contains(e.getPoint()) + " " + i + " " + j);
 				if(intersections[i][j].contains(e.getPoint())) {
 					drawStone(i, j, Color.BLACK); //testing
 					return;
