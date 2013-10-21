@@ -34,6 +34,9 @@ public class LegalMovesChecker {
 	 * @return null if the move is illegal, the new board otherwise.
 	 */
 	public boolean isMoveLegal(GoCell cell) {
+		if (newBoard.getCellAt(cell.x(), cell.y()) == null) {
+			return false;
+		}
 		if (!newBoard.getCellAt(cell.x(), cell.y()).isEmpty()) {
 			return false;
 		}

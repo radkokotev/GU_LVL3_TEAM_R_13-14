@@ -26,6 +26,7 @@ public class LegalMovesCheckerTest {
 		assertEquals(2, checker.getLiberties(board.getCellAt(0, 0)));
 		assertEquals(8, checker.getLiberties(board.getCellAt(2, 2)));
 		assertEquals(1, checker.getLiberties(board.getCellAt(5, 5)));
+		assertEquals(4, checker.getLiberties(board.getCellAt(4, 6)));
 		assertEquals(0, checker.getLiberties(board.getCellAt(9, 9)));
 		assertEquals(6, checker.getLiberties(board.getCellAt(17, 17)));
 		assertEquals(0, checker.getLiberties(board.getCellAt(18, 0)));
@@ -38,9 +39,16 @@ public class LegalMovesCheckerTest {
 		LegalMovesChecker checker = new LegalMovesChecker(board);
 		assertFalse(checker.captureOponent(board.getCellAt(0, 0)));
 		assertFalse(checker.captureOponent(board.getCellAt(6, 6)));
-		assertTrue(checker.captureOponent(board.getCellAt(10, 9)));
+		assertTrue(checker.captureOponent(board.getCellAt(6, 18)));
+		assertFalse(checker.captureOponent(board.getCellAt(7, 17)));
+		assertFalse(checker.captureOponent(board.getCellAt(8, 18)));
+		assertTrue(checker.captureOponent(board.getCellAt(8, 8)));
+		assertFalse(checker.captureOponent(board.getCellAt(8, 8)));
+		assertFalse(checker.captureOponent(board.getCellAt(10, 8)));
 		assertTrue(checker.captureOponent(board.getCellAt(17, 0)));
+		assertFalse(checker.captureOponent(board.getCellAt(18, 1)));
 		assertFalse(checker.captureOponent(board.getCellAt(18, 18)));
+		assertFalse(checker.captureOponent(board.getCellAt(18, 14)));
 	}
 
 	@Test
@@ -53,11 +61,24 @@ public class LegalMovesCheckerTest {
 		checker = new LegalMovesChecker(board);
 		assertTrue(checker.isMoveLegal(new GoCell(Stone.WHITE, 12, 12)));
 		checker = new LegalMovesChecker(board);
+		assertFalse(checker.isMoveLegal(new GoCell(Stone.WHITE, 12, 18)));
+		checker = new LegalMovesChecker(board);
+		assertTrue(checker.isMoveLegal(new GoCell(Stone.BLACK, 14, 16)));
+		checker = new LegalMovesChecker(board);
+		assertFalse(checker.isMoveLegal(new GoCell(Stone.BLACK, 14, 18)));
+		checker = new LegalMovesChecker(board);
 		assertFalse(checker.isMoveLegal(new GoCell(Stone.BLACK, 0, 18)));
 		checker = new LegalMovesChecker(board);
 		assertTrue(checker.isMoveLegal(new GoCell(Stone.WHITE, 0, 18)));
 		checker = new LegalMovesChecker(board);
 		assertFalse(checker.isMoveLegal(new GoCell(Stone.BLACK, 0, 0)));
+		checker = new LegalMovesChecker(board);
+		assertFalse(checker.isMoveLegal(new GoCell(Stone.WHITE, 21, 5)));
+		checker = new LegalMovesChecker(board);
+		assertFalse(checker.isMoveLegal(new GoCell(Stone.BLACK, 5, 25)));
+		checker = new LegalMovesChecker(board);
+		assertFalse(checker.isMoveLegal(new GoCell(Stone.WHITE, -4, 30)));
+		checker = new LegalMovesChecker(board);
 	}
 
 	@Test
@@ -68,6 +89,9 @@ public class LegalMovesCheckerTest {
 		history.add(board); 
 		assertTrue(checker.isMoveLegal(new GoCell(Stone.BLACK, 14, 1)));
 		assertFalse(checker.isMoveLegal(new GoCell(Stone.WHITE, 14, 0)));
+		assertTrue(checker.isMoveLegal(new GoCell(Stone.WHITE, 14, 18)));
+		assertTrue(checker.isMoveLegal(new GoCell(Stone.BLACK, 3, 16)));
+		assertTrue(checker.isMoveLegal(new GoCell(Stone.WHITE, 3, 15)));
 	}
 	
 	@Test
@@ -79,13 +103,13 @@ public class LegalMovesCheckerTest {
 		String expected_result = 
 				"NYYYYYYYYYYYYYYYYNN\n" + 
 				"YYYYYYYYYYYYYYYYYYN\n" +
-				"YYNNNYYYYYYYYYYYYYY\n" +
-				"YYYYYYYYYYYYYYYYYYY\n" +
-				"YYYYYNNYYYYYYYYYYYY\n" +
+				"YYNNNYYYYYYYYYNNNYY\n" +
+				"YYYYYYYYYYYYYNNNYNY\n" +
+				"YYYYYNNYYYYYYYNNNYY\n" +
 				"YYYNNNNNYYYYYYYYYYY\n" +
-				"YYYYNNNYYYYYYYYYYYY\n" +
-				"YYYYYYYYYYYYYYYYYYY\n" +
-				"YYYYYYYYNNYYYYYYYYY\n" +
+				"YYYYNNNYYYYYYYYYYYN\n" +
+				"YYYYYYYYYYYYYYYYYNN\n" +
+				"YYYYYYYYNNYYYYYYYYN\n" +
 				"YYYYYYYNNNNYYYYYYYY\n" +
 				"YYYYYYYYNNYYYYYYYYY\n" +
 				"YYYYYYYYYYYYYYYYYYY\n" +
