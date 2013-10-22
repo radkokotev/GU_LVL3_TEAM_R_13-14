@@ -6,6 +6,9 @@ package player_utils;
 import java.util.Set;
 import java.util.TreeSet;
 
+import custom_java_utils.CheckFailException;
+import custom_java_utils.CheckUtils;
+
 import board_utils.GoCell;
 import board_utils.GoPlayingBoard;
 import board_utils.Stone;
@@ -17,6 +20,7 @@ import board_utils.Stone;
 public class LegalMovesChecker {
 	private BoardHistory history;
 	private GoPlayingBoard newBoard;
+	private GoPlayingBoard originalBoard;
 	
 	/**
 	 * Creates an instance of the class and makes an internal deep copy of
@@ -25,6 +29,7 @@ public class LegalMovesChecker {
 	 */
 	public LegalMovesChecker(GoPlayingBoard board) {
 		this.newBoard = board.clone();
+		this.originalBoard = board.clone();
 		this.history = BoardHistory.getSingleton();
 	}
 	
@@ -43,10 +48,12 @@ public class LegalMovesChecker {
 		newBoard.setCellAt(cell.x(), cell.y(), cell);
 		if (!captureOponent(cell)) {
 			if (getLiberties(cell) == 0) {
+				this.reset();
 				return false;
 			}
 		}
 		if (this.history.hasBeenPlayed(newBoard)) {
+			this.reset();
 			return false;
 		}
 		return true;
@@ -94,6 +101,8 @@ public class LegalMovesChecker {
 	 */
 	private int getLibertiesRecursively(GoCell cell, Set<GoCell> liberties, Set<GoCell> visited) {
 		for (GoCell neighbour : newBoard.getNeighboursOf(cell)) {
+			// Go through all non-empty neighbouring cells from the same color (to traverse 
+			// the whole group) and if the cell is empty add it to the liberties set.
 			if (neighbour != null && !visited.contains(neighbour) && 
 					neighbour.getContent() == cell.getContent()) {
 				visited.add(neighbour.clone());
@@ -118,5 +127,42 @@ public class LegalMovesChecker {
 				removeOponentsStone(neighbour, stone);
 			}
 		}
+	}
+	
+	/**
+	 * Get the board that is produced after the move is made.
+	 * @return a deep copy (clone) of the new board
+	 * @throws CheckFailException if the new board is equal to the original board, which
+	 * indicates that no move has been played.
+	 */
+	public GoPlayingBoard getNewBoard() throws CheckFailException {
+		CheckUtils.checkNotEqual(this.originalBoard, this.newBoard);
+		return this.newBoard.clone();
+	}
+	
+	/**
+	 * Wipes all changes that were made to the inner structure of the object instance.
+	 * Reverts the instance to its initial state.
+	 */
+	public void reset() {
+		this.newBoard = this.originalBoard.clone();
+	}
+	
+	/**
+	 * Get a boolean representation of the board, representing where is legal to play.
+	 * @return two dimensional array of booleans representing true if a move is legal
+	 * at that position and false otherwise.
+	 */
+	public boolean[][] getLegalityArray() {
+		boolean[][] legalityArray = 
+				new boolean[this.originalBoard.getHeight()][this.originalBoard.getWidth()];
+		Stone stone = this.originalBoard.toPlayNext();
+		for (int i = 0; i < this.originalBoard.getHeight(); i++) {
+			for (int j = 0; j < this.originalBoard.getWidth(); j++) {
+				legalityArray[i][j] = this.isMoveLegal(new GoCell(stone, i, j));
+				this.reset();
+			}
+		}
+		return legalityArray;
 	}
 }

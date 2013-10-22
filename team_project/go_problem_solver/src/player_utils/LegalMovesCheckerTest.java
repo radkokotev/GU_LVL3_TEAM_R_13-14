@@ -56,29 +56,33 @@ public class LegalMovesCheckerTest {
 		GoPlayingBoard board = new GoPlayingBoard("src/player_utils/test_data/liberties_board");
 		LegalMovesChecker checker = new LegalMovesChecker(board);
 		assertTrue(checker.isMoveLegal(new GoCell(Stone.BLACK, 0, 1)));
-		checker = new LegalMovesChecker(board);
+		checker.reset();
 		assertTrue(checker.isMoveLegal(new GoCell(Stone.WHITE, 4, 4)));
-		checker = new LegalMovesChecker(board);
+		checker.reset();
 		assertTrue(checker.isMoveLegal(new GoCell(Stone.WHITE, 12, 12)));
-		checker = new LegalMovesChecker(board);
+		checker.reset();
 		assertFalse(checker.isMoveLegal(new GoCell(Stone.WHITE, 12, 18)));
-		checker = new LegalMovesChecker(board);
+		checker.reset();
 		assertTrue(checker.isMoveLegal(new GoCell(Stone.BLACK, 14, 16)));
-		checker = new LegalMovesChecker(board);
+		GoPlayingBoard newBoard = checker.getNewBoard();
+		assertNotSame(board, newBoard);
+		assertNotSame(board.getCellAt(14, 16), newBoard.getCellAt(14, 16));
+		assertEquals(Stone.BLACK, newBoard.getCellAt(14, 16).getContent());
+		checker.reset();
 		assertFalse(checker.isMoveLegal(new GoCell(Stone.BLACK, 14, 18)));
-		checker = new LegalMovesChecker(board);
+		checker.reset();
 		assertFalse(checker.isMoveLegal(new GoCell(Stone.BLACK, 0, 18)));
-		checker = new LegalMovesChecker(board);
+		checker.reset();
 		assertTrue(checker.isMoveLegal(new GoCell(Stone.WHITE, 0, 18)));
-		checker = new LegalMovesChecker(board);
+		checker.reset();
 		assertFalse(checker.isMoveLegal(new GoCell(Stone.BLACK, 0, 0)));
-		checker = new LegalMovesChecker(board);
+		checker.reset();
 		assertFalse(checker.isMoveLegal(new GoCell(Stone.WHITE, 21, 5)));
-		checker = new LegalMovesChecker(board);
+		checker.reset();
 		assertFalse(checker.isMoveLegal(new GoCell(Stone.BLACK, 5, 25)));
-		checker = new LegalMovesChecker(board);
+		checker.reset();
 		assertFalse(checker.isMoveLegal(new GoCell(Stone.WHITE, -4, 30)));
-		checker = new LegalMovesChecker(board);
+		checker.reset();
 	}
 
 	@Test
@@ -97,9 +101,9 @@ public class LegalMovesCheckerTest {
 	@Test
 	public void testIsMoveLegalPrint() throws FileNotFoundException, CheckFailException {
 		GoPlayingBoard board = new GoPlayingBoard("src/player_utils/test_data/liberties_board");
-		LegalMovesChecker checker;
+		board.setToPlayNext(Stone.BLACK);
+		LegalMovesChecker checker = new LegalMovesChecker(board);
 		
-		// this 
 		String expected_result = 
 				"NYYYYYYYYYYYYYYYYNN\n" + 
 				"YYYYYYYYYYYYYYYYYYN\n" +
@@ -123,15 +127,29 @@ public class LegalMovesCheckerTest {
 		String result = "";
 		for (int i = 0; i < 19; i++) {
 			for (int j = 0; j < 19; j++) {
-				checker= new LegalMovesChecker(board);
 				if (!checker.isMoveLegal(new GoCell(Stone.BLACK, i, j))) {
 					result += "N";
 				} else {
 					result += "Y";
 				}
+				checker.reset();
 			}
 			result += "\n";
 		}
 		assertEquals(expected_result, result);
+		
+		result = "";
+		boolean[][] legalityArray = checker.getLegalityArray();
+		for (int i = 0; i < 19; i++) {
+			for (int j = 0; j < 19; j++) {
+				if (legalityArray[i][j]) {
+					result += "Y";
+				} else {
+					result += "N";
+				}
+			}
+			result += "\n";
+		}
+		assertEquals(expected_result, result);		
 	}
 }
