@@ -9,6 +9,7 @@ import java.util.TreeSet;
 import custom_java_utils.CheckFailException;
 import custom_java_utils.CheckUtils;
 
+import board_utils.Cell;
 import board_utils.GoCell;
 import board_utils.GoPlayingBoard;
 import board_utils.Stone;
@@ -17,7 +18,7 @@ import board_utils.Stone;
  * A class holding the functionality to determine if a given move is 
  * legal or not.
  */
-public class LegalMovesChecker {
+public class LegalMovesChecker implements LegalityChecker{
 	private BoardHistory history;
 	private GoPlayingBoard newBoard;
 	private GoPlayingBoard originalBoard;
@@ -33,12 +34,9 @@ public class LegalMovesChecker {
 		this.history = BoardHistory.getSingleton();
 	}
 	
-	/**
-	 * Determines whether the given cell is a legal move on the current board
-	 * @param cell the move to be made
-	 * @return null if the move is illegal, the new board otherwise.
-	 */
-	public boolean isMoveLegal(GoCell cell) {
+	@Override
+	public boolean isMoveLegal(Cell<?> c) {
+		GoCell cell = (GoCell) c;
 		if (newBoard.getCellAt(cell.x(), cell.y()) == null) {
 			return false;
 		}
@@ -129,30 +127,18 @@ public class LegalMovesChecker {
 		}
 	}
 	
-	/**
-	 * Get the board that is produced after the move is made.
-	 * @return a deep copy (clone) of the new board
-	 * @throws CheckFailException if the new board is equal to the original board, which
-	 * indicates that no move has been played.
-	 */
+	@Override
 	public GoPlayingBoard getNewBoard() throws CheckFailException {
 		CheckUtils.checkNotEqual(this.originalBoard, this.newBoard);
 		return this.newBoard.clone();
 	}
 	
-	/**
-	 * Wipes all changes that were made to the inner structure of the object instance.
-	 * Reverts the instance to its initial state.
-	 */
+	@Override
 	public void reset() {
 		this.newBoard = this.originalBoard.clone();
 	}
 	
-	/**
-	 * Get a boolean representation of the board, representing where is legal to play.
-	 * @return two dimensional array of booleans representing true if a move is legal
-	 * at that position and false otherwise.
-	 */
+	@Override
 	public boolean[][] getLegalityArray() {
 		boolean[][] legalityArray = 
 				new boolean[this.originalBoard.getHeight()][this.originalBoard.getWidth()];
