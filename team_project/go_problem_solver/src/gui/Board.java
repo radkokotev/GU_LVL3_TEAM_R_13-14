@@ -110,7 +110,7 @@ public class Board extends JPanel implements MouseListener,
 				for (int y = 0; y < 19; y++) {
 					if(model.isMoveLegal(x, y, Color.BLACK)) {
 						g2.setPaint(Color.GREEN);
-
+						
 						g2.fillOval(intersections[x][y].getTopLeftX(), intersections[x][y].getTopLeftY(), sqWidth, sqWidth);
 					
 					} else {

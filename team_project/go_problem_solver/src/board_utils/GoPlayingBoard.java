@@ -74,6 +74,13 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	}
 	
 	/**
+	 * A setter for the value of who is to play next.
+	 */
+	public void setToPlayNext(Stone stone) {
+		this.toPlayNext = stone;
+	}
+	
+	/**
 	 * Gets the neighbouring cells to the given one
 	 * @param cell the central cell
 	 * @return array of 4 cells, that may contain null values if some 
