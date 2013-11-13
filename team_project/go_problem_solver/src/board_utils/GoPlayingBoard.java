@@ -118,6 +118,7 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 		} else if (!this.board[x][y].isEmpty() && content.isEmpty()) {
 			this.countPiecesOnBoard--;
 		}
+		System.out.println("added new stone to: " + x + " " + y);
 		this.board[x][y] = content.clone();
 	}
 	

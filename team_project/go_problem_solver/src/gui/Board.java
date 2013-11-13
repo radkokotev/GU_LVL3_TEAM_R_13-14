@@ -1,12 +1,22 @@
 package gui;
-
 import java.awt.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.GeneralPath;
 
 import javax.swing.*;
 
-public class Board extends JPanel implements MouseListener {
+import board_utils.GoPlayingBoard;
+
+public class Board extends JPanel implements MouseListener,
+								  			 ItemListener {
+	
+	private boolean colour;
+	private boolean drawLegalMoves;
+	private Model model;
+	
 	
 	public class DrawStone {
 		
@@ -30,10 +40,9 @@ public class Board extends JPanel implements MouseListener {
 	
 	public Board(){;
 		addMouseListener(this);
+		model = new Model();
 	}
-	
-	
-	
+
 	public void paint(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
 		if(!drawStone.draw) {
@@ -92,14 +101,50 @@ public class Board extends JPanel implements MouseListener {
 			//if drawing stone
 			g2.setPaint(drawStone.color);
 			g2.fillOval(drawStone.x, drawStone.y, sqWidth, sqWidth);
+			drawStone.draw = false;
 		}
+		
+		if (drawLegalMoves){
+			System.out.println("Draw Legal Move.");
+			for (int x = 0; x < 19; x++)
+				for (int y = 0; y < 19; y++) {
+					if(model.isMoveLegal(x, y, Color.BLACK)) {
+						g2.setPaint(Color.GREEN);
+
+						g2.fillOval(intersections[x][y].getTopLeftX(), intersections[x][y].getTopLeftY(), sqWidth, sqWidth);
+					
+					} else {
+						g2.setPaint(Color.RED);
+						g2.fillOval(intersections[x][y].getTopLeftX(), intersections[x][y].getTopLeftY(), sqWidth, sqWidth);
+					}
+					
+				}
+					
+		}	
 	}
 	
 	public void drawStone(int xIndex, int yIndex, Color c) {
-		drawStone.color = c;
-		drawStone.x = intersections[xIndex][yIndex].getTopLeftX();
-		drawStone.y = intersections[xIndex][yIndex].getTopLeftY();
-		drawStone.draw = true;
+		if(model.isMoveLegal(xIndex, yIndex, c)) {
+			model.addStone(xIndex, yIndex, c);
+			drawStone.color = c;
+			drawStone.x = intersections[xIndex][yIndex].getTopLeftX();
+			drawStone.y = intersections[xIndex][yIndex].getTopLeftY();
+			drawStone.draw = true;
+			drawLegalMoves = false;
+			repaint();
+		}
+		else
+			System.out.println("Bad Move!!!!you suck");
+	}
+	
+	public void drawLegalMoves() {
+		System.out.println("Draw Legal Move. function1");
+		drawLegalMoves = true;
+		repaint();
+	}
+	
+	public void undrawLegalMoves(){
+		drawLegalMoves = false;
 		repaint();
 	}
 
@@ -108,8 +153,18 @@ public class Board extends JPanel implements MouseListener {
 		for(int i = 0; i < BOARDSIZE; i++)	
 			for(int j = 0; j < BOARDSIZE; j++) {
 				if(intersections[i][j].contains(e.getPoint())) {
-					drawStone(i, j, Color.BLACK); //testing
-					return;
+					if (this.colour)
+					{
+						drawStone(i, j, Color.WHITE); //testing
+						this.colour = false;
+						return;
+					}
+					else 
+					{
+						drawStone(i, j, Color.BLACK); //testing
+						this.colour = true;
+						return;
+					}
 				}
 			}
 	}
@@ -125,4 +180,18 @@ public class Board extends JPanel implements MouseListener {
 
 	@Override
 	public void mouseReleased(MouseEvent arg0) {}
+
+
+
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+		System.out.println("Draw Legal Move. Listener");
+		if(e.getStateChange() == ItemEvent.SELECTED)
+			drawLegalMoves();
+		else
+			undrawLegalMoves();
+		
+	}
+	
+	
 }

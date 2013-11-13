@@ -31,6 +31,7 @@ public class BoardHistory {
 	 * @param board the board to be added
 	 */
 	public void add(GoPlayingBoard board) {
+		System.out.println("Adding to history");
 		if (!boards.containsKey(board.getCountPiecesOnBoard())) {
 			LinkedList<GoPlayingBoard> list = new LinkedList<GoPlayingBoard>(); 
 			list.add(board.clone());
