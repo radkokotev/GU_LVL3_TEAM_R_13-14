@@ -40,7 +40,7 @@ public class MinimaxGoSolverTest {
 				"src/player_utils/test_data/small_board_for_minimax_white");
 		board.setToPlayNext(Stone.WHITE);
 		MinimaxGoSolver solver = new MinimaxGoSolver(board, board.getCellAt(18, 18));
-		assertEquals(new GoCell(Stone.WHITE, 18, 16), solver.minimaxDecision());
+		assertEquals(new GoCell(Stone.WHITE, 18, 17), solver.minimaxDecision());
 	}
 	
 	@Test
