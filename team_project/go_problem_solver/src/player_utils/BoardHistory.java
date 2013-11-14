@@ -61,5 +61,4 @@ public class BoardHistory {
 		}
 		return false;
 	}
-
 }

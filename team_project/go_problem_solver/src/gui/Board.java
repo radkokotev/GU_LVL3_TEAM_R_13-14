@@ -4,17 +4,22 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
+import java.util.ArrayList;
 
 import javax.swing.*;
 
 import board_utils.GoPlayingBoard;
+import board_utils.Stone;
 
 public class Board extends JPanel implements MouseListener,
 								  			 ItemListener {
 	
 	private boolean colour;
 	private boolean drawLegalMoves;
+	private boolean drawStones;
+	private boolean eraseLegalMoves;
 	private Model model;
 	
 	
@@ -24,11 +29,6 @@ public class Board extends JPanel implements MouseListener,
 		public int x;
 		public int y;
 		public Color color;
-		
-		public DrawStone(){
-			draw = false;		
-		}
-
 	}
 	
 	final static int MARGIN = 50;
@@ -45,7 +45,7 @@ public class Board extends JPanel implements MouseListener,
 
 	public void paint(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
-		if(!drawStone.draw) {
+		if(!drawStone.draw && !drawLegalMoves) {
 			
 			//If not drawing a stone.
 			Dimension d = getSize();
@@ -97,54 +97,78 @@ public class Board extends JPanel implements MouseListener,
 				}
 			
 			g2.draw(squares);
-		} else {
+		} 
+		
+		if(drawStone.draw){
 			//if drawing stone
 			g2.setPaint(drawStone.color);
 			g2.fillOval(drawStone.x, drawStone.y, sqWidth, sqWidth);
 			drawStone.draw = false;
 		}
 		
+		if(drawStones){
+			Stone[][] stones = model.getCurrentBoardLayout();
+			for(int i = 0; i < 19; i++)
+				for(int j = 0; j < 19; j++){
+					if(stones[i][j] == Stone.BLACK) {
+						g2.setPaint(Color.BLACK);
+						g2.fillOval(intersections[i][j].getTopLeftX(), intersections[i][j].getTopLeftY(), sqWidth, sqWidth);
+					} else if(stones[i][j] == Stone.WHITE){
+						g2.setPaint(Color.WHITE);
+						g2.fillOval(intersections[i][j].getTopLeftX(), intersections[i][j].getTopLeftY(), sqWidth, sqWidth);
+					}						
+				}
+			drawStones = false;
+					
+		}
+		
 		if (drawLegalMoves){
-			System.out.println("Draw Legal Move.");
+			ArrayList<Ellipse2D> ovals = new ArrayList<Ellipse2D>();
 			for (int x = 0; x < 19; x++)
 				for (int y = 0; y < 19; y++) {
-					if(model.isMoveLegal(x, y, Color.BLACK)) {
+					if(model.isMoveLegal(x, y)) {
 						g2.setPaint(Color.GREEN);
-						
-						g2.fillOval(intersections[x][y].getTopLeftX(), intersections[x][y].getTopLeftY(), sqWidth, sqWidth);
-					
 					} else {
 						g2.setPaint(Color.RED);
-						g2.fillOval(intersections[x][y].getTopLeftX(), intersections[x][y].getTopLeftY(), sqWidth, sqWidth);
 					}
-					
+					Ellipse2D oval = new Ellipse2D.Float(intersections[x][y].getTopLeftX(), intersections[x][y].getTopLeftY(), sqWidth, sqWidth);
+					g2.fill(oval);
+					ovals.add(oval);
 				}
+		if (eraseLegalMoves){
+			for(Ellipse2D oval : ovals){
+				
+			}
+		}
+		
 					
 		}	
 	}
 	
 	public void drawStone(int xIndex, int yIndex, Color c) {
-		if(model.isMoveLegal(xIndex, yIndex, c)) {
+		if(model.isMoveLegal(xIndex, yIndex)) {
 			model.addStone(xIndex, yIndex, c);
 			drawStone.color = c;
 			drawStone.x = intersections[xIndex][yIndex].getTopLeftX();
 			drawStone.y = intersections[xIndex][yIndex].getTopLeftY();
 			drawStone.draw = true;
 			drawLegalMoves = false;
+			this.colour = !this.colour;
 			repaint();
 		}
 		else
-			System.out.println("Bad Move!!!!you suck");
+			System.out.println("Bad Move!!!!");
 	}
 	
 	public void drawLegalMoves() {
-		System.out.println("Draw Legal Move. function1");
 		drawLegalMoves = true;
 		repaint();
 	}
 	
 	public void undrawLegalMoves(){
 		drawLegalMoves = false;
+		eraseLegalMoves = false;
+		drawStones = true;
 		repaint();
 	}
 
@@ -156,13 +180,11 @@ public class Board extends JPanel implements MouseListener,
 					if (this.colour)
 					{
 						drawStone(i, j, Color.WHITE); //testing
-						this.colour = false;
 						return;
 					}
 					else 
 					{
 						drawStone(i, j, Color.BLACK); //testing
-						this.colour = true;
 						return;
 					}
 				}
@@ -185,7 +207,6 @@ public class Board extends JPanel implements MouseListener,
 
 	@Override
 	public void itemStateChanged(ItemEvent e) {
-		System.out.println("Draw Legal Move. Listener");
 		if(e.getStateChange() == ItemEvent.SELECTED)
 			drawLegalMoves();
 		else
