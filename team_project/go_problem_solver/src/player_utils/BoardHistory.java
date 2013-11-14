@@ -2,6 +2,7 @@ package player_utils;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map.Entry;
 
 import board_utils.GoPlayingBoard;
 
@@ -9,22 +10,33 @@ import board_utils.GoPlayingBoard;
  * A singleton to keep the history of all boards that have been played
  */
 public class BoardHistory {
-	private static BoardHistory instance = new BoardHistory();
-	private static HashMap<Integer, LinkedList<GoPlayingBoard>> boards;
+	private HashMap<Integer, LinkedList<GoPlayingBoard>> boards;
 	
 	/**
-	 * Private constructor for the singleton
+	 * Default constructor to create an instance of the history
 	 */
-	private BoardHistory() {
-		boards = new HashMap<Integer, LinkedList<GoPlayingBoard>>();
+	public BoardHistory() {
+		this.boards = new HashMap<Integer, LinkedList<GoPlayingBoard>>();
 	}
 	
 	/**
-	 * @return the instance of the singleton
+	 * A private constructor to efficiently construct an identical instance by taking a 
+	 * deep copy of the given history
+	 * @param boards existing history to clone into the new instance 
 	 */
-	public static BoardHistory getSingleton() {
-		return instance;
+	private BoardHistory(HashMap<Integer, LinkedList<GoPlayingBoard>> newBoards) {
+		HashMap<Integer, LinkedList<GoPlayingBoard>> content = 
+				new HashMap<Integer, LinkedList<GoPlayingBoard>>();
+		for (Entry<Integer, LinkedList<GoPlayingBoard>> entry : newBoards.entrySet()) {
+			LinkedList<GoPlayingBoard> list = new LinkedList<GoPlayingBoard>();
+			for (GoPlayingBoard b : entry.getValue()) {
+				list.add(b.clone());
+			}
+			content.put(entry.getKey(), list);
+		}
+		this.boards = content;
 	}
+	
 	
 	/**
 	 * Adding the given board to the board history by making a deep copy of it.
@@ -61,5 +73,9 @@ public class BoardHistory {
 		}
 		return false;
 	}
-
+	
+	@Override
+	public BoardHistory clone() {
+		return new BoardHistory(this.boards);
+	}	
 }

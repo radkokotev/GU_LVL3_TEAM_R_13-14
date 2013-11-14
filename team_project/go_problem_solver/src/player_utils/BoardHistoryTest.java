@@ -19,7 +19,7 @@ public class BoardHistoryTest {
 	 */
 	@Test
 	public void testEmptyBoards() {
-		BoardHistory history = BoardHistory.getSingleton();
+		BoardHistory history = new BoardHistory();
 		GoPlayingBoard board1 = new GoPlayingBoard();
 		history.add(board1);
 		GoPlayingBoard board2 = new GoPlayingBoard();
@@ -31,7 +31,7 @@ public class BoardHistoryTest {
 	 */
 	@Test
 	public void testNonCollidingMoves() {
-		BoardHistory history = BoardHistory.getSingleton();
+		BoardHistory history = new BoardHistory();
 		GoPlayingBoard board1 = new GoPlayingBoard();
 		
 		board1.setCellAt(0, 0, new GoCell(Stone.BLACK, 0, 0));
@@ -49,7 +49,7 @@ public class BoardHistoryTest {
 	 */
 	@Test
 	public void testCollidingMoves() {
-		BoardHistory history = BoardHistory.getSingleton();
+		BoardHistory history = new BoardHistory();
 		GoPlayingBoard board1 = new GoPlayingBoard();
 		board1.setCellAt(0, 0, new GoCell(Stone.BLACK, 0, 0));
 		history.add(board1);
