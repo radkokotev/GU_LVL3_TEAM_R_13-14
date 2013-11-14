@@ -20,6 +20,13 @@ public class Model {
 		checker = new LegalMovesChecker(currentBoard);
 	}
 	
+	public Model(String fileName) throws FileNotFoundException, CheckFailException {
+		this.currentBoard = new GoPlayingBoard(fileName);
+		this.history = BoardHistory.getSingleton();
+		this.checker = new LegalMovesChecker(currentBoard);
+		legalMoves = checker.getLegalityArray();
+	}
+	
 	public void addStone(int x, int y, Color c) {
 		if(c.equals(Color.BLACK)) {
 			currentBoard.setCellAt(x, y, new GoCell(Stone.BLACK, x, y));
@@ -31,16 +38,6 @@ public class Model {
 		checker = new LegalMovesChecker(currentBoard);
 		history.add(currentBoard);
 		legalMoves = checker.getLegalityArray();
-		System.out.println("TO PLAY NEXXXXT: " + currentBoard.toPlayNext());
-		
-		Stone[][] s = getCurrentBoardLayout();
-		for(int i = 0; i < 19; i++)
-		{
-			for(int j = 0; j < 19; j++)
-				System.out.print(s[i][j] + " ");
-			System.out.println();
-		}
-		
 	}
 	
 	public boolean isMoveLegal(int x, int y){
@@ -51,6 +48,14 @@ public class Model {
 			return true;
 	}
 	
+	public void removeOpponent(int x, int y){
+		GoCell[] neighbours = currentBoard.getNeighboursOf(currentBoard.getCellAt(x, y));
+		
+		for(GoCell neighbour : neighbours){
+			System.out.println("Removing: " + neighbour.x() + " " + neighbour.y());
+			System.out.println("Oponent moved: " + checker.captureOponent(neighbour) + " Neighbour: " + neighbour);
+		}
+	}
 	/**
 	 * Returns the current board Stone layout
 	 * @return A double dimension array of Stones

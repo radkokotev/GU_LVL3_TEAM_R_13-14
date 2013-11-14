@@ -23,11 +23,14 @@ public class Gui {
         
         JMenuBar menuBar = new JMenuBar();
         JCheckBoxMenuItem showValidMoves = new JCheckBoxMenuItem("Show valid/invalid moves");
+        JMenuItem importFile = new JMenuItem("Import File");
         menuBar.add(showValidMoves);
+        menuBar.add(importFile);
         frame.setJMenuBar(menuBar);
         
         Board board = new Board();
         showValidMoves.addItemListener(board);
+        importFile.addActionListener(board);
         frame.setLayout(new BorderLayout());
         frame.getContentPane().add(board, BorderLayout.CENTER);
         frame.setBackground(new Color(242,186,107));

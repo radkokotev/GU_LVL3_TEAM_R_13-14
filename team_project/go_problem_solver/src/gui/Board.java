@@ -1,20 +1,25 @@
 package gui;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 import javax.swing.*;
 
+import custom_java_utils.CheckFailException;
 import board_utils.GoPlayingBoard;
 import board_utils.Stone;
 
 public class Board extends JPanel implements MouseListener,
-								  			 ItemListener {
+								  			 ItemListener,
+								  			 ActionListener{
 	
 	private boolean colour;
 	private boolean drawLegalMoves;
@@ -134,15 +139,10 @@ public class Board extends JPanel implements MouseListener,
 					Ellipse2D oval = new Ellipse2D.Float(intersections[x][y].getTopLeftX(), intersections[x][y].getTopLeftY(), sqWidth, sqWidth);
 					g2.fill(oval);
 					ovals.add(oval);
-				}
-		if (eraseLegalMoves){
-			for(Ellipse2D oval : ovals){
-				
-			}
-		}
-		
+				}	
 					
-		}	
+		}
+			
 	}
 	
 	public void drawStone(int xIndex, int yIndex, Color c) {
@@ -155,6 +155,7 @@ public class Board extends JPanel implements MouseListener,
 			drawLegalMoves = false;
 			this.colour = !this.colour;
 			repaint();
+			model.removeOpponent(xIndex, yIndex);
 		}
 		else
 			System.out.println("Bad Move!!!!");
@@ -213,6 +214,21 @@ public class Board extends JPanel implements MouseListener,
 			undrawLegalMoves();
 		
 	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		System.out.println("Pressed");
+		try {
+			model = new Model("/users/level3/1107541g/git/GU_LVL3_TEAM_R_13-14/team_project/go_problem_solver/src/board_utils/test_data/diagonal_board");
+			drawStones = true;
+			repaint();
+		} catch (FileNotFoundException e1) {
+			System.out.println("File not found.");	
+		} catch (CheckFailException e1) {
+			System.out.println("Check fail exception.");
+		}		
+	}
+	
 	
 	
 }
