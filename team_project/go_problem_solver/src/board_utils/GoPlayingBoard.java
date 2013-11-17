@@ -13,7 +13,6 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	private GoCell[][] board;
 	private Stone toPlayNext;
 	private int countPiecesOnBoard;
-	private BoardHistory history;
 	
 	// Board constants
 	private static final int WIDTH = 19;
@@ -36,7 +35,6 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 		}
 		this.toPlayNext = Stone.BLACK;
 		this.countPiecesOnBoard = 0;
-		this.history = new BoardHistory();
 	}
 	
 	/**
@@ -99,14 +97,7 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 		return neighbours;
 	}
 	
-	/**
-	 * Getter for the board history instance.
-	 * @return a shallow copy of the board history instance for this board
-	 */
-	public BoardHistory getHistory() {
-		return this.history;
-	}
-
+	
 	@Override
 	public int getWidth() {
 		return WIDTH;
@@ -184,7 +175,6 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 		}
 		other.countPiecesOnBoard = this.countPiecesOnBoard;
 		other.toPlayNext = this.toPlayNext;
-		other.history = this.history.clone();
 		return other;
 	}
 	

@@ -20,15 +20,17 @@ import board_utils.Stone;
 public class LegalMovesChecker implements LegalityChecker{
 	private GoPlayingBoard newBoard;
 	private GoPlayingBoard originalBoard;
+	private BoardHistory history;
 	
 	/**
 	 * Creates an instance of the class and makes an internal deep copy of
 	 * the provided board
 	 * @param board the board to test for legal moves
 	 */
-	public LegalMovesChecker(GoPlayingBoard board) {
+	public LegalMovesChecker(GoPlayingBoard board, BoardHistory history) {
 		this.newBoard = board.clone();
-		this.originalBoard = board.clone();
+		this.originalBoard = board;
+		this.history = history;
 	}
 	
 	@Override
@@ -48,11 +50,11 @@ public class LegalMovesChecker implements LegalityChecker{
 				return false;
 			}
 		}
-		if (this.newBoard.getHistory().hasBeenPlayed(newBoard)) {
+		if (history.hasBeenPlayed(newBoard)) {
 			this.reset();
 			return false;
 		}
-		this.newBoard.getHistory().add(newBoard);
+		//this.newBoard.getHistory().add(newBoard);
 		this.newBoard.setToPlayNext((Stone)c.getContent() == Stone.BLACK ? Stone.WHITE : Stone.BLACK);
 		return true;
 	}
@@ -71,7 +73,7 @@ public class LegalMovesChecker implements LegalityChecker{
 			if (neighbour != null && GoCell.areOposite(cell, neighbour)) {
 				if (getLiberties(neighbour) == 0) {
 					removeOponentsStone(neighbour, neighbour.getContent());
-					System.out.println("Removed: " + neighbour.x() + " " + neighbour.y());
+					//System.out.println("Removed: " + neighbour.x() + " " + neighbour.y());
 					captured = true;
 				}
 			}

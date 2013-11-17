@@ -10,20 +10,20 @@ import board_utils.*;
 public class Model {
 	
 	private GoPlayingBoard currentBoard;
-	private BoardHistory history;
 	private LegalMovesChecker checker;
 	private boolean[][] legalMoves;
+	private BoardHistory history;
 	
 	public Model() {
 		currentBoard = new GoPlayingBoard();
-		history = currentBoard.getHistory();
-		checker = new LegalMovesChecker(currentBoard);
+		history = new BoardHistory();
+		checker = new LegalMovesChecker(currentBoard, history);
 	}
 	
 	public Model(String fileName) throws FileNotFoundException, CheckFailException {
 		this.currentBoard = new GoPlayingBoard(fileName);
-		this.history = currentBoard.getHistory();
-		this.checker = new LegalMovesChecker(currentBoard);
+		history = new BoardHistory();
+		this.checker = new LegalMovesChecker(currentBoard, history);
 		legalMoves = checker.getLegalityArray();
 	}
 	
@@ -35,12 +35,16 @@ public class Model {
 			currentBoard.setCellAt(x, y, new GoCell(Stone.WHITE, x, y));
 			currentBoard.setToPlayNext(Stone.BLACK);
 		} else System.out.println("Something wrong with colours.");
-		checker = new LegalMovesChecker(currentBoard);
+		checker = new LegalMovesChecker(currentBoard, history);
 		legalMoves = checker.getLegalityArray();
 		
+		//long start = System.currentTimeMillis();
+		history.add(currentBoard);
+		//long end = System.currentTimeMillis();
+		//System.out.println("\nElapsed time: " + (end - start) + " milliseconds");
 	}
 	
-	public boolean isMoveLegal(int x, int y){
+	public boolean isMoveLegal(int x, int y) {
 		if(legalMoves != null){
 			return legalMoves[x][y];
 		} else 
@@ -48,13 +52,12 @@ public class Model {
 	}
 	
 	public void removeOpponent(int x, int y)  {
-		GoCell[] neighbours = currentBoard.getNeighboursOf(currentBoard.getCellAt(x, y));
 		boolean isAnyKilled = false;
 		isAnyKilled = checker.captureOponent(currentBoard.getCellAt(x, y));
 		try {
 			if(isAnyKilled) {
 				currentBoard = checker.getNewBoard();
-				checker = new LegalMovesChecker(currentBoard);
+				checker = new LegalMovesChecker(currentBoard, history);
 				legalMoves = checker.getLegalityArray();
 			}
 		} catch(Exception e){
