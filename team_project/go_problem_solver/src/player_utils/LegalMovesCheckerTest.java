@@ -88,9 +88,8 @@ public class LegalMovesCheckerTest {
 	@Test
 	public void testIsMoveLegalWithKo() throws FileNotFoundException, CheckFailException {
 		GoPlayingBoard board = new GoPlayingBoard("src/player_utils/test_data/liberties_board");
+		board.getHistory().add(board); 
 		LegalMovesChecker checker = new LegalMovesChecker(board);
-		BoardHistory history = BoardHistory.getSingleton();
-		history.add(board); 
 		assertTrue(checker.isMoveLegal(new GoCell(Stone.BLACK, 14, 1)));
 		assertFalse(checker.isMoveLegal(new GoCell(Stone.WHITE, 14, 0)));
 		assertTrue(checker.isMoveLegal(new GoCell(Stone.WHITE, 14, 18)));
@@ -151,5 +150,14 @@ public class LegalMovesCheckerTest {
 			result += "\n";
 		}
 		assertEquals(expected_result, result);		
+	}
+	
+	@Test
+	public void testBug() throws FileNotFoundException, CheckFailException {
+		GoPlayingBoard board = new GoPlayingBoard("src/player_utils/test_data/unsettled_three_white");
+		board.setToPlayNext(Stone.BLACK);
+		LegalMovesChecker checker = new LegalMovesChecker(board);
+		assertTrue(checker.isMoveLegal(new GoCell(Stone.BLACK, 13, 0)));
+		assertTrue(checker.isMoveLegal(new GoCell(Stone.WHITE, 14, 0)));
 	}
 }

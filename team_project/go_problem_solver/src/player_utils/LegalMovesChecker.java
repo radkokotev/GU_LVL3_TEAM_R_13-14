@@ -8,7 +8,6 @@ import java.util.TreeSet;
 
 import custom_java_utils.CheckFailException;
 import custom_java_utils.CheckUtils;
-
 import board_utils.Cell;
 import board_utils.GoCell;
 import board_utils.GoPlayingBoard;
@@ -19,7 +18,6 @@ import board_utils.Stone;
  * legal or not.
  */
 public class LegalMovesChecker implements LegalityChecker{
-	private BoardHistory history;
 	private GoPlayingBoard newBoard;
 	private GoPlayingBoard originalBoard;
 	
@@ -31,7 +29,6 @@ public class LegalMovesChecker implements LegalityChecker{
 	public LegalMovesChecker(GoPlayingBoard board) {
 		this.newBoard = board.clone();
 		this.originalBoard = board.clone();
-		this.history = BoardHistory.getSingleton();
 	}
 	
 	@Override
@@ -51,10 +48,12 @@ public class LegalMovesChecker implements LegalityChecker{
 				return false;
 			}
 		}
-		if (this.history.hasBeenPlayed(newBoard)) {
+		if (this.newBoard.getHistory().hasBeenPlayed(newBoard)) {
 			this.reset();
 			return false;
 		}
+		this.newBoard.getHistory().add(newBoard);
+		this.newBoard.setToPlayNext((Stone)c.getContent() == Stone.BLACK ? Stone.WHITE : Stone.BLACK);
 		return true;
 	}
 
@@ -66,13 +65,13 @@ public class LegalMovesChecker implements LegalityChecker{
 	 * false - otherwise  
 	 */
 	public boolean captureOponent(GoCell cell) {
-		
+		//System.out.println("Capture: " + cell.x() + " " + cell.y());
 		boolean captured = false;
 		for (GoCell neighbour : this.newBoard.getNeighboursOf(cell)) {
 			if (neighbour != null && GoCell.areOposite(cell, neighbour)) {
 				if (getLiberties(neighbour) == 0) {
 					removeOponentsStone(neighbour, neighbour.getContent());
-					System.out.println("Removed: " + neighbour);
+					System.out.println("Removed: " + neighbour.x() + " " + neighbour.y());
 					captured = true;
 				}
 			}

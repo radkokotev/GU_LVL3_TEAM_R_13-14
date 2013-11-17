@@ -16,7 +16,6 @@ public class MinimaxGoSolverTest {
 
 	@Test
 	public void testIsPositionTerminal() throws FileNotFoundException, CheckFailException {
-		
 		GoPlayingBoard board = new GoPlayingBoard(
 				"src/player_utils/test_data/small_board_for_minimax");
 		MinimaxGoSolver solver = new MinimaxGoSolver(board, board.getCellAt(18, 18));
@@ -41,7 +40,24 @@ public class MinimaxGoSolverTest {
 				"src/player_utils/test_data/small_board_for_minimax_white");
 		board.setToPlayNext(Stone.WHITE);
 		MinimaxGoSolver solver = new MinimaxGoSolver(board, board.getCellAt(18, 18));
-		assertEquals(new GoCell(Stone.WHITE, 18, 16), solver.minimaxDecision());
+		assertEquals(new GoCell(Stone.WHITE, 18, 17), solver.minimaxDecision());
 	}
-
+	
+	@Test
+	public void testMinimaxDecisionUnsettled3White() throws FileNotFoundException, CheckFailException {
+		GoPlayingBoard board = new GoPlayingBoard(
+				"src/player_utils/test_data/unsettled_three_white");
+		board.setToPlayNext(Stone.WHITE);
+		MinimaxGoSolver solver = new MinimaxGoSolver(board, board.getCellAt(14, 1));
+		assertEquals(new GoCell(Stone.WHITE, 14, 0), solver.minimaxDecision());
+	}
+	
+	@Test
+	public void testMinimaxDecisionUnsettled3Black() throws FileNotFoundException, CheckFailException {
+		GoPlayingBoard board = new GoPlayingBoard(
+				"src/player_utils/test_data/unsettled_three_black");
+		board.setToPlayNext(Stone.BLACK);
+		MinimaxGoSolver solver = new MinimaxGoSolver(board, board.getCellAt(14, 1));
+		assertEquals(new GoCell(Stone.BLACK, 14, 0), solver.minimaxDecision());
+	}
 }
