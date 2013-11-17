@@ -113,7 +113,10 @@ public class Board extends JPanel implements MouseListener,
 				} else if(stones[i][j] == Stone.WHITE){
 					g2.setPaint(Color.WHITE);
 					g2.fillOval(intersections[i][j].getTopLeftX(), intersections[i][j].getTopLeftY(), sqWidth, sqWidth);
-				}						
+				} else if(stones[i][j] == Stone.INNER_BORDER){
+					g2.setPaint(Color.LIGHT_GRAY);
+					g2.fillRect(intersections[i][j].getTopLeftX(), intersections[i][j].getTopLeftY(), sqWidth, sqWidth);
+				}			
 			}
 		
 		if (drawLegalMoves){
@@ -213,7 +216,7 @@ public class Board extends JPanel implements MouseListener,
 	public void actionPerformed(ActionEvent e) {
 		System.out.println("Pressed");
 		try {
-			model = new Model("/users/level3/1107541g/git/GU_LVL3_TEAM_R_13-14/team_project/go_problem_solver/src/board_utils/test_data/diagonal_board");
+			model = new Model("/home/lukas/Documents/git/GU_LVL3_TEAM_R_13-14/team_project/go_problem_solver/src/board_utils/test_data/diagonal_board");
 			drawStones = true;
 			repaint();
 		} catch (FileNotFoundException e1) {

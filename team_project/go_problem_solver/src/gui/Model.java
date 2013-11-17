@@ -54,6 +54,7 @@ public class Model {
 		try {
 			if(isAnyKilled) {
 				currentBoard = checker.getNewBoard();
+				checker = new LegalMovesChecker(currentBoard);
 				legalMoves = checker.getLegalityArray();
 			}
 		} catch(Exception e){
