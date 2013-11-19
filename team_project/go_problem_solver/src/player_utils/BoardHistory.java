@@ -31,9 +31,7 @@ public class BoardHistory {
 
 	/**
 	 * Adding the given board to the board history by making a deep copy of it.
-	 * 
-	 * @param board
-	 *            the board to be added
+	 * @param board the board to be added
 	 */
 	public void add(GoPlayingBoard board) {
 		if (!boards.containsKey(board.getCountPiecesOnBoard())) {
@@ -49,9 +47,7 @@ public class BoardHistory {
 
 	/**
 	 * Adding the given board to the board history by making a deep copy of it.
-	 * 
-	 * @param board
-	 *            the board to be added
+	 * @param board the board to be added
 	 */
 	public void remove(GoPlayingBoard board) {
 		if (!boards.containsKey(board.getCountPiecesOnBoard())) {
@@ -65,9 +61,7 @@ public class BoardHistory {
 
 	/**
 	 * A method to determine if the given board is already in the history
-	 * 
-	 * @param board
-	 *            a board to be checked
+	 * @param board a board to be checked
 	 * @return true if the given board is in the history, false - otherwise
 	 */
 	public boolean hasBeenPlayed(GoPlayingBoard board) {
