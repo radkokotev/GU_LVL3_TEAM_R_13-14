@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
@@ -215,10 +216,16 @@ public class Board extends JPanel implements MouseListener,
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		System.out.println("Pressed");
+		final JFileChooser fc = new JFileChooser();
+		int returnVal = fc.showOpenDialog(this);
+		
 		try {
-			model = new Model("/home/lukas/Documents/git/GU_LVL3_TEAM_R_13-14/team_project/go_problem_solver/src/board_utils/test_data/diagonal_board");
-			drawStones = true;
-			repaint();
+	        if (returnVal == JFileChooser.APPROVE_OPTION) {
+	            File file = fc.getSelectedFile();
+	            model = new Model(file.getAbsolutePath());
+				drawStones = true;
+				repaint();
+	        }
 		} catch (FileNotFoundException e1) {
 			System.out.println("File not found.");	
 		} catch (CheckFailException e1) {
