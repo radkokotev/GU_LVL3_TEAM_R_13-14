@@ -85,6 +85,13 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	}
 	
 	/**
+	 * A setter for the value of toPlayNext. The new value would be of the opposite colour.
+	 */
+	public void oppositeToPlayNext() {
+		this.toPlayNext = this.toPlayNext == Stone.BLACK ? Stone.WHITE : Stone.BLACK;
+	}
+	
+	/**
 	 * Gets the neighbouring cells to the given one
 	 * @param cell the central cell
 	 * @return array of 4 cells, that may contain null values if some 
@@ -121,6 +128,15 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	
 	public int getNumberOfWhiteStones() {
 		return (countPiecesOnBoard - blackStones);
+	}
+	
+	public void countAndSetBlackStones() {
+		int count = 0;
+		for (int y = 0; y < 19; y++)
+			for (GoCell x: board[y])
+				if (x.getContent().equals(Stone.BLACK))
+					count++;
+		blackStones = count;
 	}
 
 	@Override

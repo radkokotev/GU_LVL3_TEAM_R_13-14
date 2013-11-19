@@ -17,6 +17,8 @@ public class LegalMovesCheckerTest {
 	
 	@Before
 	public void setUp() throws Exception {
+		// Reset the history after every test case;
+		BoardHistory.wipeHistory();
 	}
 
 	@Test
@@ -88,7 +90,7 @@ public class LegalMovesCheckerTest {
 	@Test
 	public void testIsMoveLegalWithKo() throws FileNotFoundException, CheckFailException {
 		GoPlayingBoard board = new GoPlayingBoard("src/player_utils/test_data/liberties_board");
-		board.getHistory().add(board); 
+		BoardHistory.getSingleton().add(board); 
 		LegalMovesChecker checker = new LegalMovesChecker(board);
 		assertTrue(checker.isMoveLegal(new GoCell(Stone.BLACK, 14, 1)));
 		assertFalse(checker.isMoveLegal(new GoCell(Stone.WHITE, 14, 0)));
@@ -126,10 +128,10 @@ public class LegalMovesCheckerTest {
 		String result = "";
 		for (int i = 0; i < 19; i++) {
 			for (int j = 0; j < 19; j++) {
-				if (!checker.isMoveLegal(new GoCell(Stone.BLACK, i, j))) {
-					result += "N";
-				} else {
+				if (checker.isMoveLegal(new GoCell(Stone.BLACK, i, j))) {
 					result += "Y";
+				} else {
+					result += "N";
 				}
 				checker.reset();
 			}

@@ -59,8 +59,10 @@ public class MinimaxGoSolver {
 					CellValuePair cellValuePair = new CellValuePair();
 					cellValuePair.cell = cell;
 					GoPlayingBoard newBoard = checker.getNewBoard();
+					newBoard.oppositeToPlayNext();
 					cellValuePair.minimaxValue = minimize(newBoard);
 					decisionMinimaxValues.add(cellValuePair);
+					BoardHistory.getSingleton().remove(newBoard);
 				}
 				checker.reset();
 			}
@@ -90,11 +92,13 @@ public class MinimaxGoSolver {
 			for (int j = 0; j < board.getHeight() && !foundMax; j++) {
 				if (checker.isMoveLegal(new GoCell(board.toPlayNext(), i, j))) {
 					GoPlayingBoard newBoard = checker.getNewBoard();
+					newBoard.oppositeToPlayNext();
 					long currMinimaxValue = minimize(newBoard);
 					minimaxValues.add(currMinimaxValue);  // there is a legal move
 					if (currMinimaxValue >= infinity) {
 						foundMax = true;
 					}
+					BoardHistory.getSingleton().remove(newBoard);
 				}
 				checker.reset();
 			}
@@ -122,11 +126,13 @@ public class MinimaxGoSolver {
 			for (int j = 0; j < board.getHeight() && !foundMin; j++) {
 				if (checker.isMoveLegal(new GoCell(board.toPlayNext(), i, j))) {
 					GoPlayingBoard newBoard = checker.getNewBoard();
+					newBoard.oppositeToPlayNext();
 					long currMinimaxValue = maximize(newBoard);
 					minimaxValues.add(currMinimaxValue);  // there is a legal move
 					if (currMinimaxValue <= -infinity) {
 						foundMin = true;
 					}
+					BoardHistory.getSingleton().remove(newBoard);
 				}
 				checker.reset();
 			}

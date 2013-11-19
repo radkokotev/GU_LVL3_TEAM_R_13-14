@@ -17,13 +17,13 @@ public class Model {
 	public Model() {
 		currentBoard = new GoPlayingBoard();
 		history = new BoardHistory();
-		checker = new LegalMovesChecker(currentBoard, history);
+		checker = new LegalMovesChecker(currentBoard);
 	}
 	
 	public Model(String fileName) throws FileNotFoundException, CheckFailException {
 		this.currentBoard = new GoPlayingBoard(fileName);
 		history = new BoardHistory();
-		this.checker = new LegalMovesChecker(currentBoard, history);
+		this.checker = new LegalMovesChecker(currentBoard);
 		legalMoves = checker.getLegalityArray();
 	}
 	
@@ -35,7 +35,7 @@ public class Model {
 			currentBoard.setCellAt(x, y, new GoCell(Stone.WHITE, x, y));
 			currentBoard.setToPlayNext(Stone.BLACK);
 		} else System.out.println("Something wrong with colours.");
-		checker = new LegalMovesChecker(currentBoard, history);
+		checker = new LegalMovesChecker(currentBoard);
 		legalMoves = checker.getLegalityArray();
 		
 		//long start = System.currentTimeMillis();
@@ -58,7 +58,7 @@ public class Model {
 		try {
 			if(isAnyKilled) {
 				currentBoard = checker.getNewBoard();
-				checker = new LegalMovesChecker(currentBoard, history);
+				checker = new LegalMovesChecker(currentBoard);
 				legalMoves = checker.getLegalityArray();
 			}
 		} catch(Exception e){
@@ -77,6 +77,10 @@ public class Model {
 	
 	public int getWhiteNumberOfStones(){
 		return currentBoard.getNumberOfWhiteStones();
+	}
+	
+	public void recountBlackStones() {
+		currentBoard.countAndSetBlackStones();
 	}
 	/**
 	 * Returns the current board Stone layout

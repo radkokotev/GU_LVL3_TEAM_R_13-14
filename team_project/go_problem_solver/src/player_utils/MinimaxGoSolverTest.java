@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.io.FileNotFoundException;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import custom_java_utils.CheckFailException;
@@ -13,7 +14,12 @@ import board_utils.GoPlayingBoard;
 import board_utils.Stone;
 
 public class MinimaxGoSolverTest {
-
+	
+	@Before
+	public void setUp() throws Exception {
+		// Reset the history after every test case;
+		BoardHistory.wipeHistory();
+	}
 	@Test
 	public void testIsPositionTerminal() throws FileNotFoundException, CheckFailException {
 		GoPlayingBoard board = new GoPlayingBoard(

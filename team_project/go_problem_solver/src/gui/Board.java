@@ -228,6 +228,7 @@ public class Board extends JPanel implements MouseListener,
 	        if (returnVal == JFileChooser.APPROVE_OPTION) {
 	            File file = fc.getSelectedFile();
 	            model = new Model(file.getAbsolutePath());
+	            model.recountBlackStones();
 				drawStones = true;
 				repaint();
 	        }

@@ -27,10 +27,10 @@ public class LegalMovesChecker implements LegalityChecker{
 	 * the provided board
 	 * @param board the board to test for legal moves
 	 */
-	public LegalMovesChecker(GoPlayingBoard board, BoardHistory history) {
+	public LegalMovesChecker(GoPlayingBoard board) {
 		this.newBoard = board.clone();
 		this.originalBoard = board;
-		this.history = history;
+		this.history = BoardHistory.getSingleton();
 	}
 	
 	@Override
@@ -136,6 +136,7 @@ public class LegalMovesChecker implements LegalityChecker{
 	@Override
 	public GoPlayingBoard getNewBoard() throws CheckFailException {
 		CheckUtils.checkNotEqual(this.originalBoard, this.newBoard);
+		history.add(newBoard);
 		return this.newBoard.clone();
 	}
 	
