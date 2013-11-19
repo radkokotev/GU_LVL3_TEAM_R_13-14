@@ -21,6 +21,7 @@ import board_utils.Stone;
 public class LegalMovesChecker implements LegalityChecker{
 	private GoPlayingBoard newBoard;
 	private GoPlayingBoard originalBoard;
+	private BoardHistory history;
 	
 	/**
 	 * Creates an instance of the class and makes an internal deep copy of
@@ -30,6 +31,7 @@ public class LegalMovesChecker implements LegalityChecker{
 	public LegalMovesChecker(GoPlayingBoard board) {
 		this.newBoard = board.clone();
 		this.originalBoard = board.clone();
+		this.history = BoardHistory.getSingleton();
 	}
 	
 	@Override
@@ -48,12 +50,10 @@ public class LegalMovesChecker implements LegalityChecker{
 				return false;
 			}
 		}
-		if (this.newBoard.getHistory().hasBeenPlayed(newBoard)) {
+		if (history.hasBeenPlayed(newBoard)) {
 			this.reset();
 			return false;
 		}
-		this.newBoard.getHistory().add(newBoard);
-		this.newBoard.setToPlayNext((Stone)c.getContent() == Stone.BLACK ? Stone.WHITE : Stone.BLACK);
 		return true;
 	}
 
@@ -130,6 +130,7 @@ public class LegalMovesChecker implements LegalityChecker{
 	@Override
 	public GoPlayingBoard getNewBoard() throws CheckFailException {
 		CheckUtils.checkNotEqual(this.originalBoard, this.newBoard);
+		history.add(newBoard);
 		return this.newBoard.clone();
 	}
 	

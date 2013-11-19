@@ -4,8 +4,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-import player_utils.BoardHistory;
-
 import custom_java_utils.CheckFailException;
 import custom_java_utils.CheckUtils;
 
@@ -13,7 +11,6 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	private GoCell[][] board;
 	private Stone toPlayNext;
 	private int countPiecesOnBoard;
-	private BoardHistory history;
 	
 	// Board constants
 	private static final int WIDTH = 19;
@@ -36,7 +33,6 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 		}
 		this.toPlayNext = Stone.BLACK;
 		this.countPiecesOnBoard = 0;
-		this.history = new BoardHistory();
 	}
 	
 	/**
@@ -85,6 +81,13 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	}
 	
 	/**
+	 * A setter for the value of toPlayNext. The new value would be of the opposite colour.
+	 */
+	public void oppositeToPlayNext() {
+		this.toPlayNext = this.toPlayNext == Stone.BLACK ? Stone.WHITE : Stone.BLACK;
+	}
+	
+	/**
 	 * Gets the neighbouring cells to the given one
 	 * @param cell the central cell
 	 * @return array of 4 cells, that may contain null values if some 
@@ -97,14 +100,6 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 		neighbours[2] = this.getCellAt(cell.x(), cell.y() - 1);
 		neighbours[3] = this.getCellAt(cell.x(), cell.y() + 1);
 		return neighbours;
-	}
-	
-	/**
-	 * Getter for the board history instance.
-	 * @return a shallow copy of the board history instance for this board
-	 */
-	public BoardHistory getHistory() {
-		return this.history;
 	}
 
 	@Override
@@ -183,7 +178,6 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 		}
 		other.countPiecesOnBoard = this.countPiecesOnBoard;
 		other.toPlayNext = this.toPlayNext;
-		other.history = this.history.clone();
 		return other;
 	}
 }
