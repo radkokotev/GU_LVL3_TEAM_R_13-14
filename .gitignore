@@ -8,7 +8,7 @@
 *.pydevproject
 .project
 .metadata
-bin/**
+team_project/go_problem_solver/bin/*
 tmp/**
 tmp/**/*
 *.tmp
