@@ -27,6 +27,7 @@ public class Board extends JPanel implements MouseListener,
 	private boolean drawStones;
 	private boolean eraseLegalMoves;
 	private Model model;
+	private JLabel totalStonesLabel;
 	
 	
 	public class DrawStone {
@@ -44,8 +45,10 @@ public class Board extends JPanel implements MouseListener,
 	private DrawStone drawStone = new DrawStone();
 	
 	
-	public Board(){;
+	public Board(JFrame frame){;
 		addMouseListener(this);
+		totalStonesLabel = new JLabel("Total stones: 0 Black stones: 0 White stones: 0");
+		frame.getContentPane().add(totalStonesLabel, BorderLayout.NORTH);
 		model = new Model();
 	}
 
@@ -126,7 +129,7 @@ public class Board extends JPanel implements MouseListener,
 					if(model.isMoveLegal(x, y)) {
 						//Green with transparency
 						g2.setPaint(new Color(0, 255, 0, 50));
-					} else {
+					} else {	
 						//Red with less transparency
 						g2.setPaint(new Color(255, 0, 0, 150));
 					}
@@ -156,6 +159,8 @@ public class Board extends JPanel implements MouseListener,
 			this.colour = !this.colour;
 			repaint();
 			model.removeOpponent(xIndex, yIndex);
+			totalStonesLabel.setText("Total stones: " + model.getTotalNumberOfStones() + " Black stones: " + model.getBlackNumberOfStones() + " White stones: "
+					+ model.getWhiteNumberOfStones());
 		}
 		else
 			System.out.println("Bad Move!!!!");

@@ -42,6 +42,7 @@ public class Model {
 		history.add(currentBoard);
 		//long end = System.currentTimeMillis();
 		//System.out.println("\nElapsed time: " + (end - start) + " milliseconds");
+		
 	}
 	
 	public boolean isMoveLegal(int x, int y) {
@@ -64,6 +65,18 @@ public class Model {
 			System.out.println("new board == old board");
 		}
 		
+	}
+	
+	public int getTotalNumberOfStones(){
+		return currentBoard.getCountPiecesOnBoard();
+	}
+	
+	public int getBlackNumberOfStones(){
+		return currentBoard.getNumberofBlackStones();
+	}
+	
+	public int getWhiteNumberOfStones(){
+		return currentBoard.getNumberOfWhiteStones();
 	}
 	/**
 	 * Returns the current board Stone layout

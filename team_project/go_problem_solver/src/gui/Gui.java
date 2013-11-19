@@ -28,10 +28,10 @@ public class Gui {
         menuBar.add(importFile);
         frame.setJMenuBar(menuBar);
         
-        Board board = new Board();
+        frame.setLayout(new BorderLayout());
+        Board board = new Board(frame);
         showValidMoves.addItemListener(board);
         importFile.addActionListener(board);
-        frame.setLayout(new BorderLayout());
         frame.getContentPane().add(board, BorderLayout.CENTER);
         frame.setBackground(new Color(242,186,107));
  

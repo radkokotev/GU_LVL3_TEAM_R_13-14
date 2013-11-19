@@ -13,6 +13,7 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	private GoCell[][] board;
 	private Stone toPlayNext;
 	private int countPiecesOnBoard;
+	private int blackStones;
 	
 	// Board constants
 	private static final int WIDTH = 19;
@@ -27,14 +28,15 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	 * Creates an empty Go playing board
 	 */
 	public GoPlayingBoard() {
-		this.board = new GoCell[HEIGHT][WIDTH];
+		board = new GoCell[HEIGHT][WIDTH];
 		for (int i = 0; i < HEIGHT; i++) {
 			for (int j = 0; j < WIDTH; j++) {
-				this.board[i][j] = new GoCell(Stone.NONE, i, j);
+				board[i][j] = new GoCell(Stone.NONE, i, j);
 			}
 		}
-		this.toPlayNext = Stone.BLACK;
-		this.countPiecesOnBoard = 0;
+		toPlayNext = Stone.BLACK;
+		countPiecesOnBoard = 0;
+		blackStones = 0;
 	}
 	
 	/**
@@ -112,6 +114,14 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	public int getCountPiecesOnBoard() {
 		return this.countPiecesOnBoard;
 	}
+	
+	public int getNumberofBlackStones() {
+		return blackStones;
+	}
+	
+	public int getNumberOfWhiteStones() {
+		return (countPiecesOnBoard - blackStones);
+	}
 
 	@Override
 	public GoCell getCellAt(int x, int y) {
@@ -125,8 +135,12 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	public void setCellAt(int x, int y, GoCell content) {
 		if (this.board[x][y].isEmpty() && !content.isEmpty()) {
 			this.countPiecesOnBoard++;
+			if (content.getContent().equals(Stone.BLACK))
+				blackStones++;
 		} else if (!this.board[x][y].isEmpty() && content.isEmpty()) {
 			this.countPiecesOnBoard--;
+			if(board[x][y].getContent() == Stone.BLACK)
+				blackStones--;
 		}
 		
 		this.board[x][y] = content.clone();
@@ -175,6 +189,7 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 		}
 		other.countPiecesOnBoard = this.countPiecesOnBoard;
 		other.toPlayNext = this.toPlayNext;
+		other.blackStones = this.blackStones;
 		return other;
 	}
 	
