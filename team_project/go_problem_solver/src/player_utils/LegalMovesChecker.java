@@ -6,6 +6,10 @@ package player_utils;
 import java.util.Set;
 import java.util.TreeSet;
 
+import custom_java_utils.CheckFailException;
+import custom_java_utils.CheckUtils;
+
+import board_utils.Cell;
 import board_utils.GoCell;
 import board_utils.GoPlayingBoard;
 import board_utils.Stone;
@@ -14,9 +18,10 @@ import board_utils.Stone;
  * A class holding the functionality to determine if a given move is 
  * legal or not.
  */
-public class LegalMovesChecker {
-	private BoardHistory history;
+public class LegalMovesChecker implements LegalityChecker{
 	private GoPlayingBoard newBoard;
+	private GoPlayingBoard originalBoard;
+	private BoardHistory history;
 	
 	/**
 	 * Creates an instance of the class and makes an internal deep copy of
@@ -25,25 +30,28 @@ public class LegalMovesChecker {
 	 */
 	public LegalMovesChecker(GoPlayingBoard board) {
 		this.newBoard = board.clone();
+		this.originalBoard = board.clone();
 		this.history = BoardHistory.getSingleton();
 	}
 	
-	/**
-	 * Determines whether the given cell is a legal move on the current board
-	 * @param cell the move to be made
-	 * @return null if the move is illegal, the new board otherwise.
-	 */
-	public boolean isMoveLegal(GoCell cell) {
+	@Override
+	public boolean isMoveLegal(Cell<?> c) {
+		GoCell cell = (GoCell) c;
+		if (newBoard.getCellAt(cell.x(), cell.y()) == null) {
+			return false;
+		}
 		if (!newBoard.getCellAt(cell.x(), cell.y()).isEmpty()) {
 			return false;
 		}
 		newBoard.setCellAt(cell.x(), cell.y(), cell);
 		if (!captureOponent(cell)) {
 			if (getLiberties(cell) == 0) {
+				this.reset();
 				return false;
 			}
 		}
-		if (this.history.hasBeenPlayed(newBoard)) {
+		if (history.hasBeenPlayed(newBoard)) {
+			this.reset();
 			return false;
 		}
 		return true;
@@ -91,6 +99,8 @@ public class LegalMovesChecker {
 	 */
 	private int getLibertiesRecursively(GoCell cell, Set<GoCell> liberties, Set<GoCell> visited) {
 		for (GoCell neighbour : newBoard.getNeighboursOf(cell)) {
+			// Go through all non-empty neighbouring cells from the same color (to traverse 
+			// the whole group) and if the cell is empty add it to the liberties set.
 			if (neighbour != null && !visited.contains(neighbour) && 
 					neighbour.getContent() == cell.getContent()) {
 				visited.add(neighbour.clone());
@@ -115,5 +125,31 @@ public class LegalMovesChecker {
 				removeOponentsStone(neighbour, stone);
 			}
 		}
+	}
+	
+	@Override
+	public GoPlayingBoard getNewBoard() throws CheckFailException {
+		CheckUtils.checkNotEqual(this.originalBoard, this.newBoard);
+		history.add(newBoard);
+		return this.newBoard.clone();
+	}
+	
+	@Override
+	public void reset() {
+		this.newBoard = this.originalBoard.clone();
+	}
+	
+	@Override
+	public boolean[][] getLegalityArray() {
+		boolean[][] legalityArray = 
+				new boolean[this.originalBoard.getHeight()][this.originalBoard.getWidth()];
+		Stone stone = this.originalBoard.toPlayNext();
+		for (int i = 0; i < this.originalBoard.getHeight(); i++) {
+			for (int j = 0; j < this.originalBoard.getWidth(); j++) {
+				legalityArray[i][j] = this.isMoveLegal(new GoCell(stone, i, j));
+				this.reset();
+			}
+		}
+		return legalityArray;
 	}
 }

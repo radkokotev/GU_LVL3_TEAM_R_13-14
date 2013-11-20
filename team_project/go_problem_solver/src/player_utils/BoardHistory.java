@@ -9,39 +9,56 @@ import board_utils.GoPlayingBoard;
  * A singleton to keep the history of all boards that have been played
  */
 public class BoardHistory {
-	private static BoardHistory instance = new BoardHistory();
+	private static BoardHistory instance;
 	private static HashMap<Integer, LinkedList<GoPlayingBoard>> boards;
-	
+
 	/**
 	 * Private constructor for the singleton
 	 */
 	private BoardHistory() {
 		boards = new HashMap<Integer, LinkedList<GoPlayingBoard>>();
 	}
-	
+
 	/**
 	 * @return the instance of the singleton
 	 */
 	public static BoardHistory getSingleton() {
+		if (instance == null) {
+			instance = new BoardHistory();
+		}
 		return instance;
 	}
-	
+
 	/**
 	 * Adding the given board to the board history by making a deep copy of it.
 	 * @param board the board to be added
 	 */
 	public void add(GoPlayingBoard board) {
 		if (!boards.containsKey(board.getCountPiecesOnBoard())) {
-			LinkedList<GoPlayingBoard> list = new LinkedList<GoPlayingBoard>(); 
+			LinkedList<GoPlayingBoard> list = new LinkedList<GoPlayingBoard>();
 			list.add(board.clone());
 			boards.put(board.getCountPiecesOnBoard(), list);
 		} else {
-			LinkedList<GoPlayingBoard> list = 
-					boards.get(board.getCountPiecesOnBoard());
+			LinkedList<GoPlayingBoard> list = boards.get(board
+					.getCountPiecesOnBoard());
 			list.add(board.clone());
-		}		
+		}
 	}
-	
+
+	/**
+	 * Removing the given board from the board history.
+	 * @param board the board to be removed
+	 */
+	public void remove(GoPlayingBoard board) {
+		if (!boards.containsKey(board.getCountPiecesOnBoard())) {
+			return;
+		} else {
+			LinkedList<GoPlayingBoard> list = boards.get(board
+					.getCountPiecesOnBoard());
+			list.remove(board);
+		}
+	}
+
 	/**
 	 * A method to determine if the given board is already in the history
 	 * @param board a board to be checked
@@ -57,6 +74,10 @@ public class BoardHistory {
 			}
 		}
 		return false;
+	}
+	
+	public static void wipeHistory() {
+		instance = null;
 	}
 
 }
