@@ -46,8 +46,8 @@ public class BoardHistory {
 	}
 
 	/**
-	 * Adding the given board to the board history by making a deep copy of it.
-	 * @param board the board to be added
+	 * Removing the given board from the board history.
+	 * @param board the board to be removed
 	 */
 	public void remove(GoPlayingBoard board) {
 		if (!boards.containsKey(board.getCountPiecesOnBoard())) {
