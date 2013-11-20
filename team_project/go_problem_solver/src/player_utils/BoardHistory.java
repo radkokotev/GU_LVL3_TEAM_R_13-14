@@ -16,7 +16,7 @@ public class BoardHistory {
 	/**
 	 * Default constructor to create an instance of the history
 	 */
-	public BoardHistory() {
+	private BoardHistory() {
 		this.boards = new HashMap<Integer, LinkedList<GoPlayingBoard>>();
 	}
 

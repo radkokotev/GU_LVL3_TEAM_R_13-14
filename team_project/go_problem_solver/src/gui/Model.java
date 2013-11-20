@@ -16,13 +16,13 @@ public class Model {
 	
 	public Model() {
 		currentBoard = new GoPlayingBoard();
-		history = new BoardHistory();
+		history = BoardHistory.getSingleton();
 		checker = new LegalMovesChecker(currentBoard);
 	}
 	
 	public Model(String fileName) throws FileNotFoundException, CheckFailException {
 		this.currentBoard = new GoPlayingBoard(fileName);
-		history = new BoardHistory();
+		history = BoardHistory.getSingleton();
 		this.checker = new LegalMovesChecker(currentBoard);
 		legalMoves = checker.getLegalityArray();
 	}
