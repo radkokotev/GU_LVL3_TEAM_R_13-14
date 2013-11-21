@@ -28,6 +28,8 @@ public class Board extends JPanel implements MouseListener,
 	private boolean eraseLegalMoves;
 	private Model model;
 	private JLabel totalStonesLabel;
+	private JCheckBoxMenuItem showValidMoves;
+	private JMenuItem importFile;
 	
 	
 	public class DrawStone {
@@ -45,7 +47,15 @@ public class Board extends JPanel implements MouseListener,
 	private DrawStone drawStone = new DrawStone();
 	
 	
-	public Board(JFrame frame){;
+	public Board(JFrame frame){
+	    JMenuBar menuBar = new JMenuBar();
+	    showValidMoves = new JCheckBoxMenuItem("Show valid/invalid moves");
+	    importFile = new JMenuItem("Import File");
+	    menuBar.add(showValidMoves);
+	    menuBar.add(importFile);
+	    frame.setJMenuBar(menuBar); 
+	    showValidMoves.addItemListener(this);
+        importFile.addActionListener(this);
 		addMouseListener(this);
 		totalStonesLabel = new JLabel("Total stones: 0 Black stones: 0 White stones: 0");
 		frame.getContentPane().add(totalStonesLabel, BorderLayout.NORTH);
@@ -220,7 +230,7 @@ public class Board extends JPanel implements MouseListener,
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		System.out.println("Pressed");
+
 		final JFileChooser fc = new JFileChooser();
 		int returnVal = fc.showOpenDialog(this);
 		

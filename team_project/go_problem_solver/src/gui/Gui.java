@@ -21,17 +21,8 @@ public class Gui {
         JFrame frame = new JFrame("Go Game Solver");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        JMenuBar menuBar = new JMenuBar();
-        JCheckBoxMenuItem showValidMoves = new JCheckBoxMenuItem("Show valid/invalid moves");
-        JMenuItem importFile = new JMenuItem("Import File");
-        menuBar.add(showValidMoves);
-        menuBar.add(importFile);
-        frame.setJMenuBar(menuBar);
-        
         frame.setLayout(new BorderLayout());
         Board board = new Board(frame);
-        showValidMoves.addItemListener(board);
-        importFile.addActionListener(board);
         frame.getContentPane().add(board, BorderLayout.CENTER);
         frame.setBackground(new Color(242,186,107));
  
