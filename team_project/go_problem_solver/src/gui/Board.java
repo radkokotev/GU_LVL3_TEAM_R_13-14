@@ -30,7 +30,8 @@ public class Board extends JPanel implements MouseListener,
 	private JLabel totalStonesLabel;
 	private JCheckBoxMenuItem showValidMoves;
 	private JMenuItem importFile;
-	
+	private JComboBox<String> nextAction;
+	private Status status;
 	
 	public class DrawStone {
 		
@@ -38,6 +39,10 @@ public class Board extends JPanel implements MouseListener,
 		public int x;
 		public int y;
 		public Color color;
+	}
+	
+	public enum Status {
+		REMOVE, ADD_ONLY_WHITE, ADD_ONLY_BLACK, ADD_ONLY_BORDER
 	}
 	
 	final static int MARGIN = 50;
@@ -51,14 +56,22 @@ public class Board extends JPanel implements MouseListener,
 	    JMenuBar menuBar = new JMenuBar();
 	    showValidMoves = new JCheckBoxMenuItem("Show valid/invalid moves");
 	    importFile = new JMenuItem("Import File");
+	    nextAction = new JComboBox<String>();
+	    nextAction.addItem("white");
+	    nextAction.addItem("black");
+	    nextAction.addItem("border");
+	    nextAction.addItem("remove");
+	    nextAction.addItem("switch");
+	    nextAction.addActionListener(this);
 	    menuBar.add(showValidMoves);
+	    menuBar.add(nextAction);
 	    menuBar.add(importFile);
 	    frame.setJMenuBar(menuBar); 
 	    showValidMoves.addItemListener(this);
         importFile.addActionListener(this);
 		addMouseListener(this);
-		totalStonesLabel = new JLabel("Total stones: 0 Black stones: 0 White stones: 0");
-		frame.getContentPane().add(totalStonesLabel, BorderLayout.NORTH);
+		totalStonesLabel = new JLabel("Now playing: Black Total stones: 0 Black stones: 0 White stones: 0");
+		frame.getContentPane().add(totalStonesLabel, BorderLayout.SOUTH);
 		model = new Model();
 	}
 
@@ -230,23 +243,33 @@ public class Board extends JPanel implements MouseListener,
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-
-		final JFileChooser fc = new JFileChooser();
-		int returnVal = fc.showOpenDialog(this);
-		
-		try {
-	        if (returnVal == JFileChooser.APPROVE_OPTION) {
-	            File file = fc.getSelectedFile();
-	            model = new Model(file.getAbsolutePath());
-	            model.recountBlackStones();
-				drawStones = true;
-				repaint();
-	        }
-		} catch (FileNotFoundException e1) {
-			System.out.println("File not found.");	
-		} catch (CheckFailException e1) {
-			System.out.println("Check fail exception.");
-		}		
+		if(e.getSource().equals(importFile)) {
+			final JFileChooser fc = new JFileChooser();
+			int returnVal = fc.showOpenDialog(this);
+			
+			try {
+		        if (returnVal == JFileChooser.APPROVE_OPTION) {
+		            File file = fc.getSelectedFile();
+		            model = new Model(file.getAbsolutePath());
+		            model.recountBlackStones();
+					drawStones = true;
+					repaint();
+		        }
+			} catch (FileNotFoundException e1) {
+				System.out.println("File not found.");	
+			} catch (CheckFailException e1) {
+				System.out.println("Check fail exception.");
+			}
+		} else if (e.getSource().equals(nextAction)){
+			JComboBox source =(JComboBox) e.getSource();
+			if(source.getSelectedItem().equals("switch")){
+				colour = !colour;
+			}
+			else if(source.getSelectedItem().equals("remove")) {
+				status = Status.REMOVE;
+			}
+		}
+			
 	}
 	
 	public String nowPlaying() {
