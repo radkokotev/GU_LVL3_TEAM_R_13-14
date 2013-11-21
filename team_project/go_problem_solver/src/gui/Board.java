@@ -159,8 +159,8 @@ public class Board extends JPanel implements MouseListener,
 			this.colour = !this.colour;
 			repaint();
 			model.removeOpponent(xIndex, yIndex);
-			totalStonesLabel.setText("Total stones: " + model.getTotalNumberOfStones() + " Black stones: " + model.getBlackNumberOfStones() + " White stones: "
-					+ model.getWhiteNumberOfStones());
+			totalStonesLabel.setText("Now playing: " + nowPlaying() + " Total stones: " + model.getTotalNumberOfStones() + 
+					" Black: " + model.getBlackNumberOfStones() + " White: " + model.getWhiteNumberOfStones());
 		}
 		else
 			System.out.println("Bad Move!!!!");
@@ -239,6 +239,10 @@ public class Board extends JPanel implements MouseListener,
 		}		
 	}
 	
-	
+	public String nowPlaying() {
+		if (colour)
+			return "White";
+		return "Black";
+	}
 	
 }
