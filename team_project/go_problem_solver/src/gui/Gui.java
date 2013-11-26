@@ -22,7 +22,7 @@ public class Gui {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         frame.setLayout(new BorderLayout());
-        Board board = new Board(frame);
+        GuiBoard board = new GuiBoard(frame);
         frame.getContentPane().add(board, BorderLayout.CENTER);
         frame.setBackground(new Color(242,186,107));
  
