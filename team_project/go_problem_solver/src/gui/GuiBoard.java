@@ -2,45 +2,39 @@ package gui;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
 
 import javax.swing.*;
 
-import custom_java_utils.CheckFailException;
-import board_utils.GoPlayingBoard;
-import board_utils.Stone;
-
-public class GuiBoard extends JPanel implements ActionListener{
-	private Model model;
-	private JMenuItem importFileItem, exportFileItem;
+public class GuiBoard extends JPanel implements ActionListener {
+	public JMenuItem importFileItem, exportFileItem;
+	public JMenuBar menuBar;
+	public JMenuItem modeMenuItem;
+	public JFrame frame;
 	
 	final static int MARGIN = 50;
 	final static int BOARDSIZE = 19;
 	final static File DEFAULT_DIRECTORY = new File(System.getProperty("user.dir") + "/src/player_utils/test_data/");
-	private Intersection[][] intersections = new Intersection[BOARDSIZE][BOARDSIZE];
-	private int sqWidth;
-	
+	public Intersection[][] intersections = new Intersection[BOARDSIZE][BOARDSIZE];
+	public int sqWidth;	
 	
 	public GuiBoard(JFrame frame){
-	    JMenuBar menuBar = new JMenuBar();
+		this.frame = frame;
+	    menuBar = new JMenuBar();
+	    
 	    JMenu fileMenu = new JMenu("File");
 	    importFileItem = new JMenuItem("Import file");
 	    exportFileItem = new JMenuItem("Export file");
-	    importFileItem.addActionListener(this);
-	    exportFileItem.addActionListener(this);
 	    fileMenu.add(importFileItem);
 	    fileMenu.add(exportFileItem);
 	    menuBar.add(fileMenu);
+	    
+	    modeMenuItem = new JMenuItem("Switch mode");
+	    modeMenuItem.addActionListener(this);
+	    menuBar.add(modeMenuItem);
+	    
 	    frame.setJMenuBar(menuBar); 
-		model = new Model();
 	}
 
 	public void paint(Graphics g) {
@@ -97,48 +91,9 @@ public class GuiBoard extends JPanel implements ActionListener{
 			}
 		
 		g2.draw(squares);
-		
-		//draw all stones
-		Stone[][] stones = model.getCurrentBoardLayout();
-		for(int i = 0; i < 19; i++)
-			for(int j = 0; j < 19; j++){
-				if(stones[i][j] == Stone.BLACK) {
-					g2.setPaint(Color.BLACK);
-					g2.fillOval(intersections[i][j].getTopLeftX(), intersections[i][j].getTopLeftY(), sqWidth, sqWidth);
-				} else if(stones[i][j] == Stone.WHITE){
-					g2.setPaint(Color.WHITE);
-					g2.fillOval(intersections[i][j].getTopLeftX(), intersections[i][j].getTopLeftY(), sqWidth, sqWidth);
-				} else if(stones[i][j] == Stone.INNER_BORDER){
-					g2.setPaint(Color.LIGHT_GRAY);
-					g2.fillRect(intersections[i][j].getTopLeftX(), intersections[i][j].getTopLeftY(), sqWidth, sqWidth);
-				}			
-			}			
+
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
-		JFileChooser fc = new JFileChooser(DEFAULT_DIRECTORY);
-		fc.setMultiSelectionEnabled(false);
-		if(e.getSource().equals(importFileItem)) {
-			int returnVal = fc.showOpenDialog(this);
-			try {
-		        if (returnVal == JFileChooser.APPROVE_OPTION) {
-		            File file = fc.getSelectedFile();
-		            model = new Model(file.getAbsolutePath());
-					repaint();
-		        }
-			} catch (FileNotFoundException e1) {
-				System.out.println("File not found.");	
-			} catch (CheckFailException e1) {
-				System.out.println("Check fail exception.");
-			}
-		} else if(e.getSource().equals(exportFileItem)){
-			fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-			int returnVal = fc.showSaveDialog(this);
-			if(returnVal == JFileChooser.APPROVE_OPTION){
-				//System.out.println(fc.getSelectedFile());
-				//TODO implement saving the file
-			}
-		}		
-	}
+	public void actionPerformed(ActionEvent e) {}
 }

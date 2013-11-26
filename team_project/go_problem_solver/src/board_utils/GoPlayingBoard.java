@@ -1,11 +1,11 @@
 package board_utils;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 import player_utils.BoardHistory;
-
 import custom_java_utils.CheckFailException;
 import custom_java_utils.CheckUtils;
 
@@ -46,7 +46,7 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	 * @throws CheckFailException when the given file does not have the 
 	 * dimensions of a Go playing board
 	 */
-	public GoPlayingBoard(String fileName) 
+	public GoPlayingBoard(File fileName) 
 			throws FileNotFoundException, CheckFailException {
 		this();
 		FileInputStream inputStream = new FileInputStream(fileName);
@@ -209,6 +209,13 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 		return other;
 	}
 	
+	/**
+	 * Creates a new file and populates it with this board.
+	 * @param file full path of the file where to save it
+	 */
+	public void toFile(File file){
+		//TODO export board to a file
+	}
 	
 	public GoCell[][] getBoard() {
 		return this.board;

@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.Color;
+import java.io.File;
 import java.io.FileNotFoundException;
 
 import custom_java_utils.CheckFailException;
@@ -20,7 +21,7 @@ public class Model {
 		checker = new LegalMovesChecker(currentBoard);
 	}
 	
-	public Model(String fileName) throws FileNotFoundException, CheckFailException {
+	public Model(File fileName) throws FileNotFoundException, CheckFailException {
 		this.currentBoard = new GoPlayingBoard(fileName);
 		history = BoardHistory.getSingleton();
 		this.checker = new LegalMovesChecker(currentBoard);
@@ -101,6 +102,13 @@ public class Model {
 	 */
 	public GoPlayingBoard getCurrentBoard() {
 		return currentBoard.clone();
+	}
+	/**
+	 * Creates a new file and populates it with current board.
+	 * @param file full path of the file where to save it
+	 */
+	public void toFile(File file){
+		currentBoard.toFile(file);
 	}
 
 }
