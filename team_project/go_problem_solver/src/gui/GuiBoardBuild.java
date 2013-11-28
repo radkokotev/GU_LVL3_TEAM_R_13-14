@@ -55,6 +55,7 @@ public class GuiBoardBuild extends GuiBoard implements MouseListener,
 	    combo.addActionListener(this);
 	    menuBar.add(combo);
 	    
+	    frame.setTitle("Go game solver [Build mode]");
 	    frame.getContentPane().add(this);
 	    frame.setBackground(new Color(242,186,107));
 		frame.pack();

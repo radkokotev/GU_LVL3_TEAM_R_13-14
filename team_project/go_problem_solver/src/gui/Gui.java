@@ -18,11 +18,11 @@ public class Gui {
     
     private static void createAndShowGUI() {
         //Create and set up the window.
-        JFrame frame = new JFrame("Go Game Solver");
+        JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         frame.setLayout(new BorderLayout());
-        GuiBoard board = new GuiBoardBuild(frame);
+        GuiBoard board = new GuiBoardPlay(frame);
         frame.getContentPane().add(board, BorderLayout.CENTER);
     }
 }

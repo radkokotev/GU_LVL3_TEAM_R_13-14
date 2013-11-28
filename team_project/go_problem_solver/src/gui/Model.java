@@ -28,21 +28,12 @@ public class Model {
 		legalMoves = checker.getLegalityArray();
 	}
 	
-	public void addStone(int x, int y, Color c) {
-		if(c.equals(Color.BLACK)) {
-			currentBoard.setCellAt(x, y, new GoCell(Stone.BLACK, x, y));
-			currentBoard.setToPlayNext(Stone.WHITE);
-		} else if (c.equals(Color.WHITE)) {
-			currentBoard.setCellAt(x, y, new GoCell(Stone.WHITE, x, y));
-			currentBoard.setToPlayNext(Stone.BLACK);
-		} else System.out.println("Something wrong with colours.");
+	public void addStone(int x, int y) {
+		currentBoard.setCellAt(x, y, new GoCell(currentBoard.toPlayNext(), x, y));
+		currentBoard.oppositeToPlayNext();
 		checker = new LegalMovesChecker(currentBoard);
 		legalMoves = checker.getLegalityArray();
-		
-		//long start = System.currentTimeMillis();
 		history.add(currentBoard);
-		//long end = System.currentTimeMillis();
-		//System.out.println("\nElapsed time: " + (end - start) + " milliseconds");
 		
 	}
 	
@@ -83,6 +74,7 @@ public class Model {
 	public void recountBlackStones() {
 		currentBoard.countAndSetBlackStones();
 	}
+	
 	/**
 	 * Returns the current board Stone layout
 	 * @return A double dimension array of Stones
