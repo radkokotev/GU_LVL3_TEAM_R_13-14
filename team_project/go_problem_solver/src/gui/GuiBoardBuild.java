@@ -54,6 +54,12 @@ public class GuiBoardBuild extends GuiBoard implements MouseListener,
 	    combo.addItem(NONE);
 	    combo.addActionListener(this);
 	    menuBar.add(combo);
+	    
+	    frame.getContentPane().add(this);
+	    frame.setBackground(new Color(242,186,107));
+		frame.pack();
+		frame.setVisible(true);
+        frame.setSize(500, 500);
 	}
 	
 	public void paint(Graphics g){

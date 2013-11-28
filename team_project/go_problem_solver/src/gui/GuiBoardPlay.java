@@ -16,7 +16,11 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener {
 	public GuiBoardPlay(JFrame frame) {
 		super(frame);
 		model = new Model();
-		// TODO Auto-generated constructor stub
+		frame.getContentPane().add(this);
+		frame.setBackground(new Color(242,186,107));
+		frame.pack();
+		frame.setVisible(true);
+        frame.setSize(500, 500);
 	}
 	
 	public void paint(Graphics g){
@@ -38,7 +42,6 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener {
 					g2.fillRect(intersections[i][j].getTopLeftX(), intersections[i][j].getTopLeftY(), sqWidth, sqWidth);
 				}			
 			}
-		
 	}
 
 	@Override

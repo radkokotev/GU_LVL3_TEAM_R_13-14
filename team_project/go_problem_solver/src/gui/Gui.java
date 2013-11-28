@@ -24,11 +24,5 @@ public class Gui {
         frame.setLayout(new BorderLayout());
         GuiBoard board = new GuiBoardBuild(frame);
         frame.getContentPane().add(board, BorderLayout.CENTER);
-        frame.setBackground(new Color(242,186,107));
- 
-        //Display the window.
-        frame.pack();
-        frame.setVisible(true);
-        frame.setSize(500, 500);
     }
 }
