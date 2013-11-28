@@ -39,7 +39,8 @@ public class GuiBoard extends JPanel implements ActionListener {
 
 	public void paint(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
-		
+		//draws proper and nice circles
+		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		//If not drawing a stone.
 		Dimension d = getSize();
 		//Clearing everything
