@@ -31,7 +31,7 @@ public class GuiBoardBuild extends GuiBoard implements MouseListener,
 	private static final String BLACK = "Black";
 	private static final String INNER_BORDER = "Inner border";
 	private static final String NONE = "Empty";
-	private static final File DEFAULT_BOARD = new File(System.getProperty("user.dir") + "/src/gui/defaultBoardforBuildMode.go");
+	private static final File DEFAULT_BOARD = new File(System.getProperty("user.home") + "/git/GU_LVL3_TEAM_R_13-14/team_project/go_problem_solver/src/gui/defaultBoardforBuildMode.go");
 	
 	public GuiBoardBuild(JFrame frame) {
 		super(frame);
