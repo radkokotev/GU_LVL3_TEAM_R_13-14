@@ -20,6 +20,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 
+import player_utils.BoardHistory;
 import custom_java_utils.CheckFailException;
 import board_utils.GoCell;
 import board_utils.GoPlayingBoard;
@@ -129,8 +130,9 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 				}
 			}
 		} else if(e.getSource().equals(modeMenuItem)){
-			frame.getContentPane().removeAll();;
+			frame.getContentPane().removeAll();
 			frame.getContentPane().add(new GuiBoardBuild(frame), BorderLayout.CENTER);
+			BoardHistory.wipeHistory();
 		} else if(e.getSource().equals(undoMoveItem)) {
 			model.undoMove();
 			repaint();

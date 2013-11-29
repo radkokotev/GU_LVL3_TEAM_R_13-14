@@ -141,7 +141,12 @@ public class GuiBoardBuild extends GuiBoard implements MouseListener,
 			fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			int returnVal = fc.showSaveDialog(this);
 			if(returnVal == JFileChooser.APPROVE_OPTION){
-				gpb.toFile(fc.getSelectedFile());
+				try {
+					gpb.toFile(fc.getSelectedFile());
+				} catch (FileNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		} else if(e.getSource().equals(combo)){
 			JComboBox source = (JComboBox) e.getSource();
