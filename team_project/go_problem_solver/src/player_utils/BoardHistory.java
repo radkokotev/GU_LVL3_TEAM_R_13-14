@@ -3,6 +3,7 @@ package player_utils;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map.Entry;
+import java.util.Stack;
 
 import board_utils.GoPlayingBoard;
 
@@ -12,12 +13,16 @@ import board_utils.GoPlayingBoard;
 public class BoardHistory {
 	private static BoardHistory instance;
 	private static HashMap<Integer, LinkedList<GoPlayingBoard>> boards;
+	private Stack<GoPlayingBoard> allMoves;
+	private Stack<GoPlayingBoard> undoMoves;
 
 	/**
 	 * Default constructor to create an instance of the history
 	 */
 	private BoardHistory() {
-		this.boards = new HashMap<Integer, LinkedList<GoPlayingBoard>>();
+		boards = new HashMap<Integer, LinkedList<GoPlayingBoard>>();
+		allMoves = new Stack<GoPlayingBoard>();
+		undoMoves = new Stack<GoPlayingBoard>();
 	}
 
 	/**
@@ -45,11 +50,12 @@ public class BoardHistory {
 					.getCountPiecesOnBoard());
 			list.add(board.clone());
 		}
+		allMoves.add(board.clone());
 	}
 
 	/**
-	 * Adding the given board to the board history by making a deep copy of it.
-	 * @param board the board to be added
+	 * Removing given board
+	 * @param board the board to be removed
 	 */
 	public void remove(GoPlayingBoard board) {
 		if (!boards.containsKey(board.getCountPiecesOnBoard())) {
@@ -61,6 +67,41 @@ public class BoardHistory {
 		}
 	}
 
+	/**
+	 * Method to undo the board by 1 position
+	 */
+	public void undoMove() {
+		GoPlayingBoard temp = new GoPlayingBoard();
+		if (allMoves.size() > 1) {
+			temp = allMoves.pop();
+			undoMoves.push(temp.clone());
+			remove(temp);
+		}
+
+	}
+	
+	/**
+	 * Method to redo the last move
+	 */
+	public void redoMove() {
+		if (!undoMoves.isEmpty()) {
+			allMoves.push(undoMoves.pop().clone());		}
+	}
+	
+	/**
+	 * Method to get the last move 
+	 */
+	public GoPlayingBoard getLastMove() {
+		return allMoves.peek().clone();
+	}
+	
+	/**
+	 * Method to go forward a move
+	 */
+	public GoPlayingBoard getUndoMove() {
+		return undoMoves.get(0).clone();
+	}
+	
 	/**
 	 * A method to determine if the given board is already in the history
 	 * @param board a board to be checked

@@ -18,13 +18,15 @@ public class Model {
 	public Model() {
 		currentBoard = new GoPlayingBoard();
 		history = BoardHistory.getSingleton();
+		history.add(currentBoard);
 		checker = new LegalMovesChecker(currentBoard);
 	}
 	
 	public Model(File fileName) throws FileNotFoundException, CheckFailException {
-		this.currentBoard = new GoPlayingBoard(fileName);
+		currentBoard = new GoPlayingBoard(fileName);
 		history = BoardHistory.getSingleton();
-		this.checker = new LegalMovesChecker(currentBoard);
+		history.add(currentBoard);
+		checker = new LegalMovesChecker(currentBoard);
 		legalMoves = checker.getLegalityArray();
 	}
 	
@@ -33,8 +35,6 @@ public class Model {
 		currentBoard.oppositeToPlayNext();
 		checker = new LegalMovesChecker(currentBoard);
 		legalMoves = checker.getLegalityArray();
-		history.add(currentBoard);
-		
 	}
 	
 	public boolean isMoveLegal(int x, int y) {
@@ -53,8 +53,12 @@ public class Model {
 				checker = new LegalMovesChecker(currentBoard);
 				legalMoves = checker.getLegalityArray();
 			}
+			else 
+				//this method will be called on each move, so history will be updated each time when
+				//there will be no stones killed.
+				history.add(currentBoard);
 		} catch(Exception e){
-			System.out.println("new board == old board");
+			System.out.println("new board = old board");
 		}
 		
 	}
@@ -98,9 +102,25 @@ public class Model {
 	/**
 	 * Creates a new file and populates it with current board.
 	 * @param file full path of the file where to save it
+	 * @throws FileNotFoundException 
 	 */
-	public void toFile(File file){
+	public void toFile(File file) throws FileNotFoundException{
 		currentBoard.toFile(file);
+	}
+	
+	public void undoMove() {
+		history.undoMove();
+		GoPlayingBoard last = history.getLastMove();
+		if (last != null) {
+			currentBoard = last;
+			checker = new LegalMovesChecker(currentBoard);
+			legalMoves = checker.getLegalityArray();
+		}
+	}
+	
+	public void redoMove() {
+		history.redoMove();
+		currentBoard = history.getUndoMove();
 	}
 
 }

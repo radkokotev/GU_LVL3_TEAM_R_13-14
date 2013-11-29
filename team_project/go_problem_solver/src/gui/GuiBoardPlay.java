@@ -14,6 +14,7 @@ import java.awt.geom.Ellipse2D;
 import java.io.File;
 import java.io.FileNotFoundException;
 
+import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -29,6 +30,7 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 													  ItemListener {
 	private Model model;
 	private boolean drawLegalMoves;
+	private JButton undoMoveItem;
 	
 	public GuiBoardPlay(JFrame frame) {
 		super(frame);
@@ -40,6 +42,10 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 		addMouseListener(this);
 		importFileItem.addActionListener(this);
 	    exportFileItem.addActionListener(this);
+	    
+	    undoMoveItem = new JButton("Undo");
+		menuBar.add(undoMoveItem);
+		undoMoveItem.addActionListener(this);
 	    
 		frame.setTitle("Go game solver [Play mode]");
 		frame.getContentPane().add(this);
@@ -91,6 +97,7 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
                     g2.fill(oval);
                 }                                   
 		}
+		
 	}
 
 	@Override
@@ -115,11 +122,18 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 			fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			int returnVal = fc.showSaveDialog(this);
 			if(returnVal == JFileChooser.APPROVE_OPTION){
-				model.toFile(fc.getSelectedFile());
+				try {
+					model.toFile(fc.getSelectedFile());
+				} catch (FileNotFoundException e1) {
+					System.out.println("File not found");
+				}
 			}
 		} else if(e.getSource().equals(modeMenuItem)){
 			frame.getContentPane().removeAll();;
 			frame.getContentPane().add(new GuiBoardBuild(frame), BorderLayout.CENTER);
+		} else if(e.getSource().equals(undoMoveItem)) {
+			model.undoMove();
+			repaint();
 		}
 	}
 
