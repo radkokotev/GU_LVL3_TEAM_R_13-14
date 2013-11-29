@@ -21,8 +21,8 @@ public class BoardHistory {
 	 */
 	private BoardHistory() {
 		boards = new HashMap<Integer, LinkedList<GoPlayingBoard>>();
-		this.allMoves = new Stack<GoPlayingBoard>();
-		this.undoMoves = new Stack<GoPlayingBoard>();
+		allMoves = new Stack<GoPlayingBoard>();
+		undoMoves = new Stack<GoPlayingBoard>();
 	}
 
 	/**
@@ -45,8 +45,6 @@ public class BoardHistory {
 			LinkedList<GoPlayingBoard> list = new LinkedList<GoPlayingBoard>();
 			list.add(board.clone());
 			boards.put(board.getCountPiecesOnBoard(), list);
-			System.out.println(board);
-			System.out.println(allMoves.size());
 		} else {
 			LinkedList<GoPlayingBoard> list = boards.get(board
 					.getCountPiecesOnBoard());
@@ -57,7 +55,7 @@ public class BoardHistory {
 
 	/**
 	 * Removing given board
-	 * @param the board to be removed
+	 * @param board the board to be removed
 	 */
 	public void remove(GoPlayingBoard board) {
 		if (!boards.containsKey(board.getCountPiecesOnBoard())) {
@@ -77,6 +75,7 @@ public class BoardHistory {
 		if (allMoves.size() > 1) {
 			temp = allMoves.pop();
 			undoMoves.push(temp.clone());
+			remove(temp);
 		}
 
 	}
@@ -93,14 +92,14 @@ public class BoardHistory {
 	 * Method to get the last move 
 	 */
 	public GoPlayingBoard getLastMove() {
-		return allMoves.peek();
+		return allMoves.peek().clone();
 	}
 	
 	/**
 	 * Method to go forward a move
 	 */
 	public GoPlayingBoard getUndoMove() {
-		return undoMoves.get(0);
+		return undoMoves.get(0).clone();
 	}
 	
 	/**

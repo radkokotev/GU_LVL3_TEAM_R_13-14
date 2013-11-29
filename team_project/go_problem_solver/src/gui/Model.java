@@ -23,10 +23,10 @@ public class Model {
 	}
 	
 	public Model(File fileName) throws FileNotFoundException, CheckFailException {
-		this.currentBoard = new GoPlayingBoard(fileName);
+		currentBoard = new GoPlayingBoard(fileName);
 		history = BoardHistory.getSingleton();
 		history.add(currentBoard);
-		this.checker = new LegalMovesChecker(currentBoard);
+		checker = new LegalMovesChecker(currentBoard);
 		legalMoves = checker.getLegalityArray();
 	}
 	
@@ -54,9 +54,11 @@ public class Model {
 				legalMoves = checker.getLegalityArray();
 			}
 			else 
+				//this method will be called on each move, so history will be updated each time when
+				//there will be no stones killed.
 				history.add(currentBoard);
 		} catch(Exception e){
-			System.out.println("new board == old board");
+			System.out.println("new board = old board");
 		}
 		
 	}
@@ -109,8 +111,11 @@ public class Model {
 	public void undoMove() {
 		history.undoMove();
 		GoPlayingBoard last = history.getLastMove();
-		if (last != null)
-			currentBoard = last.clone();
+		if (last != null) {
+			currentBoard = last;
+			checker = new LegalMovesChecker(currentBoard);
+			legalMoves = checker.getLegalityArray();
+		}
 	}
 	
 	public void redoMove() {
