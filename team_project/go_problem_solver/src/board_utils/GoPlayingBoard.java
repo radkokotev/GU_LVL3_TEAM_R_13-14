@@ -3,6 +3,8 @@ package board_utils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.Scanner;
 
 import player_utils.BoardHistory;
@@ -209,12 +211,32 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 		return other;
 	}
 	
+	
+	public void exportBoard(String fileName) throws FileNotFoundException, UnsupportedEncodingException {
+		
+	}
 	/**
 	 * Creates a new file and populates it with this board.
 	 * @param file full path of the file where to save it
+	 * @throws FileNotFoundException 
 	 */
-	public void toFile(File file){
-		//TODO export board to a file
+	public void toFile(File file) throws FileNotFoundException{
+		PrintWriter writer = new PrintWriter(file.toString());
+		for (GoCell[] row : board) {
+			for (GoCell cell : row) {
+				String c = "";
+				switch (cell.getContent()) {
+					case BLACK : c = "x"; break;
+					case WHITE : c = "o"; break;
+					case NONE : c = "-"; break;
+					default : c = "?";
+				}
+				writer.print(c);
+				System.out.println(c);
+			}
+			writer.println();
+		}
+		writer.close();
 	}
 	
 	public GoCell[][] getBoard() {

@@ -98,9 +98,21 @@ public class Model {
 	/**
 	 * Creates a new file and populates it with current board.
 	 * @param file full path of the file where to save it
+	 * @throws FileNotFoundException 
 	 */
-	public void toFile(File file){
+	public void toFile(File file) throws FileNotFoundException{
 		currentBoard.toFile(file);
+	}
+	
+	public void undoMove() {
+		history.undoMove();
+		if (history.getLastMove() != null)
+			currentBoard = history.getLastMove();
+	}
+	
+	public void redoMove() {
+		history.redoMove();
+		currentBoard = history.getUndoMove();
 	}
 
 }
