@@ -18,12 +18,14 @@ public class Model {
 	public Model() {
 		currentBoard = new GoPlayingBoard();
 		history = BoardHistory.getSingleton();
+		history.add(currentBoard);
 		checker = new LegalMovesChecker(currentBoard);
 	}
 	
 	public Model(File fileName) throws FileNotFoundException, CheckFailException {
 		this.currentBoard = new GoPlayingBoard(fileName);
 		history = BoardHistory.getSingleton();
+		history.add(currentBoard);
 		this.checker = new LegalMovesChecker(currentBoard);
 		legalMoves = checker.getLegalityArray();
 	}
@@ -33,8 +35,6 @@ public class Model {
 		currentBoard.oppositeToPlayNext();
 		checker = new LegalMovesChecker(currentBoard);
 		legalMoves = checker.getLegalityArray();
-		history.add(currentBoard);
-		
 	}
 	
 	public boolean isMoveLegal(int x, int y) {
@@ -53,6 +53,8 @@ public class Model {
 				checker = new LegalMovesChecker(currentBoard);
 				legalMoves = checker.getLegalityArray();
 			}
+			else 
+				history.add(currentBoard);
 		} catch(Exception e){
 			System.out.println("new board == old board");
 		}
@@ -106,8 +108,9 @@ public class Model {
 	
 	public void undoMove() {
 		history.undoMove();
-		if (history.getLastMove() != null)
-			currentBoard = history.getLastMove();
+		GoPlayingBoard last = history.getLastMove();
+		if (last != null)
+			currentBoard = last.clone();
 	}
 	
 	public void redoMove() {

@@ -30,6 +30,7 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 													  ItemListener {
 	private Model model;
 	private boolean drawLegalMoves;
+	private JButton undoMoveItem;
 	
 	public GuiBoardPlay(JFrame frame) {
 		super(frame);
@@ -42,10 +43,9 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 		importFileItem.addActionListener(this);
 	    exportFileItem.addActionListener(this);
 	    
-	    JButton undoMoveItem = new JButton("Undo");
+	    undoMoveItem = new JButton("Undo");
 		menuBar.add(undoMoveItem);
 		undoMoveItem.addActionListener(this);
-		undoMoveItem.setActionCommand("undo");
 	    
 		frame.setTitle("Go game solver [Play mode]");
 		frame.getContentPane().add(this);
@@ -131,7 +131,7 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 		} else if(e.getSource().equals(modeMenuItem)){
 			frame.getContentPane().removeAll();;
 			frame.getContentPane().add(new GuiBoardBuild(frame), BorderLayout.CENTER);
-		} else if("undo".equals(e.getActionCommand())) {
+		} else if(e.getSource().equals(undoMoveItem)) {
 			model.undoMove();
 			repaint();
 		}

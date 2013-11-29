@@ -45,7 +45,6 @@ public class BoardHistory {
 			LinkedList<GoPlayingBoard> list = new LinkedList<GoPlayingBoard>();
 			list.add(board.clone());
 			boards.put(board.getCountPiecesOnBoard(), list);
-			allMoves.add(board);
 			System.out.println(board);
 			System.out.println(allMoves.size());
 		} else {
@@ -53,18 +52,12 @@ public class BoardHistory {
 					.getCountPiecesOnBoard());
 			list.add(board.clone());
 		}
-		if (!undoMoves.isEmpty()) {
-			GoPlayingBoard toRemove = new GoPlayingBoard();
-			while (!undoMoves.isEmpty()) {
-				toRemove = undoMoves.pop();
-				boards.get(toRemove.getCountPiecesOnBoard()).remove(toRemove);
-			}
-		}
+		allMoves.add(board.clone());
 	}
 
 	/**
-	 * Adding the given board to the board history by making a deep copy of it.
-	 * @param board the board to be added
+	 * Removing given board
+	 * @param the board to be removed
 	 */
 	public void remove(GoPlayingBoard board) {
 		if (!boards.containsKey(board.getCountPiecesOnBoard())) {
@@ -81,11 +74,11 @@ public class BoardHistory {
 	 */
 	public void undoMove() {
 		GoPlayingBoard temp = new GoPlayingBoard();
-		if (!allMoves.isEmpty()) {
+		if (allMoves.size() > 1) {
 			temp = allMoves.pop();
-			undoMoves.push(temp);
-			System.out.println(undoMoves.size());
+			undoMoves.push(temp.clone());
 		}
+
 	}
 	
 	/**
@@ -93,16 +86,14 @@ public class BoardHistory {
 	 */
 	public void redoMove() {
 		if (!undoMoves.isEmpty()) {
-			allMoves.push(undoMoves.pop());		}
+			allMoves.push(undoMoves.pop().clone());		}
 	}
 	
 	/**
 	 * Method to get the last move 
 	 */
 	public GoPlayingBoard getLastMove() {
-		if (!allMoves.isEmpty())
-			return allMoves.get(0);
-		return null;
+		return allMoves.peek();
 	}
 	
 	/**
