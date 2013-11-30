@@ -26,6 +26,7 @@ public class Model {
 	}
 	
 	public Model(File fileName, GuiBoardPlay g) throws FileNotFoundException, CheckFailException {
+		BoardHistory.wipeHistory();
 		gui = g;
 		currentBoard = new GoPlayingBoard(fileName);
 		history = BoardHistory.getSingleton();
@@ -45,21 +46,25 @@ public class Model {
 		if(currentBoard.getNextPlayer() == Player.COMPUTER && !minimax.isPositionTerminal(currentBoard)){
 			computerMove();
 		}
+		removeOpponent(x, y);
 	}
 	
 	public void computerMove(){
 		minimax = new MinimaxGoSolver(currentBoard, currentBoard.getTarget());
 		GoCell decision = null;
-		System.out.println("labas");
 		try {
 			decision = minimax.minimaxDecision();
-			System.out.println(decision.x() + " " + decision.y() + " " + decision);
+			if(decision != null)
+				System.out.println(decision.x() + " " + decision.y() + " " + decision);
+			else
+				System.out.println("null");
 		} catch(CheckFailException e){
 			System.out.println("Game is finished.");
 			e.printStackTrace();
 		}
-		addStone(decision.x(), decision.y());
-		removeOpponent(decision.x(), decision.y());
+		if(decision != null) {
+			addStone(decision.x(), decision.y());
+		}
 		gui.repaint();
 	}
 	

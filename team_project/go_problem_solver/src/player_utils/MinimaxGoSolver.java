@@ -69,11 +69,13 @@ public class MinimaxGoSolver {
 		GoCell bestMove = null;
 		long bestValue = (-infinity);
 		for (CellValuePair pair : decisionMinimaxValues) {
+			System.out.println("pair" + pair.minimaxValue + " " + infinity);
 			if (pair.minimaxValue > bestValue) {
 				bestValue = pair.minimaxValue;
 				bestMove = pair.cell;
 			}
 		}
+		System.out.println("best move: " + bestMove);
 		return bestMove;
 	}
 	

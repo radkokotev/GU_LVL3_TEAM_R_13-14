@@ -59,7 +59,6 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 	private void drawStone(int x, int y){
 		if(model.isMoveLegal(x, y)) {
 			model.addStone(x, y);
-			model.removeOpponent(x, y);
 		}
 	}
 	
