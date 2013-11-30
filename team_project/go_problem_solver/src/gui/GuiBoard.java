@@ -87,8 +87,8 @@ public class GuiBoard extends JPanel implements ActionListener {
 		
 		for (int i = 0; i < BOARDSIZE; i++)
 			for(int j = 0; j < BOARDSIZE; j++) {
-				intersections[j][i] = new Intersection(
-						new Point(i * sqWidth + MARGIN, j * sqWidth + MARGIN), sqWidth);
+				intersections[i][j] = new Intersection(
+						new Point(j * sqWidth + MARGIN, i * sqWidth + MARGIN), sqWidth);
 			}
 		
 		g2.draw(squares);

@@ -5,7 +5,7 @@ import java.awt.Rectangle;
 import javax.swing.JPanel;
 
 public class Intersection extends JPanel{
-	private Point center;
+	public Point center;
 	//Intersection bounds. Mainly used for finding correct intersection where to draw a stone
 	//when user clicks mouse button. 
 	private Rectangle bounds;

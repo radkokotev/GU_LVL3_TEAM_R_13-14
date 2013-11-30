@@ -1,5 +1,6 @@
 package board_utils;
 
+import java.awt.Point;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -220,8 +221,9 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	 * @param file full path of the file where to save it
 	 * @throws FileNotFoundException 
 	 */
-	public void toFile(File file) throws FileNotFoundException{
+	public void toFile(File file, Point target) throws FileNotFoundException{
 		PrintWriter writer = new PrintWriter(file.toString());
+		writer.printf("%s KILL %d %d\n",getCellAt(target.x, target.y).getContent(), target.x, target.y);
 		for (GoCell[] row : board) {
 			for (GoCell cell : row) {
 				String c = "";
@@ -232,7 +234,6 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 					default : c = "?";
 				}
 				writer.print(c);
-				System.out.println(c);
 			}
 			writer.println();
 		}

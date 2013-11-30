@@ -4,10 +4,12 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.GeneralPath;
 import java.io.File;
 import java.io.FileNotFoundException;
 
@@ -25,12 +27,16 @@ public class GuiBoardBuild extends GuiBoard implements MouseListener,
 	private Stone current;
 	private GoPlayingBoard gpb;
 	private JComboBox<String> combo;
+	private boolean isNextStoneTarget;
+	private Point targetStone = null;
 	
 	//Constants for combo box
 	private static final String WHITE = "White";
 	private static final String BLACK = "Black";
 	private static final String INNER_BORDER = "Inner border";
 	private static final String NONE = "Empty";
+	private static final String TARGET_STONE ="Target stone";
+	
 	private static final File DEFAULT_BOARD = new File(System.getProperty("user.home") + "/git/GU_LVL3_TEAM_R_13-14/team_project/go_problem_solver/src/gui/defaultBoardforBuildMode.go");
 	
 	public GuiBoardBuild(JFrame frame) {
@@ -52,6 +58,7 @@ public class GuiBoardBuild extends GuiBoard implements MouseListener,
 	    combo.addItem(WHITE);
 	    combo.addItem(INNER_BORDER);
 	    combo.addItem(NONE);
+	    combo.addItem(TARGET_STONE);
 	    combo.addActionListener(this);
 	    menuBar.add(combo);
 	    
@@ -80,8 +87,14 @@ public class GuiBoardBuild extends GuiBoard implements MouseListener,
 				} else if(cells[i][j].getContent() == Stone.INNER_BORDER){
 					g2.setPaint(new Color(170, 170, 170, 200));
 					g2.fillRect(intersections[i][j].getTopLeftX(), intersections[i][j].getTopLeftY(), sqWidth, sqWidth);
-				}			
+				}		
 			}
+		
+		if(targetStone != null){
+			Intersection target = intersections[targetStone.x][targetStone.y];
+			g2.setPaint(Color.RED);
+			g2.fillOval(target.center.x - sqWidth/4, target.center.y - sqWidth/4, sqWidth/2, sqWidth/2);
+		}
 	}
 	
 	@Override
@@ -89,8 +102,13 @@ public class GuiBoardBuild extends GuiBoard implements MouseListener,
 	    for(int i = 0; i < BOARDSIZE; i++)        
             for(int j = 0; j < BOARDSIZE; j++) {
                 if(intersections[i][j].contains(e.getPoint())) {
-                 gpb.setCellAt(i, j, new GoCell(current, i, j));
-                 repaint();
+                	if(!isNextStoneTarget)
+	                	gpb.setCellAt(i, j, new GoCell(current, i, j));
+                	else {
+                		targetStone = new Point(i, j);
+                	}
+	                repaint();
+	                return;
                 }
             }
     }
@@ -142,7 +160,7 @@ public class GuiBoardBuild extends GuiBoard implements MouseListener,
 			int returnVal = fc.showSaveDialog(this);
 			if(returnVal == JFileChooser.APPROVE_OPTION){
 				try {
-					gpb.toFile(fc.getSelectedFile());
+					gpb.toFile(fc.getSelectedFile(), targetStone);
 				} catch (FileNotFoundException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -152,12 +170,18 @@ public class GuiBoardBuild extends GuiBoard implements MouseListener,
 			JComboBox source = (JComboBox) e.getSource();
 			if(WHITE.equals(source.getSelectedItem())){
 				current = Stone.WHITE;
+				isNextStoneTarget = false;
 			} else if (BLACK.equals(source.getSelectedItem())){
 				current = Stone.BLACK;
+				isNextStoneTarget = false;
 			} else if (INNER_BORDER.equals(source.getSelectedItem())){
 				current = Stone.INNER_BORDER;
+				isNextStoneTarget = false;
 			} else if (NONE.equals(source.getSelectedItem())){
 				current = Stone.NONE;
+				isNextStoneTarget = false;
+			} else if (TARGET_STONE.equals(source.getSelectedItem())){
+				isNextStoneTarget = true;
 			}
 		} else if(e.getSource().equals(modeMenuItem)){
 			frame.getContentPane().removeAll();;
