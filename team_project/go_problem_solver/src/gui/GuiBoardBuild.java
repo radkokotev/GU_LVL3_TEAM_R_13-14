@@ -28,7 +28,6 @@ public class GuiBoardBuild extends GuiBoard implements MouseListener,
 	private GoPlayingBoard gpb;
 	private JComboBox<String> combo;
 	private boolean isNextStoneTarget;
-	private Point targetStone = null;
 	
 	//Constants for combo box
 	private static final String WHITE = "White";
@@ -90,8 +89,8 @@ public class GuiBoardBuild extends GuiBoard implements MouseListener,
 				}		
 			}
 		
-		if(targetStone != null){
-			Intersection target = intersections[targetStone.x][targetStone.y];
+		if(gpb.getTarget() != null){
+			Intersection target = intersections[gpb.getTarget().x()][gpb.getTarget().y()];
 			g2.setPaint(Color.RED);
 			g2.fillOval(target.center.x - sqWidth/4, target.center.y - sqWidth/4, sqWidth/2, sqWidth/2);
 		}
@@ -105,7 +104,7 @@ public class GuiBoardBuild extends GuiBoard implements MouseListener,
                 	if(!isNextStoneTarget)
 	                	gpb.setCellAt(i, j, new GoCell(current, i, j));
                 	else {
-                		targetStone = new Point(i, j);
+                		gpb.setTarget(gpb.getCellAt(i, j).getContent(), i, j);
                 	}
 	                repaint();
 	                return;
@@ -160,7 +159,7 @@ public class GuiBoardBuild extends GuiBoard implements MouseListener,
 			int returnVal = fc.showSaveDialog(this);
 			if(returnVal == JFileChooser.APPROVE_OPTION){
 				try {
-					gpb.toFile(fc.getSelectedFile(), targetStone);
+					gpb.toFile(fc.getSelectedFile());
 				} catch (FileNotFoundException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();

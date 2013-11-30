@@ -8,6 +8,8 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Scanner;
 
+import javax.sound.sampled.Line;
+
 import player_utils.BoardHistory;
 import custom_java_utils.CheckFailException;
 import custom_java_utils.CheckUtils;
@@ -17,6 +19,7 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	private Stone toPlayNext;
 	private int countPiecesOnBoard;
 	private int blackStones;
+	private GoCell target = null;
 	
 	// Board constants
 	private static final int WIDTH = 19;
@@ -26,6 +29,10 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	private static final char BLACK = 'x';
 	private static final char WHITE = 'o';
 	private static final char NONE = '-';
+	
+	// Who is playing first from file?
+	private static final String FIRST_IS_WHITE = "WHITE";
+	private static final String FIRST_IS_BLACK = "BLACK";
 	
 	/**
 	 * Creates an empty Go playing board
@@ -54,6 +61,15 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 		this();
 		FileInputStream inputStream = new FileInputStream(fileName);
 		Scanner fileScanner = new Scanner(inputStream);
+		
+		//reading first line
+		String firstline = fileScanner.nextLine();
+		String[] goalArgs = firstline.split(" ");
+		if(goalArgs[0].equals(FIRST_IS_WHITE))
+			toPlayNext = Stone.WHITE;
+		else if(goalArgs[0].equals(FIRST_IS_BLACK))
+			toPlayNext = Stone.BLACK;		
+		
 		for (int i = 0; fileScanner.hasNext(); i++) {
 			// TODO what happens if there are less than 19 lines in the file?
 			CheckUtils.checkLess(i, HEIGHT);
@@ -70,7 +86,10 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 				this.board[i][j].setContent(stone);
 			}
 		}
+		if(!firstline.equals(""))
+			target = getCellAt(Integer.valueOf(goalArgs[2]), Integer.valueOf(goalArgs[3])).clone();
 		fileScanner.close();
+		System.out.println(toPlayNext);
 	}
 	
 	/**
@@ -165,6 +184,17 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 		this.board[x][y] = content.clone();
 	}
 	
+	public GoCell getTarget(){
+		if (target != null)
+			return target.clone();
+		else
+			return null;
+	}
+	
+	public void setTarget(Stone content, int x, int y){
+		target = new GoCell(content, x, y);
+	}
+	
 	@Override
 	public String toString() {
 		String result = "";
@@ -221,9 +251,9 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	 * @param file full path of the file where to save it
 	 * @throws FileNotFoundException 
 	 */
-	public void toFile(File file, Point target) throws FileNotFoundException{
+	public void toFile(File file) throws FileNotFoundException{
 		PrintWriter writer = new PrintWriter(file.toString());
-		writer.printf("%s KILL %d %d\n",getCellAt(target.x, target.y).getContent(), target.x, target.y);
+		writer.printf("%s KILL %d %d\r\n", target.getContent(), target.x(), target.y());
 		for (GoCell[] row : board) {
 			for (GoCell cell : row) {
 				String c = "";

@@ -99,6 +99,12 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
                 }                                   
 		}
 		
+		if(model.getTarget() != null){
+			Intersection target = intersections[model.getTarget().x()][model.getTarget().y()];
+			g2.setPaint(Color.RED);
+			g2.fillOval(target.center.x - sqWidth/4, target.center.y - sqWidth/4, sqWidth/2, sqWidth/2);
+		}
+		
 	}
 
 	@Override

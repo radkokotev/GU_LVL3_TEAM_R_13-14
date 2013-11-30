@@ -99,6 +99,10 @@ public class Model {
 	public GoPlayingBoard getCurrentBoard() {
 		return currentBoard.clone();
 	}
+	
+	public GoCell getTarget() {
+		return currentBoard.getTarget();
+	}
 	/**
 	 * Creates a new file and populates it with current board.
 	 * @param file full path of the file where to save it
