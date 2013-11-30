@@ -17,6 +17,7 @@ import custom_java_utils.CheckUtils;
 public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	private GoCell[][] board;
 	private Stone toPlayNext;
+	private Player nextPlayer;
 	private int countPiecesOnBoard;
 	private int blackStones;
 	private GoCell target = null;
@@ -33,6 +34,8 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	// Who is playing first from file?
 	private static final String FIRST_IS_WHITE = "WHITE";
 	private static final String FIRST_IS_BLACK = "BLACK";
+	private static final String HUMAN = "HUMAN";
+	private static final String COMPUTER = "COMPUTER";
 	
 	/**
 	 * Creates an empty Go playing board
@@ -64,11 +67,11 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 		
 		//reading first line
 		String firstline = fileScanner.nextLine();
-		String[] goalArgs = firstline.split(" ");
-		if(goalArgs[0].equals(FIRST_IS_WHITE))
+		String[] fileArgs = firstline.split(" ");
+		if(fileArgs[0].equals(FIRST_IS_WHITE))
 			toPlayNext = Stone.WHITE;
-		else if(goalArgs[0].equals(FIRST_IS_BLACK))
-			toPlayNext = Stone.BLACK;		
+		else if(fileArgs[0].equals(FIRST_IS_BLACK))
+			toPlayNext = Stone.BLACK;
 		
 		for (int i = 0; fileScanner.hasNext(); i++) {
 			// TODO what happens if there are less than 19 lines in the file?
@@ -86,10 +89,16 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 				this.board[i][j].setContent(stone);
 			}
 		}
-		if(!firstline.equals(""))
-			target = getCellAt(Integer.valueOf(goalArgs[2]), Integer.valueOf(goalArgs[3])).clone();
+		if(!firstline.equals("")) {
+			target = getCellAt(Integer.valueOf(fileArgs[3]), Integer.valueOf(fileArgs[4])).clone();
+			if(fileArgs[1].equals(COMPUTER)){
+				nextPlayer = Player.COMPUTER;
+			} else if(fileArgs[1].equals(HUMAN)){
+				nextPlayer = Player.HUMAN;
+			}
+		} else 
+			nextPlayer = Player.COMPUTER;
 		fileScanner.close();
-		System.out.println(toPlayNext);
 	}
 	
 	/**
@@ -111,6 +120,14 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	 */
 	public void oppositeToPlayNext() {
 		this.toPlayNext = this.toPlayNext == Stone.BLACK ? Stone.WHITE : Stone.BLACK;
+	}
+	
+	public Player getNextPlayer(){
+		return nextPlayer;
+	}
+	
+	public void oppositePlayer(){
+		nextPlayer = nextPlayer == Player.HUMAN ? Player.COMPUTER : Player.HUMAN;
 	}
 	
 	/**
@@ -253,7 +270,7 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	 */
 	public void toFile(File file) throws FileNotFoundException{
 		PrintWriter writer = new PrintWriter(file.toString());
-		writer.printf("%s KILL %d %d\r\n", target.getContent(), target.x(), target.y());
+		writer.printf("BLACK COMPUTER KILL %d %d\r\n", target.x(), target.y());
 		for (GoCell[] row : board) {
 			for (GoCell cell : row) {
 				String c = "";

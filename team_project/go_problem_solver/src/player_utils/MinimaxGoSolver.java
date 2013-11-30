@@ -14,7 +14,6 @@ public class MinimaxGoSolver {
 	public MinimaxGoSolver(GoPlayingBoard board, GoCell cell) {
 		this.board = board.clone();
 		this.cellToCapture = cell.clone();
-		System.out.println("Minimax");
 	}
 	
 	private class CellValuePair implements Comparable<CellValuePair>{

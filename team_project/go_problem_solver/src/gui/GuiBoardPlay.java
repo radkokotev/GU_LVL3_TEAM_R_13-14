@@ -35,7 +35,7 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 	
 	public GuiBoardPlay(JFrame frame) {
 		super(frame);
-		model = new Model();
+		model = new Model(this);
 		
 		JCheckBoxMenuItem showValidMoves = new JCheckBoxMenuItem("Show valid/invalid moves");
 		menuBar.add(showValidMoves);
@@ -117,7 +117,7 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 			try {
 		        if (returnVal == JFileChooser.APPROVE_OPTION) {
 		            File file = fc.getSelectedFile();
-		            model = new Model(file);
+		            model = new Model(file, this);
 					repaint();
 		        }
 			} catch (FileNotFoundException e1) {

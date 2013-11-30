@@ -14,27 +14,53 @@ public class Model {
 	private LegalMovesChecker checker;
 	private boolean[][] legalMoves;
 	private BoardHistory history;
+	private MinimaxGoSolver minimax;
+	private GuiBoardPlay gui;
 	
-	public Model() {
+	public Model(GuiBoardPlay g) {
+		gui = g;
 		currentBoard = new GoPlayingBoard();
 		history = BoardHistory.getSingleton();
 		history.add(currentBoard);
 		checker = new LegalMovesChecker(currentBoard);
 	}
 	
-	public Model(File fileName) throws FileNotFoundException, CheckFailException {
+	public Model(File fileName, GuiBoardPlay g) throws FileNotFoundException, CheckFailException {
+		gui = g;
 		currentBoard = new GoPlayingBoard(fileName);
 		history = BoardHistory.getSingleton();
 		history.add(currentBoard);
 		checker = new LegalMovesChecker(currentBoard);
 		legalMoves = checker.getLegalityArray();
+		if(currentBoard.getNextPlayer() == Player.COMPUTER)
+			computerMove();
 	}
 	
 	public void addStone(int x, int y) {
 		currentBoard.setCellAt(x, y, new GoCell(currentBoard.toPlayNext(), x, y));
 		currentBoard.oppositeToPlayNext();
+		currentBoard.oppositePlayer();
 		checker = new LegalMovesChecker(currentBoard);
 		legalMoves = checker.getLegalityArray();
+		if(currentBoard.getNextPlayer() == Player.COMPUTER && !minimax.isPositionTerminal(currentBoard)){
+			computerMove();
+		}
+	}
+	
+	public void computerMove(){
+		minimax = new MinimaxGoSolver(currentBoard, currentBoard.getTarget());
+		GoCell decision = null;
+		System.out.println("labas");
+		try {
+			decision = minimax.minimaxDecision();
+			System.out.println(decision.x() + " " + decision.y() + " " + decision);
+		} catch(CheckFailException e){
+			System.out.println("Game is finished.");
+			e.printStackTrace();
+		}
+		addStone(decision.x(), decision.y());
+		removeOpponent(decision.x(), decision.y());
+		gui.repaint();
 	}
 	
 	public boolean isMoveLegal(int x, int y) {
