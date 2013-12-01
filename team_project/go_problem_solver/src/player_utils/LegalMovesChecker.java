@@ -54,7 +54,7 @@ public class LegalMovesChecker implements LegalityChecker{
 			return false;
 		}
 		//this.newBoard.getHistory().add(newBoard);
-		this.newBoard.setToPlayNext((Stone)c.getContent() == Stone.BLACK ? Stone.WHITE : Stone.BLACK);
+		//this.newBoard.setToPlayNext((Stone)c.getContent() == Stone.BLACK ? Stone.WHITE : Stone.BLACK);
 		return true;
 	}
 

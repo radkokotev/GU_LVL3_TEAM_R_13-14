@@ -40,13 +40,13 @@ public class Model {
 	public void addStone(int x, int y) {
 		currentBoard.setCellAt(x, y, new GoCell(currentBoard.toPlayNext(), x, y));
 		currentBoard.oppositeToPlayNext();
+		currentBoard.oppositePlayer();
 		checker = new LegalMovesChecker(currentBoard);
 		legalMoves = checker.getLegalityArray();
+		removeOpponent(x, y);
 		if(minimax != null && currentBoard.getNextPlayer() == Player.COMPUTER && !minimax.isPositionTerminal(currentBoard)){
-			currentBoard.oppositePlayer();
 			computerMove();
 		}
-		removeOpponent(x, y);
 	}
 	
 	public void computerMove(){
