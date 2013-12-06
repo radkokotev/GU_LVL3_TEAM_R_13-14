@@ -110,7 +110,7 @@ public class LegalMovesChecker implements LegalityChecker{
 					neighbour.getContent() == cell.getContent()) {
 				visited.add(neighbour.clone());
 				getLibertiesRecursively(neighbour, liberties, visited);
-			} else if (neighbour != null && neighbour.isEmpty()) {
+			} else if (neighbour != null && (neighbour.isEmpty() || neighbour.getContent() == Stone.INNER_BORDER)) {
 				liberties.add(neighbour.clone());
 			}
 		}
