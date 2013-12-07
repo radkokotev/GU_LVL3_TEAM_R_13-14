@@ -256,6 +256,8 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 		other.countPiecesOnBoard = this.countPiecesOnBoard;
 		other.toPlayNext = this.toPlayNext;
 		other.blackStones = this.blackStones;
+		other.target = this.target;
+		other.nextPlayer = this.nextPlayer;
 		return other;
 	}
 	
