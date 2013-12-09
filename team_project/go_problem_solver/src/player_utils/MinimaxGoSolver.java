@@ -79,10 +79,7 @@ public class MinimaxGoSolver {
 	}
 	
 	private long maximize(GoPlayingBoard board, int depth) throws CheckFailException {
-		if(depth < 40 && depth > 30) {
-			System.out.println(depth);
-			System.out.println(board);
-		}
+		if(depth <= 0) System.out.println(depth);
 		depth++;
 		if (isPositionTerminal(board)) {
 			if (board.getCellAt(cellToCapture.x(), cellToCapture.y()).isEmpty()) {
@@ -118,10 +115,7 @@ public class MinimaxGoSolver {
 	}
 	
 	private long minimize(GoPlayingBoard board, int depth) throws CheckFailException {
-		if(depth < 40 && depth > 30) {
-			System.out.println(depth);
-			System.out.println(board);
-		}
+		if(depth <= 0) System.out.println(depth);
 		depth++;
 		if (isPositionTerminal(board)) {
 			if (board.getCellAt(cellToCapture.x(), cellToCapture.y()).isEmpty()) {

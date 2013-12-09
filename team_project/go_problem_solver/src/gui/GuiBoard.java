@@ -15,7 +15,7 @@ public class GuiBoard extends JPanel implements ActionListener {
 	
 	final static int MARGIN = 50;
 	final static int BOARDSIZE = 19;
-	final static File DEFAULT_DIRECTORY = new File(System.getProperty("user.dir") + "/src/player_utils/test_data/");
+	final static File DEFAULT_DIRECTORY = new File(System.getProperty("user.dir") + "/team_project/go_problem_solver/src/problems");
 	public Intersection[][] intersections = new Intersection[BOARDSIZE][BOARDSIZE];
 	public int sqWidth;	
 	
