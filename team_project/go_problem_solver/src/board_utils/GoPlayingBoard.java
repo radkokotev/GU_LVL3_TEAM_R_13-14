@@ -1,16 +1,26 @@
 package board_utils;
 
+import java.awt.Point;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.Scanner;
 
+import javax.sound.sampled.Line;
+
+import player_utils.BoardHistory;
 import custom_java_utils.CheckFailException;
 import custom_java_utils.CheckUtils;
 
 public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	private GoCell[][] board;
 	private Stone toPlayNext;
+	private Player nextPlayer;
 	private int countPiecesOnBoard;
+	private int blackStones;
+	private GoCell target = null;
 	
 	// Board constants
 	private static final int WIDTH = 19;
@@ -21,18 +31,25 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	private static final char WHITE = 'o';
 	private static final char NONE = '-';
 	
+	// Who is playing first from file?
+	private static final String FIRST_IS_WHITE = "WHITE";
+	private static final String FIRST_IS_BLACK = "BLACK";
+	private static final String HUMAN = "HUMAN";
+	private static final String COMPUTER = "COMPUTER";
+	
 	/**
 	 * Creates an empty Go playing board
 	 */
 	public GoPlayingBoard() {
-		this.board = new GoCell[HEIGHT][WIDTH];
+		board = new GoCell[HEIGHT][WIDTH];
 		for (int i = 0; i < HEIGHT; i++) {
 			for (int j = 0; j < WIDTH; j++) {
-				this.board[i][j] = new GoCell(Stone.NONE, i, j);
+				board[i][j] = new GoCell(Stone.NONE, i, j);
 			}
 		}
-		this.toPlayNext = Stone.BLACK;
-		this.countPiecesOnBoard = 0;
+		toPlayNext = Stone.BLACK;
+		countPiecesOnBoard = 0;
+		blackStones = 0;
 	}
 	
 	/**
@@ -42,11 +59,20 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	 * @throws CheckFailException when the given file does not have the 
 	 * dimensions of a Go playing board
 	 */
-	public GoPlayingBoard(String fileName) 
+	public GoPlayingBoard(File fileName) 
 			throws FileNotFoundException, CheckFailException {
 		this();
 		FileInputStream inputStream = new FileInputStream(fileName);
 		Scanner fileScanner = new Scanner(inputStream);
+		
+		//reading first line
+		String firstline = fileScanner.nextLine();
+		String[] fileArgs = firstline.split(" ");
+		if(fileArgs[0].equals(FIRST_IS_WHITE))
+			toPlayNext = Stone.WHITE;
+		else if(fileArgs[0].equals(FIRST_IS_BLACK))
+			toPlayNext = Stone.BLACK;
+		
 		for (int i = 0; fileScanner.hasNext(); i++) {
 			// TODO what happens if there are less than 19 lines in the file?
 			CheckUtils.checkLess(i, HEIGHT);
@@ -63,6 +89,15 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 				this.board[i][j].setContent(stone);
 			}
 		}
+		if(!firstline.equals("")) {
+			target = getCellAt(Integer.valueOf(fileArgs[3]), Integer.valueOf(fileArgs[4])).clone();
+			if(fileArgs[1].equals(COMPUTER)){
+				nextPlayer = Player.COMPUTER;
+			} else if(fileArgs[1].equals(HUMAN)){
+				nextPlayer = Player.HUMAN;
+			}
+		} else 
+			nextPlayer = Player.COMPUTER;
 		fileScanner.close();
 	}
 	
@@ -87,6 +122,14 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 		this.toPlayNext = this.toPlayNext == Stone.BLACK ? Stone.WHITE : Stone.BLACK;
 	}
 	
+	public Player getNextPlayer(){
+		return nextPlayer;
+	}
+	
+	public void oppositePlayer(){
+		nextPlayer = nextPlayer == Player.HUMAN ? Player.COMPUTER : Player.HUMAN;
+	}
+	
 	/**
 	 * Gets the neighbouring cells to the given one
 	 * @param cell the central cell
@@ -101,7 +144,8 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 		neighbours[3] = this.getCellAt(cell.x(), cell.y() + 1);
 		return neighbours;
 	}
-
+	
+	
 	@Override
 	public int getWidth() {
 		return WIDTH;
@@ -116,6 +160,23 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	public int getCountPiecesOnBoard() {
 		return this.countPiecesOnBoard;
 	}
+	
+	public int getNumberofBlackStones() {
+		return blackStones;
+	}
+	
+	public int getNumberOfWhiteStones() {
+		return (countPiecesOnBoard - blackStones);
+	}
+	
+	public void countAndSetBlackStones() {
+		int count = 0;
+		for (int y = 0; y < 19; y++)
+			for (GoCell x: board[y])
+				if (x.getContent().equals(Stone.BLACK))
+					count++;
+		blackStones = count;
+	}
 
 	@Override
 	public GoCell getCellAt(int x, int y) {
@@ -129,10 +190,26 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	public void setCellAt(int x, int y, GoCell content) {
 		if (this.board[x][y].isEmpty() && !content.isEmpty()) {
 			this.countPiecesOnBoard++;
+			if (content.getContent().equals(Stone.BLACK))
+				blackStones++;
 		} else if (!this.board[x][y].isEmpty() && content.isEmpty()) {
 			this.countPiecesOnBoard--;
+			if(board[x][y].getContent() == Stone.BLACK)
+				blackStones--;
 		}
+		
 		this.board[x][y] = content.clone();
+	}
+	
+	public GoCell getTarget(){
+		if (target != null)
+			return target.clone();
+		else
+			return null;
+	}
+	
+	public void setTarget(Stone content, int x, int y){
+		target = new GoCell(content, x, y);
 	}
 	
 	@Override
@@ -178,6 +255,41 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 		}
 		other.countPiecesOnBoard = this.countPiecesOnBoard;
 		other.toPlayNext = this.toPlayNext;
+		other.blackStones = this.blackStones;
+		other.target = this.target;
+		other.nextPlayer = this.nextPlayer;
 		return other;
+	}
+	
+	
+	public void exportBoard(String fileName) throws FileNotFoundException, UnsupportedEncodingException {
+		
+	}
+	/**
+	 * Creates a new file and populates it with this board.
+	 * @param file full path of the file where to save it
+	 * @throws FileNotFoundException 
+	 */
+	public void toFile(File file) throws FileNotFoundException{
+		PrintWriter writer = new PrintWriter(file.toString());
+		writer.printf("BLACK COMPUTER KILL %d %d\r\n", target.x(), target.y());
+		for (GoCell[] row : board) {
+			for (GoCell cell : row) {
+				String c = "";
+				switch (cell.getContent()) {
+					case BLACK : c = "x"; break;
+					case WHITE : c = "o"; break;
+					case NONE : c = "-"; break;
+					default : c = "?";
+				}
+				writer.print(c);
+			}
+			writer.println();
+		}
+		writer.close();
+	}
+	
+	public GoCell[][] getBoard() {
+		return this.board;
 	}
 }
