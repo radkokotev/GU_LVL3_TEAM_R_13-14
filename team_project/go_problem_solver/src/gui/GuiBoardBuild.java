@@ -69,6 +69,11 @@ public class GuiBoardBuild extends GuiBoard implements MouseListener,
         frame.setSize(500, 500);
 	}
 	
+	public GuiBoardBuild(JFrame frame,  GoPlayingBoard gpb){
+		this(frame);
+		this.gpb = gpb;		
+	}
+	
 	public void paint(Graphics g){
 		super.paint(g);
 		Graphics2D g2 = (Graphics2D) g;
@@ -184,7 +189,7 @@ public class GuiBoardBuild extends GuiBoard implements MouseListener,
 			}
 		} else if(e.getSource().equals(modeMenuItem)){
 			frame.getContentPane().removeAll();;
-			frame.getContentPane().add(new GuiBoardPlay(frame), BorderLayout.CENTER);
+			frame.getContentPane().add(new GuiBoardPlay(frame, gpb), BorderLayout.CENTER);
 		}
 	}
 }

@@ -26,12 +26,18 @@ public class Model {
 	}
 	
 	public Model(File fileName, GuiBoardPlay g) throws FileNotFoundException, CheckFailException {
+		this(g);
 		BoardHistory.wipeHistory();
-		gui = g;
 		currentBoard = new GoPlayingBoard(fileName);
-		history = BoardHistory.getSingleton();
-		history.add(currentBoard);
-		checker = new LegalMovesChecker(currentBoard);
+		legalMoves = checker.getLegalityArray();
+		if(currentBoard.getNextPlayer() == Player.COMPUTER)
+			computerMove();
+	}
+	
+	public Model(GuiBoardPlay g, GoPlayingBoard board) {
+		this(g);
+		BoardHistory.wipeHistory();
+		currentBoard = board.clone();
 		legalMoves = checker.getLegalityArray();
 		if(currentBoard.getNextPlayer() == Player.COMPUTER)
 			computerMove();

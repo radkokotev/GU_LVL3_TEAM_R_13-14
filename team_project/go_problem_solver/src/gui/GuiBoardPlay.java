@@ -56,6 +56,11 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
         frame.setSize(500, 500);
 	}
 	
+	public GuiBoardPlay(JFrame frame, GoPlayingBoard gpb){
+		this(frame);
+		model = new Model(this, gpb);
+	}
+	
 	private void drawStone(int x, int y){
 		if(model.isMoveLegal(x, y)) {
 			model.addStone(x, y);
@@ -136,7 +141,7 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 			}
 		} else if(e.getSource().equals(modeMenuItem)){
 			frame.getContentPane().removeAll();
-			frame.getContentPane().add(new GuiBoardBuild(frame), BorderLayout.CENTER);
+			frame.getContentPane().add(new GuiBoardBuild(frame, model.getCurrentBoard()), BorderLayout.CENTER);
 			BoardHistory.wipeHistory();
 		} else if(e.getSource().equals(undoMoveItem)) {
 			model.undoMove();
