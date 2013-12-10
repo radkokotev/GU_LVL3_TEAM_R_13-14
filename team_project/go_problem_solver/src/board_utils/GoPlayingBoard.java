@@ -1,6 +1,5 @@
 package board_utils;
 
-import java.awt.Point;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -8,9 +7,6 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Scanner;
 
-import javax.sound.sampled.Line;
-
-import player_utils.BoardHistory;
 import custom_java_utils.CheckFailException;
 import custom_java_utils.CheckUtils;
 
@@ -196,17 +192,16 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	
 	@Override
 	public void setCellAt(int x, int y, GoCell content) {
-		if (this.board[x][y].isEmpty() && !content.isEmpty()) {
-			if (content.getContent().equals(Stone.BLACK))
-				blackStones++;
-			else if(content.getContent().equals(Stone.WHITE))
-				whiteStones++;
-		} else if (!this.board[x][y].isEmpty() && content.isEmpty()) {
-			if(board[x][y].getContent() == Stone.BLACK)
-				blackStones--;
-			else if(board[x][y].getContent() == Stone.WHITE)
-				whiteStones--;
-		}
+		
+		if (content.getContent().equals(Stone.BLACK))
+			blackStones++;
+		else if(content.getContent().equals(Stone.WHITE))
+			whiteStones++;
+
+		if(board[x][y].getContent() == Stone.BLACK)
+			blackStones--;
+		else if(board[x][y].getContent() == Stone.WHITE)
+			whiteStones--;
 		
 		this.board[x][y] = content.clone();
 	}
