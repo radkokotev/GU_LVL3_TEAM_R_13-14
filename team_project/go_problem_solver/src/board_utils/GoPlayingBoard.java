@@ -18,8 +18,8 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	private GoCell[][] board;
 	private Stone toPlayNext;
 	private Player nextPlayer;
-	private int countPiecesOnBoard;
 	private int blackStones;
+	private int whiteStones;
 	private GoCell target = null;
 	
 	// Board constants
@@ -48,8 +48,8 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 			}
 		}
 		toPlayNext = Stone.BLACK;
-		countPiecesOnBoard = 0;
 		blackStones = 0;
+		whiteStones = 0;
 	}
 	
 	/**
@@ -81,8 +81,8 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 			for (int j = 0; j < WIDTH; j++) {
 				Stone stone;
 				switch (line.charAt(j)) {
-					case (BLACK) : stone = Stone.BLACK; countPiecesOnBoard++; break;
-					case (WHITE) : stone = Stone.WHITE; countPiecesOnBoard++; break;
+					case (BLACK) : stone = Stone.BLACK; blackStones++; break;
+					case (WHITE) : stone = Stone.WHITE; whiteStones++; break;
 					case (NONE) : stone = Stone.NONE; break;
 					default : stone = Stone.INNER_BORDER;
 				}
@@ -158,7 +158,7 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 
 	@Override
 	public int getCountPiecesOnBoard() {
-		return this.countPiecesOnBoard;
+		return blackStones + whiteStones;
 	}
 	
 	public int getNumberofBlackStones() {
@@ -166,7 +166,15 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	}
 	
 	public int getNumberOfWhiteStones() {
-		return (countPiecesOnBoard - blackStones);
+		return whiteStones;
+	}
+	
+	public int getNumberOfOpponentStones() {
+		return toPlayNext == Stone.BLACK ? blackStones : whiteStones;
+	}
+	
+	public int getNumberOfOwnStones() {
+		return toPlayNext == Stone.BLACK ? whiteStones : blackStones;
 	}
 	
 	public void countAndSetBlackStones() {
@@ -189,13 +197,15 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	@Override
 	public void setCellAt(int x, int y, GoCell content) {
 		if (this.board[x][y].isEmpty() && !content.isEmpty()) {
-			this.countPiecesOnBoard++;
 			if (content.getContent().equals(Stone.BLACK))
 				blackStones++;
+			else if(content.getContent().equals(Stone.WHITE))
+				whiteStones++;
 		} else if (!this.board[x][y].isEmpty() && content.isEmpty()) {
-			this.countPiecesOnBoard--;
 			if(board[x][y].getContent() == Stone.BLACK)
 				blackStones--;
+			else if(board[x][y].getContent() == Stone.WHITE)
+				whiteStones--;
 		}
 		
 		this.board[x][y] = content.clone();
@@ -253,9 +263,9 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 				other.board[i][j] =this.board[i][j];
 			}
 		}
-		other.countPiecesOnBoard = this.countPiecesOnBoard;
 		other.toPlayNext = this.toPlayNext;
 		other.blackStones = this.blackStones;
+		other.whiteStones = this.whiteStones;
 		other.target = this.target;
 		other.nextPlayer = this.nextPlayer;
 		return other;

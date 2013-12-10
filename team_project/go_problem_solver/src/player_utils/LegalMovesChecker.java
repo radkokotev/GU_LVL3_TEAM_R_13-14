@@ -53,8 +53,6 @@ public class LegalMovesChecker implements LegalityChecker{
 			this.reset();
 			return false;
 		}
-		//this.newBoard.getHistory().add(newBoard);
-		//this.newBoard.setToPlayNext((Stone)c.getContent() == Stone.BLACK ? Stone.WHITE : Stone.BLACK);
 		return true;
 	}
 
@@ -72,7 +70,6 @@ public class LegalMovesChecker implements LegalityChecker{
 			if (neighbour != null && GoCell.areOposite(cell, neighbour)) {
 				if (getLiberties(neighbour) == 0) {
 					removeOponentsStone(neighbour, neighbour.getContent());
-					//System.out.println("Removed: " + neighbour.x() + " " + neighbour.y());
 					captured = true;
 				}
 			}

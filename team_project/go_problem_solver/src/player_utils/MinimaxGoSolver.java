@@ -22,9 +22,7 @@ public class MinimaxGoSolver {
 		
 		@Override
 		public int compareTo(CellValuePair other) {
-			if (this.minimaxValue < other.minimaxValue) return -1;
-			if (this.minimaxValue > other.minimaxValue) return 1;
-			return 0;
+			return (int) (this.minimaxValue - other.minimaxValue);
 		}
 	}
 	
