@@ -8,10 +8,16 @@ import player_utils.LegalMovesChecker;
 import player_utils.MinimaxGoSolver;
 import board_utils.GoCell;
 import board_utils.GoPlayingBoard;
+import board_utils.Player;
 import board_utils.Stone;
 import custom_java_utils.CheckFailException;
 
 public class Model {
+	
+	public static final String HUMANSTRING = "Human";
+	public static final String COMPUTERSTRING = "Computer";
+	public static final String BlACKSTRING = "Black";
+	public static final String WHITESTRING = "White";
 	
 	private GoPlayingBoard currentBoard;
 	private LegalMovesChecker checker;
@@ -156,6 +162,38 @@ public class Model {
 	 */
 	public void toFile(File file) throws FileNotFoundException{
 		currentBoard.toFile(file);
+	}
+	
+	public void setFirstPlayerType(Object b){
+		String t = (String) b;
+		if(t.equals(HUMANSTRING))
+			currentBoard.setFirstPlayerType(Player.Type.HUMAN);
+		else if(t.equals(COMPUTERSTRING))
+			currentBoard.setFirstPlayerType(Player.Type.COMPUTER);
+	}
+	
+	public void setFirstPlayerColour(Object b){
+		String t = (String) b;
+		if(t.equals(BlACKSTRING))
+			currentBoard.setFirstPlayerColour(Stone.BLACK);
+		else if(t.equals(WHITESTRING))
+			currentBoard.setFirstPlayerColour(Stone.WHITE);
+	}
+	
+	public void setSecondPlayerType(Object b){
+		String t = (String) b;
+		if(t.equals(HUMANSTRING))
+			currentBoard.setSecondPlayerType(Player.Type.HUMAN);
+		else if(t.equals(COMPUTERSTRING))
+			currentBoard.setSecondPlayerType(Player.Type.COMPUTER);
+	}
+	
+	public void setSecondPlayerColour(Object b){
+		String t = (String) b;
+		if(t.equals(BlACKSTRING))
+			currentBoard.setSecondPlayerColour(Stone.BLACK);
+		else if(t.equals(WHITESTRING))
+			currentBoard.setSecondPlayerColour(Stone.WHITE);
 	}
 	
 	public void undoMove() {

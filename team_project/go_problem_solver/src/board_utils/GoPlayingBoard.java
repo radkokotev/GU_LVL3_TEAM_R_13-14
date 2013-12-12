@@ -213,6 +213,22 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 		target = new GoCell(content, x, y);
 	}
 	
+	public void setFirstPlayerType(Player.Type t){
+		firstPlayer.type = t;
+	}
+	
+	public void setFirstPlayerColour(Stone t){
+		firstPlayer.colour = t;
+	}
+	
+	public void setSecondPlayerType(Player.Type t){
+		secondPlayer.type = t;
+	}
+	
+	public void setSecondPlayerColour(Stone t){
+		secondPlayer.colour = t;
+	}
+	
 	@Override
 	public String toString() {
 		String result = "";
