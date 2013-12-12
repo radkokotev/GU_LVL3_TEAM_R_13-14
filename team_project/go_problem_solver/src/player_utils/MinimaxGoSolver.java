@@ -64,7 +64,7 @@ public class MinimaxGoSolver {
 		GoCell bestMove = null;
 		long bestValue = (-infinity);
 		for (CellValuePair pair : decisionMinimaxValues) {
-			System.out.println("pair" + pair.minimaxValue);
+			System.out.println(pair.cell + " "  + pair.minimaxValue);
 			if (pair.minimaxValue >= bestValue) {
 				bestValue = pair.minimaxValue;
 				bestMove = pair.cell;

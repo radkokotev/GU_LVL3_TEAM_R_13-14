@@ -4,12 +4,10 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.geom.GeneralPath;
 import java.io.File;
 import java.io.FileNotFoundException;
 
@@ -17,13 +15,17 @@ import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 
-import custom_java_utils.CheckFailException;
 import board_utils.GoCell;
 import board_utils.GoPlayingBoard;
 import board_utils.Stone;
+import custom_java_utils.CheckFailException;
 
 public class GuiBoardBuild extends GuiBoard implements MouseListener, 
 													   ActionListener {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -775669390589182229L;
 	private Stone current;
 	private GoPlayingBoard gpb;
 	private JComboBox<String> combo;
@@ -189,7 +191,12 @@ public class GuiBoardBuild extends GuiBoard implements MouseListener,
 			}
 		} else if(e.getSource().equals(modeMenuItem)){
 			frame.getContentPane().removeAll();;
-			frame.getContentPane().add(new GuiBoardPlay(frame, gpb), BorderLayout.CENTER);
+			try {
+				frame.getContentPane().add(new GuiBoardPlay(frame, gpb), BorderLayout.CENTER);
+			} catch (FileNotFoundException | CheckFailException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 	}
 }

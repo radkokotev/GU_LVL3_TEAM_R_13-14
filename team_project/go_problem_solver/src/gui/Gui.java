@@ -1,8 +1,11 @@
 package gui;
 
 import java.awt.*;
+import java.io.FileNotFoundException;
 
 import javax.swing.*;
+
+import custom_java_utils.CheckFailException;
 
 public class Gui {
 	
@@ -11,12 +14,20 @@ public class Gui {
         //creating and showing this application's GUI.
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                createAndShowGUI();
+                try {
+					createAndShowGUI();
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (CheckFailException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             }
         });
     }
     
-    private static void createAndShowGUI() {
+    private static void createAndShowGUI() throws FileNotFoundException, CheckFailException {
         //Create and set up the window.
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

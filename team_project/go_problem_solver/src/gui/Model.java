@@ -1,12 +1,15 @@
 package gui;
 
-import java.awt.Color;
 import java.io.File;
 import java.io.FileNotFoundException;
 
+import player_utils.BoardHistory;
+import player_utils.LegalMovesChecker;
+import player_utils.MinimaxGoSolver;
+import board_utils.GoCell;
+import board_utils.GoPlayingBoard;
+import board_utils.Stone;
 import custom_java_utils.CheckFailException;
-import player_utils.*;
-import board_utils.*;
 
 public class Model {
 	
@@ -17,40 +20,40 @@ public class Model {
 	private MinimaxGoSolver minimax;
 	private GuiBoardPlay gui;
 	
-	public Model(GuiBoardPlay g) {
+	public Model(GuiBoardPlay g) throws FileNotFoundException, CheckFailException {
+		this(g, null, null);
+	}
+	
+	public Model(GuiBoardPlay g, File filename) throws FileNotFoundException, CheckFailException {
+		this(g, null, filename);
+	}
+	
+	public Model(GuiBoardPlay g, GoPlayingBoard board) throws FileNotFoundException, CheckFailException{
+		this(g, board, null);
+	}
+	
+	public Model(GuiBoardPlay g, GoPlayingBoard board, File filename) throws FileNotFoundException, CheckFailException {
 		gui = g;
-		currentBoard = new GoPlayingBoard();
+		if(filename == null)
+			currentBoard = new GoPlayingBoard();
+		else
+			currentBoard = new GoPlayingBoard(filename);
 		history = BoardHistory.getSingleton();
 		history.add(currentBoard);
 		checker = new LegalMovesChecker(currentBoard);
-	}
-	
-	public Model(File fileName, GuiBoardPlay g) throws FileNotFoundException, CheckFailException {
-		this(g);
 		BoardHistory.wipeHistory();
-		currentBoard = new GoPlayingBoard(fileName);
+		if(board != null)
+			currentBoard = board.clone();
 		legalMoves = checker.getLegalityArray();
-		if(currentBoard.getNextPlayer() == Player.COMPUTER)
-			computerMove();
-	}
-	
-	public Model(GuiBoardPlay g, GoPlayingBoard board) {
-		this(g);
-		BoardHistory.wipeHistory();
-		currentBoard = board.clone();
-		legalMoves = checker.getLegalityArray();
-		if(currentBoard.getNextPlayer() == Player.COMPUTER)
-			computerMove();
 	}
 	
 	public void addStone(int x, int y) {
 		currentBoard.setCellAt(x, y, new GoCell(currentBoard.toPlayNext(), x, y));
 		currentBoard.oppositeToPlayNext();
-		currentBoard.oppositePlayer();
 		checker = new LegalMovesChecker(currentBoard);
 		legalMoves = checker.getLegalityArray();
 		removeOpponent(x, y);
-		if(minimax != null && currentBoard.getNextPlayer() == Player.COMPUTER && !minimax.isPositionTerminal(currentBoard)){
+		if(minimax != null && currentBoard.isNextPlayerComputer() && !minimax.isPositionTerminal(currentBoard)){
 			computerMove();
 		}
 	}
@@ -68,10 +71,16 @@ public class Model {
 			System.out.println("Game is finished.");
 			e.printStackTrace();
 		}
+		gui.repaint();
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		if(decision != null) {
 			addStone(decision.x(), decision.y());
 		}
-		gui.repaint();
 	}
 	
 	public boolean isMoveLegal(int x, int y) {

@@ -16,24 +16,26 @@ import java.io.FileNotFoundException;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 
 import player_utils.BoardHistory;
-import custom_java_utils.CheckFailException;
-import board_utils.GoCell;
 import board_utils.GoPlayingBoard;
 import board_utils.Stone;
+import custom_java_utils.CheckFailException;
 
 public class GuiBoardPlay extends GuiBoard implements ActionListener,
 													  MouseListener,
 													  ItemListener {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6992005544699270577L;
 	private Model model;
 	private boolean drawLegalMoves;
-	private JButton undoMoveItem;
+	private JButton undoMoveItem, start;
 	
-	public GuiBoardPlay(JFrame frame) {
+	public GuiBoardPlay(JFrame frame) throws FileNotFoundException, CheckFailException {
 		super(frame);
 		model = new Model(this);
 		
@@ -47,6 +49,10 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 	    undoMoveItem = new JButton("Undo");
 		menuBar.add(undoMoveItem);
 		undoMoveItem.addActionListener(this);
+		
+		start = new JButton("Start");
+		menuBar.add(start);
+		start.addActionListener(this);
 	    
 		frame.setTitle("Go game solver [Play mode]");
 		frame.getContentPane().add(this);
@@ -56,7 +62,7 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
         frame.setSize(500, 500);
 	}
 	
-	public GuiBoardPlay(JFrame frame, GoPlayingBoard gpb){
+	public GuiBoardPlay(JFrame frame, GoPlayingBoard gpb) throws FileNotFoundException, CheckFailException{
 		this(frame);
 		model = new Model(this, gpb);
 	}
@@ -121,7 +127,7 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 			try {
 		        if (returnVal == JFileChooser.APPROVE_OPTION) {
 		            File file = fc.getSelectedFile();
-		            model = new Model(file, this);
+		            model = new Model(this, file);
 					repaint();
 		        }
 			} catch (FileNotFoundException e1) {
@@ -146,6 +152,8 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 		} else if(e.getSource().equals(undoMoveItem)) {
 			model.undoMove();
 			repaint();
+		} else if(e.getSource().equals(start)) {
+			model.computerMove();
 		}
 	}
 

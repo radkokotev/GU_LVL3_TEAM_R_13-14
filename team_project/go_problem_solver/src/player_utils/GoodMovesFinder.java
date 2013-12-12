@@ -41,6 +41,7 @@ public class GoodMovesFinder {
 	 */
 	private static final int ATARI_POINTS = 5; 
 	private static final int KILLING_HIMSELF_PENALTY = 1000;
+	private static final boolean SWITCH_OFF = true;
 	
 	public GoodMovesFinder(GoPlayingBoard board) throws CheckFailException{
 		currentBoard = board.clone();
@@ -48,9 +49,11 @@ public class GoodMovesFinder {
 		getLegalMoves();
 		
 		//And here all heuristic methods can be called
-		countPieces();
-		addAtariPoints();
-		isKillingHimself();
+		if(!SWITCH_OFF) {
+			countPieces();
+			addAtariPoints();
+			isKillingHimself();
+		}
 	}
 	/*
 	 * Getting and keeping all legal moves for current board position. All following methods can then just
