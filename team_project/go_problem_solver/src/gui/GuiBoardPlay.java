@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,7 +15,6 @@ import java.awt.geom.Ellipse2D;
 import java.io.File;
 import java.io.FileNotFoundException;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
@@ -24,6 +22,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import player_utils.BoardHistory;
 import board_utils.GoPlayingBoard;
@@ -39,14 +38,16 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 	private static final long serialVersionUID = 6992005544699270577L;
 	private Model model;
 	private boolean drawLegalMoves;
-	private JButton undoMoveItem, start, stop;
+	private JButton undoMoveItem, start, reset;
 	private JComboBox<String> player1Type;
 	private JComboBox<String> player1Colour;
 	private JComboBox<String> player2Type;
 	private JComboBox<String> player2Colour;
+	private File lastImportedFilename;
 	
 	public GuiBoardPlay(JFrame frame) throws FileNotFoundException, CheckFailException {
 		super(frame);
+		lastImportedFilename = null;
 		model = new Model(this);
 		
 		JCheckBoxMenuItem showValidMoves = new JCheckBoxMenuItem("Show valid/invalid moves");
@@ -79,9 +80,9 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 		player2Colour = new JComboBox<String>(new String[]{Model.WHITESTRING, Model.BlACKSTRING});
 		playersPanel.add(player2Colour);
 		player2Colour.addActionListener(this);
-		stop = new JButton("Stop");
-		playersPanel.add(stop);
-		stop.addActionListener(this);
+		reset = new JButton("Reset");
+		playersPanel.add(reset);
+		reset.addActionListener(this);
 		
 		frame.setTitle("Go game solver [Play mode]");
 		frame.getContentPane().add(this, BorderLayout.CENTER);
@@ -161,12 +162,14 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 		super.actionPerformed(e);
 		JFileChooser fc = new JFileChooser(DEFAULT_DIRECTORY);
 		fc.setMultiSelectionEnabled(false);
+		fc.setFileFilter(new FileNameExtensionFilter("Go problems files", "go"));
 		if(e.getSource().equals(importFileItem)) {
 			int returnVal = fc.showOpenDialog(this);
 			try {
 		        if (returnVal == JFileChooser.APPROVE_OPTION) {
 		            File file = fc.getSelectedFile();
 		            model = new Model(this, file);
+		            lastImportedFilename = file;
 					repaint();
 		        }
 			} catch (FileNotFoundException e1) {
@@ -201,6 +204,17 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 			model.setSecondPlayerColour(((JComboBox) e.getSource()).getSelectedItem());
 		} else if(e.getSource().equals(start)) {
 			model.start();
+		} else if(e.getSource().equals(reset)) {
+			try {
+				model = new Model(this, lastImportedFilename);
+			} catch (FileNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (CheckFailException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			repaint();
 		}
 	}
 

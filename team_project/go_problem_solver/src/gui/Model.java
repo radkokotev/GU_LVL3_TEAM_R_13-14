@@ -47,9 +47,9 @@ public class Model {
 			gui.setPlayersColours(currentBoard.getFirstPlayerColour());
 		}
 		history = BoardHistory.getSingleton();
-		history.add(currentBoard);
 		checker = new LegalMovesChecker(currentBoard);
 		BoardHistory.wipeHistory();
+		history.add(currentBoard);
 		if(board != null)
 			currentBoard = board.clone();
 		legalMoves = checker.getLegalityArray();
@@ -73,6 +73,12 @@ public class Model {
 	}
 	
 	public void computerMove(){
+		try {
+			Thread.sleep(1500);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		minimax = new MinimaxGoSolver(currentBoard, currentBoard.getTarget());
 		if(minimax.isPositionTerminal(currentBoard))
 			return;
@@ -85,12 +91,6 @@ public class Model {
 				System.out.println("null");
 		} catch(CheckFailException e){
 			System.out.println("Game is finished.");
-			e.printStackTrace();
-		}
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		if(decision != null) {
