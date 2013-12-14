@@ -177,6 +177,10 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 					count++;
 		blackStones = count;
 	}
+	
+	public Stone getFirstPlayerColour() {
+		return firstPlayer.colour;
+	}
 
 	@Override
 	public GoCell getCellAt(int x, int y) {

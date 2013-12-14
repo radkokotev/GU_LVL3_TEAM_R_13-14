@@ -42,8 +42,10 @@ public class Model {
 		gui = g;
 		if(filename == null)
 			currentBoard = new GoPlayingBoard();
-		else
+		else {
 			currentBoard = new GoPlayingBoard(filename);
+			gui.setPlayersColours(currentBoard.getFirstPlayerColour());
+		}
 		history = BoardHistory.getSingleton();
 		history.add(currentBoard);
 		checker = new LegalMovesChecker(currentBoard);
@@ -53,20 +55,27 @@ public class Model {
 		legalMoves = checker.getLegalityArray();
 	}
 	
+	public void start() {
+		if(currentBoard.isNextPlayerComputer())
+			computerMove();
+	}
+	
 	public void addStone(int x, int y) {
 		currentBoard.setCellAt(x, y, new GoCell(currentBoard.toPlayNext(), x, y));
 		currentBoard.oppositeToPlayNext();
 		checker = new LegalMovesChecker(currentBoard);
 		legalMoves = checker.getLegalityArray();
 		removeOpponent(x, y);
-		gui.paint(gui.getGraphics());
-		if(minimax != null && currentBoard.isNextPlayerComputer() && !minimax.isPositionTerminal(currentBoard)){
+		gui.paintImmediately(0, 0, gui.getSize().width, gui.getSize().height);
+		if(currentBoard.isNextPlayerComputer()){
 			computerMove();
 		}
 	}
 	
 	public void computerMove(){
 		minimax = new MinimaxGoSolver(currentBoard, currentBoard.getTarget());
+		if(minimax.isPositionTerminal(currentBoard))
+			return;
 		GoCell decision = null;
 		try {
 			decision = minimax.minimaxDecision();

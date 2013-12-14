@@ -103,6 +103,16 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 		}
 	}
 	
+	public void setPlayersColours(Stone firstPlayerColour){
+		if(firstPlayerColour == Stone.WHITE) {
+			player1Colour.setSelectedItem(Model.WHITESTRING);
+			player2Colour.setSelectedItem(Model.BlACKSTRING);
+		} else if(firstPlayerColour == Stone.BLACK){
+			player1Colour.setSelectedItem(Model.BlACKSTRING);
+			player2Colour.setSelectedItem(Model.WHITESTRING);
+		}
+	}
+	
 	public void paint(Graphics g){
 		super.paint(g);
 		Graphics2D g2 = (Graphics2D) g;
@@ -144,7 +154,6 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 			g2.setPaint(Color.RED);
 			g2.fillOval(target.center.x - sqWidth/4, target.center.y - sqWidth/4, sqWidth/2, sqWidth/2);
 		}
-		
 	}
 
 	@Override
@@ -191,7 +200,7 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 		} else if(e.getSource().equals(player2Colour)) {
 			model.setSecondPlayerColour(((JComboBox) e.getSource()).getSelectedItem());
 		} else if(e.getSource().equals(start)) {
-			model.computerMove();
+			model.start();
 		}
 	}
 
@@ -201,6 +210,7 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 			for(int j = 0; j < BOARDSIZE; j++) {
 				if(intersections[i][j].contains(e.getPoint())) {
 					drawStone(i,j);
+					repaint();
 		        }
 		    }
 	}
