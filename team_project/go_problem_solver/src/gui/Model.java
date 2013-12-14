@@ -59,6 +59,7 @@ public class Model {
 		checker = new LegalMovesChecker(currentBoard);
 		legalMoves = checker.getLegalityArray();
 		removeOpponent(x, y);
+		gui.paint(gui.getGraphics());
 		if(minimax != null && currentBoard.isNextPlayerComputer() && !minimax.isPositionTerminal(currentBoard)){
 			computerMove();
 		}
@@ -77,7 +78,6 @@ public class Model {
 			System.out.println("Game is finished.");
 			e.printStackTrace();
 		}
-		gui.repaint();
 		try {
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {

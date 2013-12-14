@@ -106,7 +106,7 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 	public void paint(Graphics g){
 		super.paint(g);
 		Graphics2D g2 = (Graphics2D) g;
-		
+
 		//draw all stones
 		Stone[][] stones = model.getCurrentBoardLayout();
 		for(int i = 0; i < 19; i++)
@@ -201,7 +201,6 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 			for(int j = 0; j < BOARDSIZE; j++) {
 				if(intersections[i][j].contains(e.getPoint())) {
 					drawStone(i,j);
-		            repaint();
 		        }
 		    }
 	}
