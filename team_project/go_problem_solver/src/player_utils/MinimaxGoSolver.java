@@ -50,6 +50,7 @@ public class MinimaxGoSolver {
 				new ArrayList<MinimaxGoSolver.CellValuePair>();
 		GoodMovesFinder finder = new GoodMovesFinder(board.clone());
 		for(GoCell cell : finder.getGoodMoves()) {
+			System.out.println(0 + " " + cell);
 			if (checker.isMoveLegal(cell)) {
 				CellValuePair cellValuePair = new CellValuePair();
 				cellValuePair.cell = cell;
@@ -58,8 +59,7 @@ public class MinimaxGoSolver {
 				cellValuePair.minimaxValue = minimize(newBoard, 0);
 				decisionMinimaxValues.add(cellValuePair);
 				BoardHistory.getSingleton().remove(newBoard);
-			} else 
-				System.out.println("illegal");
+			}
 			checker.reset();
 		}
 		GoCell bestMove = null;

@@ -41,6 +41,7 @@ public class GoodMovesFinder {
 	 */
 	private static final int ATARI_POINTS = 1; 
 	private static final int KILLING_HIMSELF_PENALTY = 1000;
+	private static final int GROUP_SAVER_REWARD = 1;
 	private static final boolean SWITCH_OFF = false;
 	
 	public GoodMovesFinder(GoPlayingBoard board) throws CheckFailException{
@@ -53,6 +54,7 @@ public class GoodMovesFinder {
 			countPieces();
 			addAtariPoints();
 			isKillingHimself();
+			canISaveMyGroupWithOneLiberty();
 		}
 	}
 	/*
@@ -137,6 +139,28 @@ public class GoodMovesFinder {
 		}
 	}
 
+	private void canISaveMyGroupWithOneLiberty() throws CheckFailException{
+		for(CellValuePair pair : goodMoves){
+			GoPlayingBoard newBoard = currentBoard.clone();
+			LegalMovesChecker checker = new LegalMovesChecker(currentBoard);
+			for(GoCell cell : currentBoard.getNeighboursOf(pair.cell)){
+				if(!GoCell.areOposite(cell, pair.cell) && checker.getLiberties(cell) == 1) {
+					newBoard.setCellAt(pair.cell.x(), pair.cell.y(), pair.cell);
+					checker = new LegalMovesChecker(newBoard);
+					if(checker.captureOponent(pair.cell)) {
+						newBoard = checker.getNewBoard();
+						BoardHistory.getSingleton().remove(newBoard);
+					}
+					newBoard.oppositeToPlayNext();
+					if(checker.getLiberties(pair.cell) > 1)
+						pair.value += GROUP_SAVER_REWARD;
+					break;
+					
+				}
+			}
+			
+		}
+	}
 	
 	public GoCell[] getGoodMoves(){
 		Collections.sort(goodMoves);
@@ -144,7 +168,9 @@ public class GoodMovesFinder {
 		int i = 0;
 		for(CellValuePair pair : goodMoves) {
 			result[i++] = pair.cell;
+			System.out.print(pair.cell + " " + pair.value + " ");
 		}
+		System.out.println();
 		return result;
 	}	
 }
