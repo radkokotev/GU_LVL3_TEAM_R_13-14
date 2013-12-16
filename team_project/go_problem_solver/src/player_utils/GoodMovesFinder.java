@@ -39,7 +39,7 @@ public class GoodMovesFinder {
 	/*
 	 * Points for putting opponent group to atari
 	 */
-	private static final int ATARI_POINTS = 5; 
+	private static final int ATARI_POINTS = 1; 
 	private static final int KILLING_HIMSELF_PENALTY = 1000;
 	private static final boolean SWITCH_OFF = false;
 	
@@ -81,8 +81,10 @@ public class GoodMovesFinder {
 			GoPlayingBoard newBoard = currentBoard.clone();
 			newBoard.setCellAt(pair.cell.x(), pair.cell.y(), pair.cell);
 			LegalMovesChecker checker = new LegalMovesChecker(newBoard);
-			if(checker.captureOponent(pair.cell))
+			if(checker.captureOponent(pair.cell)) {
 				newBoard = checker.getNewBoard();
+				BoardHistory.getSingleton().remove(newBoard);
+			}
 			newBoard.oppositeToPlayNext();
 			pair.value += newBoard.getNumberOfOwnStones(); 
 			pair.value -= newBoard.getNumberOfOpponentStones();
@@ -91,19 +93,20 @@ public class GoodMovesFinder {
 	/*
 	 * Adds ATARI_POINTS amount to moves, which puts opponent stones group into Atari.
 	 */
-	private void addAtariPoints() {
+	private void addAtariPoints() throws CheckFailException {
 		for(CellValuePair pair : goodMoves) {
 			GoPlayingBoard newBoard = currentBoard.clone();
 			newBoard.setCellAt(pair.cell.x(), pair.cell.y(), pair.cell);
 			LegalMovesChecker checker = new LegalMovesChecker(newBoard);
-			checker.captureOponent(pair.cell);
+			if(checker.captureOponent(pair.cell)) {
+				newBoard = checker.getNewBoard();
+				BoardHistory.getSingleton().remove(newBoard);
+			}
 			newBoard.oppositeToPlayNext();
 			for(GoCell neighbour : newBoard.getNeighboursOf(pair.cell))
-				if (
-					neighbour != null 
-					&& GoCell.areOposite(neighbour, pair.cell) 
-					&& checker.getLiberties(neighbour) == 1
-				)
+				if (neighbour != null 
+						&& GoCell.areOposite(neighbour, pair.cell) 
+						&& checker.getLiberties(neighbour) == 1)
 					pair.value += ATARI_POINTS;
 		}
 	}
@@ -112,23 +115,28 @@ public class GoodMovesFinder {
 	 * Checks if move lowered any of player's group liberties. If yes then subtracting from the move
 	 * KILLING_HIMSELF_PENALTY amount of points
 	 */
-	private void isKillingHimself() {
+	private void isKillingHimself() throws CheckFailException {
 		for(CellValuePair pair : goodMoves){
 			GoPlayingBoard newBoard = currentBoard.clone();
 			newBoard.setCellAt(pair.cell.x(), pair.cell.y(), pair.cell);
 			LegalMovesChecker newChecker = new LegalMovesChecker(newBoard);
 			LegalMovesChecker oldChecker = new LegalMovesChecker(currentBoard);
-			newChecker.captureOponent(pair.cell);
-			newBoard.oppositeToPlayNext();
-			int currentLiberties = 0;
-			for(GoCell neighbour : currentBoard.getNeighboursOf(pair.cell)) {
-				if(neighbour != null && pair.cell.getContent() == neighbour.getContent())
-					currentLiberties += oldChecker.getLiberties(neighbour);
+			if(newChecker.captureOponent(pair.cell)) {
+				newBoard = newChecker.getNewBoard();
+				BoardHistory.getSingleton().remove(newBoard);
 			}
-			if(currentLiberties > newChecker.getLiberties(pair.cell))
-				pair.value -= KILLING_HIMSELF_PENALTY;
+			newBoard.oppositeToPlayNext();
+			for(GoCell neighbour : currentBoard.getNeighboursOf(pair.cell)) {
+				if(neighbour != null 
+						&& pair.cell.getContent() == neighbour.getContent() 
+						&& oldChecker.getLiberties(neighbour) > newChecker.getLiberties(pair.cell)) {
+					pair.value -= KILLING_HIMSELF_PENALTY;
+					break;
+				}
+			}
 		}
 	}
+
 	
 	public GoCell[] getGoodMoves(){
 		Collections.sort(goodMoves);

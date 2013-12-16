@@ -48,7 +48,7 @@ public class MinimaxGoSolver {
 		LegalMovesChecker checker = new LegalMovesChecker(board);
 		ArrayList<CellValuePair> decisionMinimaxValues = 
 				new ArrayList<MinimaxGoSolver.CellValuePair>();
-		GoodMovesFinder finder = new GoodMovesFinder(board);
+		GoodMovesFinder finder = new GoodMovesFinder(board.clone());
 		for(GoCell cell : finder.getGoodMoves()) {
 			if (checker.isMoveLegal(cell)) {
 				CellValuePair cellValuePair = new CellValuePair();
@@ -58,7 +58,8 @@ public class MinimaxGoSolver {
 				cellValuePair.minimaxValue = minimize(newBoard, 0);
 				decisionMinimaxValues.add(cellValuePair);
 				BoardHistory.getSingleton().remove(newBoard);
-			}
+			} else 
+				System.out.println("illegal");
 			checker.reset();
 		}
 		GoCell bestMove = null;
@@ -74,7 +75,7 @@ public class MinimaxGoSolver {
 	}
 	
 	private long maximize(GoPlayingBoard board, int depth) throws CheckFailException {
-		if(depth <= 0) System.out.println(depth);
+		//System.out.println(depth);
 		depth++;
 		if (isPositionTerminal(board)) {
 			if (board.getCellAt(cellToCapture.x(), cellToCapture.y()).isEmpty()) {
@@ -85,8 +86,9 @@ public class MinimaxGoSolver {
 		ArrayList<Long> minimaxValues = new ArrayList<Long>();
 		LegalMovesChecker checker = new LegalMovesChecker(board);
 		boolean foundMax = false;
-		GoodMovesFinder finder = new GoodMovesFinder(board);
+		GoodMovesFinder finder = new GoodMovesFinder(board.clone());
 		for(GoCell cell : finder.getGoodMoves()) {
+			System.out.println(depth + " " + cell);
 			if (checker.isMoveLegal(cell)) {
 				GoPlayingBoard newBoard = checker.getNewBoard();
 				newBoard.oppositeToPlayNext();
@@ -110,7 +112,7 @@ public class MinimaxGoSolver {
 	}
 	
 	private long minimize(GoPlayingBoard board, int depth) throws CheckFailException {
-		if(depth <= 0) System.out.println(depth);
+		//System.out.println(depth);
 		depth++;
 		if (isPositionTerminal(board)) {
 			if (board.getCellAt(cellToCapture.x(), cellToCapture.y()).isEmpty()) {
@@ -121,8 +123,9 @@ public class MinimaxGoSolver {
 		ArrayList<Long> minimaxValues = new ArrayList<Long>();
 		LegalMovesChecker checker = new LegalMovesChecker(board);
 		boolean foundMin = false;
-		GoodMovesFinder finder = new GoodMovesFinder(board);
+		GoodMovesFinder finder = new GoodMovesFinder(board.clone());
 		for(GoCell cell : finder.getGoodMoves()) {
+			System.out.println(depth + " " + cell);
 			if (checker.isMoveLegal(cell)) {
 				GoPlayingBoard newBoard = checker.getNewBoard();
 				newBoard.oppositeToPlayNext();
