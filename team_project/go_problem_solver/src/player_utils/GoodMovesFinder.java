@@ -41,7 +41,7 @@ public class GoodMovesFinder {
 	 */
 	private static final int ATARI_POINTS = 5; 
 	private static final int KILLING_HIMSELF_PENALTY = 1000;
-	private static final boolean SWITCH_OFF = true;
+	private static final boolean SWITCH_OFF = false;
 	
 	public GoodMovesFinder(GoPlayingBoard board) throws CheckFailException{
 		currentBoard = board.clone();
@@ -81,8 +81,11 @@ public class GoodMovesFinder {
 			GoPlayingBoard newBoard = currentBoard.clone();
 			newBoard.setCellAt(pair.cell.x(), pair.cell.y(), pair.cell);
 			LegalMovesChecker checker = new LegalMovesChecker(newBoard);
-			checker.captureOponent(pair.cell);
+			if(checker.captureOponent(pair.cell))
+				newBoard = checker.getNewBoard();
 			newBoard.oppositeToPlayNext();
+			pair.value += newBoard.getNumberOfOwnStones(); 
+			pair.value -= newBoard.getNumberOfOpponentStones();
 		}	
 	}
 	/*
@@ -118,9 +121,10 @@ public class GoodMovesFinder {
 			newChecker.captureOponent(pair.cell);
 			newBoard.oppositeToPlayNext();
 			int currentLiberties = 0;
-			for(GoCell neighbour : currentBoard.getNeighboursOf(pair.cell))
+			for(GoCell neighbour : currentBoard.getNeighboursOf(pair.cell)) {
 				if(neighbour != null && pair.cell.getContent() == neighbour.getContent())
 					currentLiberties += oldChecker.getLiberties(neighbour);
+			}
 			if(currentLiberties > newChecker.getLiberties(pair.cell))
 				pair.value -= KILLING_HIMSELF_PENALTY;
 		}
@@ -130,8 +134,9 @@ public class GoodMovesFinder {
 		Collections.sort(goodMoves);
 		GoCell[] result = new GoCell[goodMoves.size()];
 		int i = 0;
-		for(CellValuePair pair : goodMoves)
+		for(CellValuePair pair : goodMoves) {
 			result[i++] = pair.cell;
+		}
 		return result;
 	}	
 }
