@@ -6,12 +6,7 @@
 	xmlns:ivy="antlib:org.apache.ivy.ant"
 	default="build"
 >
-	<taskdef
-		name="junit"
-		classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"
-	>
-		<classpath path="ant-junit-1.7.1.jar"/>
-	</taskdef>
+	
 	<path id="project.classpath">
 
 		<pathelement location="team_project/go_problem_solver/bin" />
