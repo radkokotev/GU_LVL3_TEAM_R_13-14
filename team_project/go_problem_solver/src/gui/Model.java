@@ -1,12 +1,16 @@
 package gui;
 
-import java.awt.Color;
 import java.io.File;
 import java.io.FileNotFoundException;
 
+import player_utils.BoardHistory;
+import player_utils.LegalMovesChecker;
+import player_utils.MinimaxGoSolver;
+import board_utils.GoCell;
+import board_utils.GoPlayingBoard;
+import board_utils.Player;
+import board_utils.Stone;
 import custom_java_utils.CheckFailException;
-import player_utils.*;
-import board_utils.*;
 
 public class Model {
 	
@@ -28,7 +32,7 @@ public class Model {
 	public Model(File fileName, GuiBoardPlay g) throws FileNotFoundException, CheckFailException {
 		BoardHistory.wipeHistory();
 		gui = g;
-		currentBoard = new GoPlayingBoard(fileName);
+		currentBoard = new GoPlayingBoard(fileName.getAbsolutePath());
 		history = BoardHistory.getSingleton();
 		history.add(currentBoard);
 		checker = new LegalMovesChecker(currentBoard);

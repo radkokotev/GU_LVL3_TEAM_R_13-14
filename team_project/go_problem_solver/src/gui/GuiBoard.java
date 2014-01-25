@@ -8,6 +8,7 @@ import java.io.File;
 import javax.swing.*;
 
 public class GuiBoard extends JPanel implements ActionListener {
+	private static final long serialVersionUID = -5294839711008195581L;
 	public JMenuItem importFileItem, exportFileItem;
 	public JMenuBar menuBar;
 	public JMenuItem modeMenuItem;

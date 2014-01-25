@@ -4,12 +4,10 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.geom.GeneralPath;
 import java.io.File;
 import java.io.FileNotFoundException;
 
@@ -17,13 +15,14 @@ import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 
-import custom_java_utils.CheckFailException;
 import board_utils.GoCell;
 import board_utils.GoPlayingBoard;
 import board_utils.Stone;
+import custom_java_utils.CheckFailException;
 
 public class GuiBoardBuild extends GuiBoard implements MouseListener, 
 													   ActionListener {
+	private static final long serialVersionUID = 4466021000645463248L;
 	private Stone current;
 	private GoPlayingBoard gpb;
 	private JComboBox<String> combo;
@@ -36,7 +35,7 @@ public class GuiBoardBuild extends GuiBoard implements MouseListener,
 	private static final String NONE = "Empty";
 	private static final String TARGET_STONE ="Target stone";
 	
-	private static final File DEFAULT_BOARD = new File(System.getProperty("user.home") + "/git/GU_LVL3_TEAM_R_13-14/team_project/go_problem_solver/src/gui/defaultBoardforBuildMode.go");
+	private static final String DEFAULT_BOARD = "src/gui/defaultBoardforBuildMode.go";
 	
 	public GuiBoardBuild(JFrame frame) {
 		super(frame);
@@ -146,7 +145,7 @@ public class GuiBoardBuild extends GuiBoard implements MouseListener,
 			try {
 		        if (returnVal == JFileChooser.APPROVE_OPTION) {
 		            File file = fc.getSelectedFile();
-		            gpb = new GoPlayingBoard(file);
+		            gpb = new GoPlayingBoard(file.getAbsolutePath());
 					repaint();
 		        }
 			} catch (FileNotFoundException e1) {
@@ -166,7 +165,7 @@ public class GuiBoardBuild extends GuiBoard implements MouseListener,
 				}
 			}
 		} else if(e.getSource().equals(combo)){
-			JComboBox source = (JComboBox) e.getSource();
+			JComboBox<?> source = (JComboBox<?>) e.getSource();
 			if(WHITE.equals(source.getSelectedItem())){
 				current = Stone.WHITE;
 				isNextStoneTarget = false;

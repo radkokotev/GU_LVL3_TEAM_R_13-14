@@ -55,6 +55,7 @@ public class MinimaxGoSolverTest {
 				"src/player_utils/test_data/unsettled_three_white");
 		board.setToPlayNext(Stone.WHITE);
 		MinimaxGoSolver solver = new MinimaxGoSolver(board, board.getCellAt(14, 1));
+		assertEquals(Stone.BLACK, board.getCellAt(14, 1).getContent());
 		assertEquals(new GoCell(Stone.WHITE, 14, 0), solver.minimaxDecision());
 	}
 	

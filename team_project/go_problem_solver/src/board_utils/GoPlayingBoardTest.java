@@ -62,7 +62,7 @@ public class GoPlayingBoardTest {
 		}
 	}
 	
-	@Test(expected=CheckFailException.class)
+	@Test(expected=ArrayIndexOutOfBoundsException.class)
 	public void testGoPlayingBoardParserBadInput() 
 			throws FileNotFoundException, CheckFailException {
 		new GoPlayingBoard("src/board_utils/test_data/bad_input");

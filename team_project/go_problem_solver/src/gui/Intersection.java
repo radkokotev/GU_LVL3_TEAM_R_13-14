@@ -2,9 +2,11 @@ package gui;
 
 import java.awt.Point;
 import java.awt.Rectangle;
+
 import javax.swing.JPanel;
 
 public class Intersection extends JPanel{
+	private static final long serialVersionUID = -3855850303665219282L;
 	public Point center;
 	//Intersection bounds. Mainly used for finding correct intersection where to draw a stone
 	//when user clicks mouse button. 

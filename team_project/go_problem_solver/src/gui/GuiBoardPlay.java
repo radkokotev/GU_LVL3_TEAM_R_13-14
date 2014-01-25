@@ -16,19 +16,17 @@ import java.io.FileNotFoundException;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 
 import player_utils.BoardHistory;
-import custom_java_utils.CheckFailException;
-import board_utils.GoCell;
-import board_utils.GoPlayingBoard;
 import board_utils.Stone;
+import custom_java_utils.CheckFailException;
 
 public class GuiBoardPlay extends GuiBoard implements ActionListener,
 													  MouseListener,
 													  ItemListener {
+	private static final long serialVersionUID = -5583632264766625487L;
 	private Model model;
 	private boolean drawLegalMoves;
 	private JButton undoMoveItem;

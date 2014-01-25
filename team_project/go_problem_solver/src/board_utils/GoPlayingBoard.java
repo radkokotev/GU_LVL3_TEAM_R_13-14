@@ -1,6 +1,5 @@
 package board_utils;
 
-import java.awt.Point;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -8,9 +7,6 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Scanner;
 
-import javax.sound.sampled.Line;
-
-import player_utils.BoardHistory;
 import custom_java_utils.CheckFailException;
 import custom_java_utils.CheckUtils;
 
@@ -59,7 +55,7 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	 * @throws CheckFailException when the given file does not have the 
 	 * dimensions of a Go playing board
 	 */
-	public GoPlayingBoard(File fileName) 
+	public GoPlayingBoard(String fileName) 
 			throws FileNotFoundException, CheckFailException {
 		this();
 		FileInputStream inputStream = new FileInputStream(fileName);

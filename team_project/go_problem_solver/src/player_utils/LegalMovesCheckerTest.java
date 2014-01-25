@@ -71,7 +71,7 @@ public class LegalMovesCheckerTest {
 		assertNotSame(board.getCellAt(14, 16), newBoard.getCellAt(14, 16));
 		assertEquals(Stone.BLACK, newBoard.getCellAt(14, 16).getContent());
 		checker.reset();
-		assertFalse(checker.isMoveLegal(new GoCell(Stone.BLACK, 14, 18)));
+		assertTrue(checker.isMoveLegal(new GoCell(Stone.BLACK, 14, 18)));
 		checker.reset();
 		assertFalse(checker.isMoveLegal(new GoCell(Stone.BLACK, 0, 18)));
 		checker.reset();
@@ -120,7 +120,7 @@ public class LegalMovesCheckerTest {
 				"YYYYYYYYYYYYYYYYYYY\n" +
 				"YYYYYYYYYYYYYYYNNNN\n" +
 				"NNYYYYYYYYYYYYYNYYN\n" +
-				"NYNYYYYYYYYYYYYNYNN\n" +
+				"NYNYYYYYYYYYYYYNYNY\n" +
 				"NNYYYYYYYYYYYYYNNNN\n" +
 				"YYYYYYYYYYYYYYYYYYY\n" +
 				"NYYYYYYYYYYYYYNNNNN\n" +
