@@ -8,12 +8,20 @@ import org.junit.Before;
 import org.junit.Test;
 
 import custom_java_utils.CheckFailException;
-
 import board_utils.GoCell;
 import board_utils.GoPlayingBoard;
 import board_utils.Stone;
 
 public class LegalMovesCheckerTest {
+	private static String workspaceDirectory;
+	
+	@Before public void initialize() {
+	       workspaceDirectory = System.getProperty("user.dir");
+	       int projectFolderPosition = workspaceDirectory.lastIndexOf("/team_project/go_problem_solver");
+	       if (projectFolderPosition == -1) {
+	    	   workspaceDirectory += "/team_project/go_problem_solver";
+	       }
+	}
 	
 	@Before
 	public void setUp() throws Exception {
@@ -23,7 +31,7 @@ public class LegalMovesCheckerTest {
 
 	@Test
 	public void testGetLiberties() throws FileNotFoundException, CheckFailException {
-		GoPlayingBoard board = new GoPlayingBoard("src/player_utils/test_data/liberties_board");
+		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory + "/src/player_utils/test_data/liberties_board");
 		LegalMovesChecker checker = new LegalMovesChecker(board);
 		assertEquals(2, checker.getLiberties(board.getCellAt(0, 0)));
 		assertEquals(8, checker.getLiberties(board.getCellAt(2, 2)));
@@ -37,7 +45,7 @@ public class LegalMovesCheckerTest {
 	
 	@Test
 	public void testCaptureOponent() throws FileNotFoundException, CheckFailException {
-		GoPlayingBoard board = new GoPlayingBoard("src/player_utils/test_data/liberties_board");
+		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory + "/src/player_utils/test_data/liberties_board");
 		LegalMovesChecker checker = new LegalMovesChecker(board);
 		assertFalse(checker.captureOponent(board.getCellAt(0, 0)));
 		assertFalse(checker.captureOponent(board.getCellAt(6, 6)));
@@ -55,7 +63,7 @@ public class LegalMovesCheckerTest {
 
 	@Test
 	public void testIsMoveLegalNoKo() throws FileNotFoundException, CheckFailException {
-		GoPlayingBoard board = new GoPlayingBoard("src/player_utils/test_data/liberties_board");
+		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory + "/src/player_utils/test_data/liberties_board");
 		LegalMovesChecker checker = new LegalMovesChecker(board);
 		assertTrue(checker.isMoveLegal(new GoCell(Stone.BLACK, 0, 1)));
 		checker.reset();
@@ -89,7 +97,7 @@ public class LegalMovesCheckerTest {
 
 	@Test
 	public void testIsMoveLegalWithKo() throws FileNotFoundException, CheckFailException {
-		GoPlayingBoard board = new GoPlayingBoard("src/player_utils/test_data/liberties_board");
+		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory + "/src/player_utils/test_data/liberties_board");
 		BoardHistory.getSingleton().add(board); 
 		LegalMovesChecker checker = new LegalMovesChecker(board);
 		assertTrue(checker.isMoveLegal(new GoCell(Stone.BLACK, 14, 1)));
@@ -101,7 +109,7 @@ public class LegalMovesCheckerTest {
 	
 	@Test
 	public void testIsMoveLegalPrint() throws FileNotFoundException, CheckFailException {
-		GoPlayingBoard board = new GoPlayingBoard("src/player_utils/test_data/liberties_board");
+		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory + "/src/player_utils/test_data/liberties_board");
 		board.setToPlayNext(Stone.BLACK);
 		LegalMovesChecker checker = new LegalMovesChecker(board);
 		
@@ -156,7 +164,7 @@ public class LegalMovesCheckerTest {
 	
 	@Test
 	public void testBug() throws FileNotFoundException, CheckFailException {
-		GoPlayingBoard board = new GoPlayingBoard("src/player_utils/test_data/unsettled_three_white");
+		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory + "/src/player_utils/test_data/unsettled_three_white");
 		board.setToPlayNext(Stone.BLACK);
 		LegalMovesChecker checker = new LegalMovesChecker(board);
 		assertTrue(checker.isMoveLegal(new GoCell(Stone.BLACK, 13, 0)));

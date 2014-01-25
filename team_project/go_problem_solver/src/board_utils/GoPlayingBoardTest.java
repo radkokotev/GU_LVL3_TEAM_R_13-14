@@ -5,12 +5,22 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import custom_java_utils.CheckFailException;
 
 public class GoPlayingBoardTest {
-
+	private static String workspaceDirectory;
+	
+	@Before public void initialize() {
+	       workspaceDirectory = System.getProperty("user.dir");
+	       int projectFolderPosition = workspaceDirectory.lastIndexOf("/team_project/go_problem_solver");
+	       if (projectFolderPosition == -1) {
+	    	   workspaceDirectory += "/team_project/go_problem_solver";
+	       }
+	}
+	
 	@Test
 	public void testGetCountPiecesOnBoard() {
 		GoPlayingBoard board = new GoPlayingBoard();
@@ -38,7 +48,7 @@ public class GoPlayingBoardTest {
 			throws FileNotFoundException, CheckFailException {
 		// Empty board
 		GoPlayingBoard board = 
-				new GoPlayingBoard("src/board_utils/test_data/empty_board");
+				new GoPlayingBoard(workspaceDirectory + "/src/board_utils/test_data/empty_board");
 		for (int i = 0; i < 19; i++) {
 			for (int j = 0; j < 19; j++) {
 				assertTrue(board.getCellAt(i, j).isEmpty());
@@ -46,7 +56,7 @@ public class GoPlayingBoardTest {
 		}
 		
 		board = 
-				new GoPlayingBoard("src/board_utils/test_data/diagonal_board");
+				new GoPlayingBoard(workspaceDirectory + "/src/board_utils/test_data/diagonal_board");
 		for (int i = 0; i < 19; i++) {
 			for (int j = 0; j < 19; j++) {
 				if (i == j && i % 2 == 0) {
@@ -65,7 +75,7 @@ public class GoPlayingBoardTest {
 	@Test(expected=ArrayIndexOutOfBoundsException.class)
 	public void testGoPlayingBoardParserBadInput() 
 			throws FileNotFoundException, CheckFailException {
-		new GoPlayingBoard("src/board_utils/test_data/bad_input");
+		new GoPlayingBoard(workspaceDirectory + "/src/board_utils/test_data/bad_input");
 	}
 
 	@Test
@@ -74,7 +84,7 @@ public class GoPlayingBoardTest {
 		GoPlayingBoard board = new GoPlayingBoard();
 		
 		assertEquals(board, 
-				new GoPlayingBoard("src/board_utils/test_data/empty_board"));
+				new GoPlayingBoard(workspaceDirectory + "/src/board_utils/test_data/empty_board"));
 		
 		// Make board the diagonal board represented in test_data
 		for (int i = 0; i < 19; i++) {
@@ -88,7 +98,7 @@ public class GoPlayingBoardTest {
 		}
 		
 		assertEquals(board, 
-				new GoPlayingBoard("src/board_utils/test_data/diagonal_board"));
+				new GoPlayingBoard(workspaceDirectory + "/src/board_utils/test_data/diagonal_board"));
 		
 	}
 

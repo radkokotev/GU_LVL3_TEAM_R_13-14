@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<project
+	name="se-notes.demos.ant"
+	basedir="."
+	xmlns:ivy="antlib:org.apache.ivy.ant"
+	default="build"
+>
+	<taskdef
+		name="junit"
+		classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"
+	>
+		<classpath path="ant-junit-1.7.1.jar"/>
+	</taskdef>
+	<path id="project.classpath">
+
+		<pathelement location="team_project/go_problem_solver/bin" />
+
+		<fileset dir="lib" />
+
+	</path>
+
+	
+	<property name="install.dir" value=""/>
+	
+
+	<property name="exec.dir" value=""/>
+		
+	
+	<target
+		name="clean"
+		description="Deletes all intermediate files."
+	>
+		
+		<delete dir="team_project/go_problem_solver/bin" />
+	
+	</target>
+	
+	
+	<target
+		name="cleanall"
+		description="Deletes all files not included in the distribution archive."
+		depends="clean"
+	>
+		
+		<delete dir="lib" />
+		<delete dir="." includes="*.jar"/>
+		<ivy:cleancache/>
+	
+	</target>
+	
+	
+	<target
+		name="init"
+		description="Initalises the distribution in preparation for compilation of code and documentation."
+	>
+		
+		<mkdir dir="team_project/go_problem_solver/bin"/>
+		
+	</target>
+
+	
+	<target
+		name="resolve"
+		description="Retrieves necessary dependencies for this project."
+	>
+		
+		<ivy:retrieve />
+		
+	</target>
+	
+	
+	<target
+		name="compile"
+		depends="init,resolve"
+		description="Compiles all java class files."
+	>
+
+		<javac
+			srcdir="team_project/go_problem_solver/src"
+			destdir="team_project/go_problem_solver/bin"
+			debuglevel="lines,vars,source"
+			classpathref="project.classpath"
+		/>
+	
+	</target>
+	
+	
+	<target
+		name="run"
+		depends="compile"
+		description="Invokes the application from the default entry point."
+	>
+		
+		<java
+			classname="uk.ac.glasgow.senotes.ant.HelloWorldProject"
+			fork="yes"
+			classpathref="project.classpath"
+		/>
+		
+	</target>
+		
+	
+	<target
+		name="test"
+		description="Invokes the project's suite of JUnit test cases"
+		depends="compile">
+		
+		<junit			
+			printsummary="yes"
+		>
+			<classpath refid="project.classpath"/>
+			<batchtest>
+				<formatter type="plain" usefile="false"/>
+       				<fileset dir="team_project/go_problem_solver/src">
+            				<include name="**/*Test*" />
+      				 </fileset>
+    			</batchtest>
+		</junit>
+	
+	</target>
+	
+	
+	<target
+		name="build-jar"
+		description="Creates an executable jar of the project class files, excluding test cases."
+		depends="compile"
+	>
+		<jar
+			destfile="helloworldproject.jar"
+			basedir="team_project/go_problem_solver/bin"
+			excludes="**/test/**/*.class"
+		/>
+		
+	</target>
+	
+	
+	<target
+		name="install"
+		description="Copies the project jar and dependencies to ${install.dir} and an executable script 'helloworld' to ${exec.dir} (both set on command line)"
+		depends="build-jar"
+	>
+		<fail
+			message="$${install.dir} and $${exec.dir} properties not set.">
+			<condition>
+				<or>
+					<equals arg1="${install.dir}" arg2=""/>
+					<equals arg1="${exec.dir}" arg2=""/>
+				</or>
+			</condition>
+		</fail>
+		
+		<copy todir="${install.dir}">
+			<fileset dir="lib/" includes="*.jar"/>
+			<fileset dir="./" includes="*.jar"/>
+		</copy>
+		
+		<copy todir="${exec.dir}" file="config/helloworld.sh"/>
+		
+	  	<replace
+	  		file="${exec.dir}/helloworld.sh"
+	  		token="@INSTALLDIR"
+	  		value="${install.dir}"
+	  	/>
+		
+		<chmod
+			perm="ugo+rx"
+			file="${exec.dir}/helloworld.sh"
+		/>
+		
+	</target>
+	
+	
+	<target
+		name="uninstall"
+		description="Removes project artifacts from the environment"
+	>
+		<fail message="Not implemented."/>
+	</target>
+	
+	
+	<target
+		name="build"
+		depends="compile"
+		description="Invokes the compile target."
+	/>
+		
+	
+</project>

@@ -1,0 +1,21 @@
+<ivy-module version="2.0">
+
+
+    <info 
+      organisation="uk.ac.glasgow"
+      module="senotes.demos.ant"
+      />
+      
+
+    <dependencies>
+    
+        <dependency
+	 	 	org="junit"
+			name="junit"
+			conf="default"
+			rev="4.8.2"/>
+                            
+    </dependencies>
+
+
+</ivy-module>
