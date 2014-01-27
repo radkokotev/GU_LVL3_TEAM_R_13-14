@@ -9,16 +9,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 import custom_java_utils.CheckFailException;
+import custom_java_utils.ProjectPathUtils;
 
 public class GoPlayingBoardTest {
 	private static String workspaceDirectory;
 	
 	@Before public void initialize() {
-	       workspaceDirectory = System.getProperty("user.dir");
-	       int projectFolderPosition = workspaceDirectory.lastIndexOf("/team_project/go_problem_solver");
-	       if (projectFolderPosition == -1) {
-	    	   workspaceDirectory += "/team_project/go_problem_solver";
-	       }
+	       workspaceDirectory = ProjectPathUtils.getWorkspaceDir();
 	}
 	
 	@Test

@@ -25,7 +25,7 @@ public class GuiBoardBuild extends GuiBoard implements MouseListener,
 	private static final long serialVersionUID = 4466021000645463248L;
 	private Stone current;
 	private GoPlayingBoard gpb;
-	private JComboBox<String> combo;
+	private JComboBox combo;
 	private boolean isNextStoneTarget;
 	
 	//Constants for combo box
@@ -51,7 +51,7 @@ public class GuiBoardBuild extends GuiBoard implements MouseListener,
 		importFileItem.addActionListener(this);
 	    exportFileItem.addActionListener(this);
 	    
-	    combo = new JComboBox<String>();
+	    combo = new JComboBox();
 	    combo.addItem(BLACK);
 	    combo.addItem(WHITE);
 	    combo.addItem(INNER_BORDER);
@@ -165,7 +165,7 @@ public class GuiBoardBuild extends GuiBoard implements MouseListener,
 				}
 			}
 		} else if(e.getSource().equals(combo)){
-			JComboBox<?> source = (JComboBox<?>) e.getSource();
+			JComboBox source = (JComboBox) e.getSource();
 			if(WHITE.equals(source.getSelectedItem())){
 				current = Stone.WHITE;
 				isNextStoneTarget = false;
