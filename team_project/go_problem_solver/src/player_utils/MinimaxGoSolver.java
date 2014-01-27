@@ -59,7 +59,7 @@ public class MinimaxGoSolver {
 					cellValuePair.cell = cell;
 					GoPlayingBoard newBoard = checker.getNewBoard();
 					newBoard.oppositeToPlayNext();
-					cellValuePair.minimaxValue = minimize(newBoard);
+					cellValuePair.minimaxValue = minimize(newBoard, 0);
 					decisionMinimaxValues.add(cellValuePair);
 					BoardHistory.getSingleton().remove(newBoard);
 				}
@@ -69,7 +69,8 @@ public class MinimaxGoSolver {
 		GoCell bestMove = null;
 		long bestValue = (-infinity);
 		for (CellValuePair pair : decisionMinimaxValues) {
-			if (pair.minimaxValue > bestValue) {
+			System.out.println("pair" + pair.minimaxValue);
+			if (pair.minimaxValue >= bestValue) {
 				bestValue = pair.minimaxValue;
 				bestMove = pair.cell;
 			}
@@ -77,7 +78,9 @@ public class MinimaxGoSolver {
 		return bestMove;
 	}
 	
-	private long maximize(GoPlayingBoard board) throws CheckFailException {
+	private long maximize(GoPlayingBoard board, int depth) throws CheckFailException {
+		if(depth <= 0) System.out.println(depth);
+		depth++;
 		if (isPositionTerminal(board)) {
 			if (board.getCellAt(cellToCapture.x(), cellToCapture.y()).isEmpty()) {
 				return infinity;
@@ -92,7 +95,7 @@ public class MinimaxGoSolver {
 				if (checker.isMoveLegal(new GoCell(board.toPlayNext(), i, j))) {
 					GoPlayingBoard newBoard = checker.getNewBoard();
 					newBoard.oppositeToPlayNext();
-					long currMinimaxValue = minimize(newBoard);
+					long currMinimaxValue = minimize(newBoard, depth);
 					minimaxValues.add(currMinimaxValue);  // there is a legal move
 					if (currMinimaxValue >= infinity) {
 						foundMax = true;
@@ -111,7 +114,9 @@ public class MinimaxGoSolver {
 		return maxValue;
 	}
 	
-	private long minimize(GoPlayingBoard board) throws CheckFailException {
+	private long minimize(GoPlayingBoard board, int depth) throws CheckFailException {
+		if(depth <= 0) System.out.println(depth);
+		depth++;
 		if (isPositionTerminal(board)) {
 			if (board.getCellAt(cellToCapture.x(), cellToCapture.y()).isEmpty()) {
 				return infinity;
@@ -126,7 +131,7 @@ public class MinimaxGoSolver {
 				if (checker.isMoveLegal(new GoCell(board.toPlayNext(), i, j))) {
 					GoPlayingBoard newBoard = checker.getNewBoard();
 					newBoard.oppositeToPlayNext();
-					long currMinimaxValue = maximize(newBoard);
+					long currMinimaxValue = maximize(newBoard, depth);
 					minimaxValues.add(currMinimaxValue);  // there is a legal move
 					if (currMinimaxValue <= -infinity) {
 						foundMin = true;

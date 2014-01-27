@@ -8,7 +8,6 @@ import java.util.TreeSet;
 
 import custom_java_utils.CheckFailException;
 import custom_java_utils.CheckUtils;
-
 import board_utils.Cell;
 import board_utils.GoCell;
 import board_utils.GoPlayingBoard;
@@ -30,7 +29,7 @@ public class LegalMovesChecker implements LegalityChecker{
 	 */
 	public LegalMovesChecker(GoPlayingBoard board) {
 		this.newBoard = board.clone();
-		this.originalBoard = board.clone();
+		this.originalBoard = board;
 		this.history = BoardHistory.getSingleton();
 	}
 	
@@ -44,7 +43,7 @@ public class LegalMovesChecker implements LegalityChecker{
 			return false;
 		}
 		newBoard.setCellAt(cell.x(), cell.y(), cell);
-		if (!captureOponent(cell)) {
+		if (!captureOponent(cell)){
 			if (getLiberties(cell) == 0) {
 				this.reset();
 				return false;
@@ -54,6 +53,8 @@ public class LegalMovesChecker implements LegalityChecker{
 			this.reset();
 			return false;
 		}
+		//this.newBoard.getHistory().add(newBoard);
+		//this.newBoard.setToPlayNext((Stone)c.getContent() == Stone.BLACK ? Stone.WHITE : Stone.BLACK);
 		return true;
 	}
 
@@ -65,11 +66,13 @@ public class LegalMovesChecker implements LegalityChecker{
 	 * false - otherwise  
 	 */
 	public boolean captureOponent(GoCell cell) {
+		//System.out.println("Capture: " + cell.x() + " " + cell.y());
 		boolean captured = false;
 		for (GoCell neighbour : this.newBoard.getNeighboursOf(cell)) {
 			if (neighbour != null && GoCell.areOposite(cell, neighbour)) {
 				if (getLiberties(neighbour) == 0) {
 					removeOponentsStone(neighbour, neighbour.getContent());
+					//System.out.println("Removed: " + neighbour.x() + " " + neighbour.y());
 					captured = true;
 				}
 			}
@@ -83,10 +86,12 @@ public class LegalMovesChecker implements LegalityChecker{
 	 * @return the number of liberties the group has.
 	 */
 	public int getLiberties(GoCell cell) {
+		//System.out.println(cell.toString());
 		Set<GoCell> liberties = new TreeSet<GoCell>();
 		Set<GoCell> visited = new TreeSet<GoCell>();
 		visited.add(cell);
 		getLibertiesRecursively(cell, liberties, visited);
+		//System.out.println(cell.toString() + " has " + liberties.size() + " liberties x:" + cell.x() + " y:" + cell.y());
 		return liberties.size();
 	}
 	
@@ -94,7 +99,7 @@ public class LegalMovesChecker implements LegalityChecker{
 	 * Recursively counts the number of empty cells that are adjacent to the group
 	 * @param cell a member of a group
 	 * @param liberties a set of already found empty cells
-	 * @param visited a set of all visited cells
+	 * @pgetLibertiesaram visited a set of all visited cells
 	 * @return the number of empty cells adjacent to the group.
 	 */
 	private int getLibertiesRecursively(GoCell cell, Set<GoCell> liberties, Set<GoCell> visited) {
@@ -105,7 +110,7 @@ public class LegalMovesChecker implements LegalityChecker{
 					neighbour.getContent() == cell.getContent()) {
 				visited.add(neighbour.clone());
 				getLibertiesRecursively(neighbour, liberties, visited);
-			} else if (neighbour != null && neighbour.isEmpty()) {
+			} else if (neighbour != null && (neighbour.isEmpty() || neighbour.getContent() == Stone.INNER_BORDER)) {
 				liberties.add(neighbour.clone());
 			}
 		}
