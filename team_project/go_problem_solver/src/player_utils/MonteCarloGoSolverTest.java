@@ -14,7 +14,12 @@ import board_utils.GoPlayingBoard;
 import board_utils.Stone;
 
 public class MonteCarloGoSolverTest {
-	
+	private static String workspaceDirectory;
+        
+        @Before public void initialize() {
+         workspaceDirectory = ProjectPathUtils.getWorkspaceDir();
+        }
+
 	@Before
 	public void setUp() throws Exception {
 		// Reset the history after every test case;
@@ -22,8 +27,8 @@ public class MonteCarloGoSolverTest {
 	}
 	@Test
 	public void testIsPositionTerminal() throws FileNotFoundException, CheckFailException {
-		GoPlayingBoard board = new GoPlayingBoard(
-				"src/player_utils/test_data/small_board_for_minimax");
+		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory +
+				"/src/player_utils/test_data/small_board_for_minimax");
 		MonteCarloGoSolver solver = new MonteCarloGoSolver(board, board.getCellAt(18, 18));
 		assertFalse(solver.isGoalAchieved(board));
 		board.setCellAt(18, 18, new GoCell(Stone.BLACK, 18, 17));
@@ -33,8 +38,8 @@ public class MonteCarloGoSolverTest {
 
 	@Test
 	public void testMinimaxDecisionBlack() throws FileNotFoundException, CheckFailException {
-		GoPlayingBoard board = new GoPlayingBoard(
-				"src/player_utils/test_data/small_board_for_minimax");
+		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory +
+				"/src/player_utils/test_data/small_board_for_minimax");
 		board.setToPlayNext(Stone.BLACK);
 		MonteCarloGoSolver solver = new MonteCarloGoSolver(board, board.getCellAt(18, 18));
 		assertEquals(new GoCell(Stone.BLACK, 18, 17), solver.decision());
@@ -42,8 +47,8 @@ public class MonteCarloGoSolverTest {
 	
 	@Test
 	public void testMinimaxDecisionWhite() throws FileNotFoundException, CheckFailException {
-		GoPlayingBoard board = new GoPlayingBoard(
-				"src/player_utils/test_data/small_board_for_minimax_white");
+		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory +
+				"/src/player_utils/test_data/small_board_for_minimax_white");
 		board.setToPlayNext(Stone.WHITE);
 		MonteCarloGoSolver solver = new MonteCarloGoSolver(board, board.getCellAt(18, 18));
 		assertEquals(new GoCell(Stone.WHITE, 18, 17), solver.decision());
@@ -51,8 +56,8 @@ public class MonteCarloGoSolverTest {
 	
 	@Test
 	public void testMinimaxDecisionUnsettled3White() throws FileNotFoundException, CheckFailException {
-		GoPlayingBoard board = new GoPlayingBoard(
-				"src/player_utils/test_data/unsettled_three_white");
+		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory +
+				"/src/player_utils/test_data/unsettled_three_white");
 		board.setToPlayNext(Stone.WHITE);
 		MonteCarloGoSolver solver = new MonteCarloGoSolver(board, board.getCellAt(14, 1));
 		assertEquals(new GoCell(Stone.WHITE, 14, 0), solver.decision());
@@ -60,8 +65,8 @@ public class MonteCarloGoSolverTest {
 	
 	@Test
 	public void testMinimaxDecisionUnsettled3Black() throws FileNotFoundException, CheckFailException {
-		GoPlayingBoard board = new GoPlayingBoard(
-				"src/player_utils/test_data/unsettled_three_black");
+		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory +
+				"/src/player_utils/test_data/unsettled_three_black");
 		board.setToPlayNext(Stone.BLACK);
 		MonteCarloGoSolver solver = new MonteCarloGoSolver(board, board.getCellAt(14, 1));
 		assertEquals(new GoCell(Stone.BLACK, 14, 0), solver.decision());
