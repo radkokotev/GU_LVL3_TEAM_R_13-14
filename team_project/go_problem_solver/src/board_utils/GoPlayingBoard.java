@@ -213,7 +213,15 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 		String result = "";
 		for (int i = 0; i < HEIGHT; i++) {
 			for (int j = 0; j < WIDTH; j++) {
-				result += this.board[i][j].toString() + "\t";
+				if (this.board[i][j].getContent() == Stone.BLACK) {
+					result += BLACK;
+				} else if (this.board[i][j].getContent() == Stone.WHITE) {
+					result += WHITE;
+				} else if (this.board[i][j].getContent() == Stone.NONE) {
+					result += NONE;
+				} else {
+					result += '?';
+				}
 			}
 			result += "\n";
 		}
