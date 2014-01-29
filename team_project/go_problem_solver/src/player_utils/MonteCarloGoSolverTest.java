@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import custom_java_utils.CheckFailException;
+import custom_java_utils.ProjectPathUtils;
 
 import board_utils.GoCell;
 import board_utils.GoPlayingBoard;
