@@ -1,7 +1,9 @@
 package player_utils;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Random;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import board_utils.GoCell;
 import board_utils.GoPlayingBoard;
@@ -12,6 +14,7 @@ public class MonteCarloGoSolver {
 	private GoCell cellToCapture;
 	private static final long infinity = Integer.MAX_VALUE;
 	private int gamesPerMove = 100;
+	private ConcurrentLinkedQueue<CellValuePair> monteCarloValues;
 	
 	public MonteCarloGoSolver(GoPlayingBoard board, GoCell cell) {
 		this.board = board.clone();
@@ -50,12 +53,14 @@ public class MonteCarloGoSolver {
 	 * Calculates what the best next move would be
 	 * @return the cell that is the best move according to the algorithm
 	 * @throws CheckFailException
+	 * @throws InterruptedException 
 	 */
-	public GoCell decision() throws CheckFailException {
+	public GoCell decision() throws CheckFailException, InterruptedException {
 		LegalMovesChecker checker = new LegalMovesChecker(board);
-		ArrayList<CellValuePair> monteCarloValues = 
-				new ArrayList<MonteCarloGoSolver.CellValuePair>();
+		monteCarloValues = 
+				new ConcurrentLinkedQueue<MonteCarloGoSolver.CellValuePair>();
 		
+		LinkedList<Thread> threads = new LinkedList<Thread>();
 		for (int i = 0; i < board.getWidth(); i++) {
 			for (int j = 0; j < board.getHeight(); j++) {
 				GoCell cell = new GoCell(board.toPlayNext(), i, j);
@@ -64,12 +69,19 @@ public class MonteCarloGoSolver {
 					cellValuePair.cell = cell;
 					GoPlayingBoard newBoard = checker.getNewBoard();
 					newBoard.oppositeToPlayNext();
-					cellValuePair.value = monteCarloEvaluation(newBoard);
-					monteCarloValues.add(cellValuePair);
+//					cellValuePair.value = monteCarloEvaluation(newBoard);
+//					monteCarloValues.add(cellValuePair);
+					Thread thread = new Thread(new MonteCarloInstanceRunner(newBoard, cell));
+					threads.add(thread);
+					thread.start();
 					BoardHistory.getSingleton().remove(newBoard);
 				}
 				checker.reset();
 			}
+		}
+		System.out.println("Running with " + Thread.activeCount() + " threads.");
+		for (Thread t : threads) {
+			t.join();
 		}
 		GoCell bestMove = null;
 		double bestValue = (-infinity);
@@ -78,6 +90,7 @@ public class MonteCarloGoSolver {
 				bestValue = pair.value;
 				bestMove = pair.cell;
 			}
+			System.out.println(pair.cell.x() + "," + pair.cell.y() + " -> " + pair.value);
 		}
 		return bestMove;
 	}
@@ -131,5 +144,30 @@ public class MonteCarloGoSolver {
 			}
 		}
 		return ((double)winCount) * 1.0 / gamesPerMove;
-	}	
+	}
+	
+	private class MonteCarloInstanceRunner implements Runnable {
+		private GoPlayingBoard board;
+		private CellValuePair cellValuePair;
+		public MonteCarloInstanceRunner(GoPlayingBoard board, GoCell move) {
+			this.board = board;
+			this.cellValuePair = new CellValuePair();
+			this.cellValuePair.cell = move;
+		}
+
+		@Override
+		public void run() {
+			try {
+				cellValuePair.value = monteCarloEvaluation(board);
+				synchronized(monteCarloValues) {
+					monteCarloValues.add(cellValuePair);
+				}
+			} catch (CheckFailException e) {
+				e.printStackTrace();
+				System.exit(1);
+			}
+			BoardHistory.wipeHistory();
+		}
+		
+	}
 }
