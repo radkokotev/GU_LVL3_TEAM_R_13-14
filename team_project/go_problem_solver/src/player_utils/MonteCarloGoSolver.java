@@ -40,7 +40,8 @@ public class MonteCarloGoSolver {
 	}
 	
 	public boolean isGoalAchieved(GoPlayingBoard board) {
-		if (board.getCellAt(cellToCapture.x(), cellToCapture.y()).isEmpty()) {
+		if (board.getCellAt(cellToCapture.getVerticalCoordinate(), 
+				cellToCapture.getHorizontalCoordinate()).isEmpty()) {
 			// the target stone was captured
 			return true;
 		}
@@ -90,7 +91,8 @@ public class MonteCarloGoSolver {
 				bestValue = pair.value;
 				bestMove = pair.cell;
 			}
-			System.out.println(pair.cell.x() + "," + pair.cell.y() + " -> " + pair.value);
+			System.out.println(pair.cell.getVerticalCoordinate() + "," + 
+					pair.cell.getHorizontalCoordinate() + " -> " + pair.value);
 		}
 		return bestMove;
 	}
@@ -135,7 +137,8 @@ public class MonteCarloGoSolver {
 				newBoard.oppositeToPlayNext();
 				boardsPlayed.add(newBoard);
 			}
-			if (newBoard.getCellAt(cellToCapture.x(), cellToCapture.y()).isEmpty()) {
+			if (newBoard.getCellAt(cellToCapture.getVerticalCoordinate(), 
+					cellToCapture.getHorizontalCoordinate()).isEmpty()) {
 				winCount++;
 			}
 			// Remove all played boards from history

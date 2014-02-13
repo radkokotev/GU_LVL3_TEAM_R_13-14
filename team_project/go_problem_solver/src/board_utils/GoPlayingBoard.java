@@ -134,10 +134,10 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	 */
 	public GoCell[] getNeighboursOf(GoCell cell) {
 		GoCell[] neighbours = new GoCell[4];
-		neighbours[0] = this.getCellAt(cell.x() - 1, cell.y());
-		neighbours[1] = this.getCellAt(cell.x() + 1, cell.y());
-		neighbours[2] = this.getCellAt(cell.x(), cell.y() - 1);
-		neighbours[3] = this.getCellAt(cell.x(), cell.y() + 1);
+		neighbours[0] = this.getCellAt(cell.getVerticalCoordinate() - 1, cell.getHorizontalCoordinate());
+		neighbours[1] = this.getCellAt(cell.getVerticalCoordinate() + 1, cell.getHorizontalCoordinate());
+		neighbours[2] = this.getCellAt(cell.getVerticalCoordinate(), cell.getHorizontalCoordinate() - 1);
+		neighbours[3] = this.getCellAt(cell.getVerticalCoordinate(), cell.getHorizontalCoordinate() + 1);
 		return neighbours;
 	}
 	
@@ -276,7 +276,7 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	 */
 	public void toFile(File file) throws FileNotFoundException{
 		PrintWriter writer = new PrintWriter(file.toString());
-		writer.printf("BLACK COMPUTER KILL %d %d\r\n", target.x(), target.y());
+		writer.printf("BLACK COMPUTER KILL %d %d\r\n", target.getVerticalCoordinate(), target.getHorizontalCoordinate());
 		for (GoCell[] row : board) {
 			for (GoCell cell : row) {
 				String c = "";

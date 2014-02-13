@@ -89,7 +89,8 @@ public class GuiBoardBuild extends GuiBoard implements MouseListener,
 			}
 		
 		if(gpb.getTarget() != null){
-			Intersection target = intersections[gpb.getTarget().x()][gpb.getTarget().y()];
+			Intersection target = intersections[gpb.getTarget().getVerticalCoordinate()]
+					[gpb.getTarget().getHorizontalCoordinate()];
 			g2.setPaint(Color.RED);
 			g2.fillOval(target.center.x - sqWidth/4, target.center.y - sqWidth/4, sqWidth/2, sqWidth/2);
 		}
