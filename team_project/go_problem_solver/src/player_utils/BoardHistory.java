@@ -3,7 +3,6 @@ package player_utils;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Stack;
-import java.util.concurrent.ConcurrentHashMap;
 
 import board_utils.GoPlayingBoard;
 
@@ -11,11 +10,11 @@ import board_utils.GoPlayingBoard;
  * A singleton to keep the history of all boards that have been played
  */
 public class BoardHistory {
-	private HashMap<Integer, LinkedList<GoPlayingBoard>> boards;
+	private static BoardHistory instance;
+	private static HashMap<Integer, LinkedList<GoPlayingBoard>> boards;
 	private Stack<GoPlayingBoard> allMoves;
 	private Stack<GoPlayingBoard> undoMoves;
-	private static ConcurrentHashMap<Long, BoardHistory> instancePool;
-
+	
 	/**
 	 * Default constructor to create an instance of the history
 	 */
@@ -30,17 +29,11 @@ public class BoardHistory {
 	 * deep copy of the given history
 	 * @param boards existing history to clone into the new instance 
 	 */
-	public static synchronized BoardHistory getSingleton() {
-		if (instancePool == null) {
-			instancePool = new ConcurrentHashMap<Long, BoardHistory>();
+	public static BoardHistory getSingleton() {
+		if (instance == null) {
+			instance = new BoardHistory();
 		}
-		long threadId = Thread.currentThread().getId();
-		BoardHistory result = instancePool.get(threadId);
-		if (result == null) {
-			result = new BoardHistory();
-			instancePool.put(threadId, result);
-		}
-		return result;
+		return instance;
 	}
 	/**
 	 * Adding the given board to the board history by making a deep copy of it.
@@ -125,9 +118,7 @@ public class BoardHistory {
 		return false;
 	}
 	
-	public static synchronized void wipeHistory() {
-		if (instancePool != null) {
-			instancePool.remove(Thread.currentThread().getId());
-		}
+	public static void wipeHistory() {
+		instance = null;
 	}
 }
