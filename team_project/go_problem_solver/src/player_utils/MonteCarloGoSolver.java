@@ -103,7 +103,6 @@ public class MonteCarloGoSolver {
 					cellValuePair.cell = cell;
 					GoPlayingBoard newBoard = checker.getNewBoard();
 					newBoard.oppositeToPlayNext();
-					//cellValuePair.value = monteCarloEvaluation(newBoard);
 					monteCarloValues.add(cellValuePair);
 					legalMoves.add(newBoard);
 					BoardHistory.getSingleton().remove(newBoard);
