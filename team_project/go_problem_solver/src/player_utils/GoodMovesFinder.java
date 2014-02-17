@@ -41,7 +41,7 @@ public class GoodMovesFinder {
 	 */
 	private static final int ATARI_POINTS = 1; 
 	private static final int KILLING_HIMSELF_PENALTY = 1000;
-	private static final int GROUP_SAVER_REWARD = 1;
+	private static final int GROUP_SAVER_REWARD = 1000;
 	private static final boolean SWITCH_OFF = false;
 	
 	public GoodMovesFinder(GoPlayingBoard board) throws CheckFailException{
@@ -83,7 +83,7 @@ public class GoodMovesFinder {
 			GoPlayingBoard newBoard = currentBoard.clone();
 			newBoard.setCellAt(pair.cell.x(), pair.cell.y(), pair.cell);
 			LegalMovesChecker checker = new LegalMovesChecker(newBoard);
-			if(checker.captureOponent(pair.cell)) {
+			if(!checker.captureOponent(pair.cell).isEmpty()) {
 				newBoard = checker.getNewBoard();
 				BoardHistory.getSingleton().remove(newBoard);
 			}
@@ -100,7 +100,7 @@ public class GoodMovesFinder {
 			GoPlayingBoard newBoard = currentBoard.clone();
 			newBoard.setCellAt(pair.cell.x(), pair.cell.y(), pair.cell);
 			LegalMovesChecker checker = new LegalMovesChecker(newBoard);
-			if(checker.captureOponent(pair.cell)) {
+			if(!checker.captureOponent(pair.cell).isEmpty()) {
 				newBoard = checker.getNewBoard();
 				BoardHistory.getSingleton().remove(newBoard);
 			}
@@ -123,7 +123,7 @@ public class GoodMovesFinder {
 			newBoard.setCellAt(pair.cell.x(), pair.cell.y(), pair.cell);
 			LegalMovesChecker newChecker = new LegalMovesChecker(newBoard);
 			LegalMovesChecker oldChecker = new LegalMovesChecker(currentBoard);
-			if(newChecker.captureOponent(pair.cell)) {
+			if(!newChecker.captureOponent(pair.cell).isEmpty()) {
 				newBoard = newChecker.getNewBoard();
 				BoardHistory.getSingleton().remove(newBoard);
 			}
@@ -144,10 +144,10 @@ public class GoodMovesFinder {
 			GoPlayingBoard newBoard = currentBoard.clone();
 			LegalMovesChecker checker = new LegalMovesChecker(currentBoard);
 			for(GoCell cell : currentBoard.getNeighboursOf(pair.cell)){
-				if(!GoCell.areOposite(cell, pair.cell) && checker.getLiberties(cell) == 1) {
+				if(cell != null && !GoCell.areOposite(cell, pair.cell) && checker.getLiberties(cell) == 1) {
 					newBoard.setCellAt(pair.cell.x(), pair.cell.y(), pair.cell);
 					checker = new LegalMovesChecker(newBoard);
-					if(checker.captureOponent(pair.cell)) {
+					if(!checker.captureOponent(pair.cell).isEmpty()) {
 						newBoard = checker.getNewBoard();
 						BoardHistory.getSingleton().remove(newBoard);
 					}

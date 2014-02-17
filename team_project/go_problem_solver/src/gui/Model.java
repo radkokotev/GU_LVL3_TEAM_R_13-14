@@ -106,10 +106,8 @@ public class Model {
 	}
 	
 	public void removeOpponent(int x, int y)  {
-		boolean isAnyKilled = false;
-		isAnyKilled = checker.captureOponent(currentBoard.getCellAt(x, y));
 		try {
-			if(isAnyKilled) {
+			if(checker.captureOponent(currentBoard.getCellAt(x, y)) != null) {
 				currentBoard = checker.getNewBoard();
 				checker = new LegalMovesChecker(currentBoard);
 				legalMoves = checker.getLegalityArray();

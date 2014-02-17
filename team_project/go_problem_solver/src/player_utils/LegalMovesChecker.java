@@ -3,6 +3,7 @@
  */
 package player_utils;
 
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -43,7 +44,7 @@ public class LegalMovesChecker implements LegalityChecker{
 			return false;
 		}
 		newBoard.setCellAt(cell.x(), cell.y(), cell);
-		if (!captureOponent(cell)){
+		if (captureOponent(cell) != null){
 			if (getLiberties(cell) == 0) {
 				this.reset();
 				return false;
@@ -60,17 +61,17 @@ public class LegalMovesChecker implements LegalityChecker{
 	 * Removes and all opponent stones (if any) that have no liberties left 
 	 * after this move.
 	 * @param cell the new move that is being made
-	 * @return true if there were opponent stones that were killed, 
-	 * false - otherwise  
+	 * @return ArrayList of the removed groups, 
+	 *
 	 */
-	public boolean captureOponent(GoCell cell) {
+	public ArrayList<GoCell> captureOponent(GoCell cell) {
 		//System.out.println("Capture: " + cell.x() + " " + cell.y());
-		boolean captured = false;
+		ArrayList<GoCell> captured = new ArrayList<GoCell>();
 		for (GoCell neighbour : this.newBoard.getNeighboursOf(cell)) {
 			if (neighbour != null && GoCell.areOposite(cell, neighbour)) {
 				if (getLiberties(neighbour) == 0) {
 					removeOponentsStone(neighbour, neighbour.getContent());
-					captured = true;
+					captured.add(neighbour);
 				}
 			}
 		}
