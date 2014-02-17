@@ -42,11 +42,8 @@ public class MonteCarloGoSolver {
 	 * @param gamesPerMove how may games should be played per legal move
 	 */
 	public MonteCarloGoSolver(GoPlayingBoard board, GoCell cell, int gamesPerMove) {
-		this.board = board.clone();
-		this.cellToCapture = cell.clone();
+		this(board, cell);
 		this.gamesPerMove = gamesPerMove;
-		this.gamesPerThreadRun = 10;
-		this.finishTime = -1;
 	}
 	
 	/**
@@ -60,8 +57,7 @@ public class MonteCarloGoSolver {
 	 */
 	public MonteCarloGoSolver(GoPlayingBoard board, GoCell cell, 
 			int gamesPerThreadRun, long finishTime) {
-		this.board = board.clone();
-		this.cellToCapture = cell.clone();
+		this(board, cell);
 		this.gamesPerThreadRun = gamesPerThreadRun;
 		this.gamesPerMove = -1;
 		this.finishTime = finishTime;
@@ -220,9 +216,9 @@ public class MonteCarloGoSolver {
 						if (gamesPerMove > 0 && countGamesPlayed > gamesPerMove) {
 							break;
 						}
-						if (finishTime > 0 && System.currentTimeMillis() > finishTime) {
-							break;
-						}
+					}
+					if (finishTime > 0 && System.currentTimeMillis() > finishTime) {
+						break;
 					}
 				}
 			} catch (CheckFailException e) {
