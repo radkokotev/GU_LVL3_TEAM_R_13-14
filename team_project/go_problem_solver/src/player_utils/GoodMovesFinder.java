@@ -5,6 +5,7 @@ import java.util.Collections;
 
 import board_utils.GoCell;
 import board_utils.GoPlayingBoard;
+import board_utils.Stone;
 import custom_java_utils.CheckFailException;
 
 /*
@@ -39,9 +40,10 @@ public class GoodMovesFinder {
 	/*
 	 * Points for putting opponent group to atari
 	 */
-	private static final int ATARI_POINTS = 1; 
+	private static final int ATARI_POINTS = 400; 
 	private static final int KILLING_HIMSELF_PENALTY = 1000;
 	private static final int GROUP_SAVER_REWARD = 1000;
+	private static final int EYE_POINTS = 300;
 	private static final boolean SWITCH_OFF = false;
 	
 	public GoodMovesFinder(GoPlayingBoard board) throws CheckFailException{
@@ -55,6 +57,7 @@ public class GoodMovesFinder {
 			addAtariPoints();
 			isKillingHimself();
 			canISaveMyGroupWithOneLiberty();
+			isEye();
 		}
 	}
 	/*
@@ -159,6 +162,55 @@ public class GoodMovesFinder {
 				}
 			}
 			
+		}
+	}
+	
+	/**
+	 * Let's say an eye is if at least 50% of surrounding intersections
+	 * have same stone colour or only two or less same colour stones are 
+	 * missing to fully surround group of liberties.
+	 *  
+	 * @param cell The cell of group which we are inspecting as an eye
+	 * @param board The board in which we are inspecting for an eye
+	 * @return true if given group of liberties looks like an eye
+	 */
+	private boolean doesLookLikeEye(GoCell cell, GoPlayingBoard board){
+		int ownStonesAround = 0;
+		ArrayList<GoCell> closeCellsGroup = board.getCloseCellsOfGroup(cell);
+		for(GoCell closeCell : closeCellsGroup){
+			if(closeCell.getContent() == board.toPlayNext())
+				ownStonesAround++;
+		}
+		if((double)ownStonesAround / (double)closeCellsGroup.size() >= 0.5)
+			return true;
+		if(0 < closeCellsGroup.size() - ownStonesAround 
+				&& closeCellsGroup.size() - ownStonesAround <= 2)
+			return true;
+		return false;
+	}
+	
+	/**
+	 * Maybe I should use reflection? 
+	 */
+	public boolean testDoesLookLikeEye(GoCell cell, GoPlayingBoard board){
+		return doesLookLikeEye(cell, board);
+	}
+	
+	private void isEye() throws CheckFailException{
+		GoPlayingBoard newBoard = currentBoard.clone();
+		LegalMovesChecker checker = new LegalMovesChecker(currentBoard);
+		for(CellValuePair pair : goodMoves) {
+			newBoard.setCellAt(pair.cell.x(), pair.cell.y(), pair.cell);
+			checker = new LegalMovesChecker(newBoard);
+			if(!checker.captureOponent(pair.cell).isEmpty()) {
+				newBoard = checker.getNewBoard();
+				BoardHistory.getSingleton().remove(newBoard);
+			}
+			newBoard.oppositeToPlayNext();
+			for(GoCell cell : newBoard.getCloseCellsOfGroup(pair.cell)){
+				if(cell.getContent() == Stone.NONE && doesLookLikeEye(cell, newBoard))
+					pair.value += EYE_POINTS;
+			}
 		}
 	}
 	

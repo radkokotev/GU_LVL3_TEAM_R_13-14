@@ -55,4 +55,6 @@ local.properties
 *.vrb
 *.xdy
 *.tdo
+
 /bin
+*~

@@ -5,7 +5,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.Set;
+import java.util.TreeSet;
 
 import custom_java_utils.CheckFailException;
 import custom_java_utils.CheckUtils;
@@ -135,6 +138,53 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 		neighbours[2] = this.getCellAt(cell.x(), cell.y() - 1);
 		neighbours[3] = this.getCellAt(cell.x(), cell.y() + 1);
 		return neighbours;
+	}
+	
+	/**
+	 * @param cell the central cell
+	 * @return array of all eight cells which are around given cell, that may 
+	 * contain null values if some are outside of bounds
+	 */
+	public GoCell[] getCloseCellsOf(GoCell cell) {
+		GoCell[] allAround = new GoCell[8];
+		GoCell[] neighbours = getNeighboursOf(cell);
+		for(int i = 0; i < neighbours.length; i++)
+			allAround[i] = neighbours[i];
+		allAround[4] = this.getCellAt(cell.x() - 1, cell.y() - 1);
+		allAround[5] = this.getCellAt(cell.x() + 1, cell.y() + 1);
+		allAround[6] = this.getCellAt(cell.x() + 1, cell.y() - 1);
+		allAround[7] = this.getCellAt(cell.x() - 1, cell.y() + 1);
+		return allAround;
+	}
+	
+	/**
+	 * @param cell Cell from the group you want to find.
+	 * @param set of visited cells
+	 * @return array of group cells which are adjacent to given cell and same as 
+	 * colour as given cell
+	 */
+	public ArrayList<GoCell> findGroupOf(GoCell cell, Set<GoCell> visited){
+		ArrayList<GoCell> group = new ArrayList<GoCell>();
+		group.add(cell);
+		visited.add(cell);
+		for(GoCell neighbour : getNeighboursOf(cell)){
+			if(neighbour != null && neighbour.getContent() == cell.getContent()
+					&& !visited.contains(neighbour)) 
+				group.addAll(findGroupOf(neighbour, visited));
+		}
+		return group;
+	}
+	
+	public ArrayList<GoCell> getCloseCellsOfGroup(GoCell cell){
+		ArrayList<GoCell> group = findGroupOf(cell, new TreeSet<GoCell>());
+		ArrayList<GoCell> closeCells = new ArrayList<GoCell>();
+		for(GoCell groupMember : group){
+			for(GoCell closeCell : getCloseCellsOf(groupMember))
+				if(closeCell != null && !group.contains(closeCell)
+						&& !closeCells.contains(closeCell))
+					closeCells.add(closeCell);
+		}
+		return closeCells;
 	}
 	
 	

@@ -32,4 +32,21 @@ public class GoodMovesFinderTest {
 		GoCell[] found = finder.getGoodMoves();
 		assertArrayEquals(correct, found);
 	}
+	
+	@Test
+	public void testDoesLookLikeEye() throws CheckFailException {
+		GoPlayingBoard board = new GoPlayingBoard();
+		for(int i = 0; i < 19; i++)
+			for(int j = 0; j < 19; j++) 
+				board.setCellAt(i, j, new GoCell(Stone.INNER_BORDER, i, j));
+		board.setCellAt(1, 0, new GoCell(Stone.WHITE, 1, 0));
+		board.setCellAt(0, 1, new GoCell(Stone.WHITE, 0, 1));
+		board.setCellAt(2, 1, new GoCell(Stone.WHITE, 2, 1));
+		board.setCellAt(1, 2, new GoCell(Stone.WHITE, 1, 2));
+		board.setCellAt(1, 1, new GoCell(Stone.NONE, 1, 1));
+		board.setToPlayNext(Stone.WHITE);
+		GoodMovesFinder finder = new GoodMovesFinder(board);
+		assertTrue(finder.testDoesLookLikeEye(new GoCell(Stone.NONE, 1, 1), board));
+	}
+	
 }

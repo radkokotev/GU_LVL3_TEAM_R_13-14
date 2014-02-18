@@ -3,14 +3,19 @@ package board_utils;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.TreeSet;
 
 import org.junit.Test;
 
 import custom_java_utils.CheckFailException;
 
 public class GoPlayingBoardTest {
-
+	
+	static final String DEFAULT_DIRECTORY = System.getProperty("user.dir");
+	
 	@Test
 	public void testGetCountPiecesOnBoard() {
 		GoPlayingBoard board = new GoPlayingBoard();
@@ -90,6 +95,37 @@ public class GoPlayingBoardTest {
 		assertEquals(board, 
 				new GoPlayingBoard("src/board_utils/test_data/diagonal_board"));
 		
+	}
+	
+	@Test
+	public void testFindGroupOf() throws FileNotFoundException, CheckFailException{
+		GoPlayingBoard board = new GoPlayingBoard(new File(DEFAULT_DIRECTORY + "/src/gui/defaultBoardforBuildMode.go"));
+		board.setCellAt(0, 0, new GoCell(Stone.BLACK, 0 , 0));
+		board.setCellAt(0, 1, new GoCell(Stone.BLACK, 0 , 1));
+		board.setCellAt(0, 2, new GoCell(Stone.BLACK, 0 , 2));
+		ArrayList<GoCell> oracle = new ArrayList<GoCell>();
+		oracle.add(new GoCell(Stone.BLACK, 0 , 0));
+		oracle.add(new GoCell(Stone.BLACK, 0 , 1));
+		oracle.add(new GoCell(Stone.BLACK, 0 , 2));
+		
+		assertEquals(oracle, board.findGroupOf(new GoCell(Stone.BLACK, 0, 0), 
+				new TreeSet<GoCell>()));			
+	}
+	
+	@Test
+	public void getCloseCellsOfGroup() throws FileNotFoundException, CheckFailException{
+		GoPlayingBoard board = new GoPlayingBoard(new File(DEFAULT_DIRECTORY + "/src/gui/defaultBoardforBuildMode.go"));
+		board.setCellAt(0, 0, new GoCell(Stone.BLACK, 0 , 0));
+		board.setCellAt(0, 1, new GoCell(Stone.BLACK, 0 , 1));
+		board.setCellAt(0, 2, new GoCell(Stone.BLACK, 0 , 2));
+		ArrayList<GoCell> oracle = new ArrayList<GoCell>();
+		oracle.add(new GoCell(Stone.INNER_BORDER, 1 , 0));
+		oracle.add(new GoCell(Stone.INNER_BORDER, 1 , 1));
+		oracle.add(new GoCell(Stone.INNER_BORDER, 1 , 2));
+		oracle.add(new GoCell(Stone.INNER_BORDER, 0 , 3));
+		oracle.add(new GoCell(Stone.INNER_BORDER, 1 , 3));
+		
+		assertEquals(oracle, board.getCloseCellsOfGroup(new GoCell(Stone.BLACK, 0, 0)));			
 	}
 
 }
