@@ -44,7 +44,7 @@ public class LegalMovesChecker implements LegalityChecker{
 			return false;
 		}
 		newBoard.setCellAt(cell.x(), cell.y(), cell);
-		if (captureOponent(cell) != null){
+		if (!captureOponent(cell).isEmpty()){
 			if (getLiberties(cell) == 0) {
 				this.reset();
 				return false;
