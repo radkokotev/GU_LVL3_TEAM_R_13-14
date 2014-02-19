@@ -29,7 +29,8 @@ public class AlphaBetaGoSolver {
 	}
 	
 	public boolean isPositionTerminal(GoPlayingBoard board) {
-		if (board.getCellAt(cellToCapture.x(), cellToCapture.y()).isEmpty()) {
+		if (board.getCellAt(cellToCapture.getVerticalCoordinate(), 
+				cellToCapture.getHorizontalCoordinate()).isEmpty()) {
 			// the target stone was captured
 			return true;
 		}
@@ -79,7 +80,8 @@ public class AlphaBetaGoSolver {
 	
 	private long maximize(GoPlayingBoard board, long alpha, long beta) throws CheckFailException {
 		if (isPositionTerminal(board)) {
-			if (board.getCellAt(cellToCapture.x(), cellToCapture.y()).isEmpty()) {
+			if (board.getCellAt(cellToCapture.getVerticalCoordinate(), 
+					cellToCapture.getHorizontalCoordinate()).isEmpty()) {
 				return infinity;
 			}
 			return (-infinity);
@@ -105,7 +107,8 @@ public class AlphaBetaGoSolver {
 	
 	private long minimize(GoPlayingBoard board, long alpha, long beta) throws CheckFailException {
 		if (isPositionTerminal(board)) {
-			if (board.getCellAt(cellToCapture.x(), cellToCapture.y()).isEmpty()) {
+			if (board.getCellAt(cellToCapture.getVerticalCoordinate(), 
+					cellToCapture.getHorizontalCoordinate()).isEmpty()) {
 				return infinity;
 			}
 			return (-infinity);
