@@ -63,15 +63,15 @@ public class MonteCarloGoSolver {
 		this.finishTime = finishTime;
 	}
 	
-	private class CellValuePair implements Comparable<CellValuePair>{
-		public GoCell cell;
-		public double value;
-		
-		@Override
-		public int compareTo(CellValuePair other) {
-			return Double.compare(this.value, other.value);
-		}
-	}
+//	private class CellValuePair implements Comparable<CellValuePair>{
+//		public GoCell cell;
+//		public double value;
+//		
+//		@Override
+//		public int compareTo(CellValuePair other) {
+//			return Double.compare(this.value, other.value);
+//		}
+//	}
 	
 	public boolean isGoalAchieved(GoPlayingBoard board) {
 		if (board.getCellAt(cellToCapture.getVerticalCoordinate(), 
@@ -92,7 +92,7 @@ public class MonteCarloGoSolver {
 	 */
 	public GoCell decision() throws CheckFailException, InterruptedException {
 		LegalMovesChecker checker = new LegalMovesChecker(board);
-		monteCarloValues = new ArrayList<MonteCarloGoSolver.CellValuePair>();
+		monteCarloValues = new ArrayList<CellValuePair>();
 		legalMoves = new ArrayList<GoPlayingBoard>();
 		// Find all initially legal moves
 		for (int i = 0; i < board.getWidth(); i++) {
@@ -130,8 +130,8 @@ public class MonteCarloGoSolver {
 				bestValue = pair.value;
 				bestMove = pair.cell;
 			}
-			System.out.println(pair.cell.getVerticalCoordinate() + "," + 
-					pair.cell.getHorizontalCoordinate() + " -> " + pair.value);
+			/*System.out.println(pair.cell.getVerticalCoordinate() + "," + 
+					pair.cell.getHorizontalCoordinate() + " -> " + pair.value);*/
 		}
 		return bestMove;
 	}
@@ -227,6 +227,16 @@ public class MonteCarloGoSolver {
 			// Wipe history for the current thread.
 			BoardHistory.wipeHistory();
 		}
-
+	}
+	
+	public ArrayList<CellValuePair> getMovesPercentages() {
+		ArrayList<CellValuePair> result = new ArrayList<CellValuePair>();
+		for (CellValuePair p : monteCarloValues) {
+			CellValuePair newPair = new CellValuePair();
+			newPair.cell = p.cell;
+			newPair.value = p.value / countGamesPlayed;
+			result.add(newPair);
+		}
+		return result;
 	}
 }

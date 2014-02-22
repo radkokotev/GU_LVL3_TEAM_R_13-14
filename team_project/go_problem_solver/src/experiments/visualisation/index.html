@@ -1,0 +1,74 @@
+<html>
+  <head>
+    <!--Load the AJAX API-->
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+     var header = ["(7,10)", "(7,14)", "(7,15)", "(8,10)", "(8,14)", "(8,15)"];
+     var numbers = [
+[0.35000,0.40000,0.25000,0.35000,0.30000,0.35000],
+[0.30000,0.43333,0.20000,0.40000,0.36667,0.26667],
+[0.27500,0.50000,0.17500,0.37500,0.35000,0.27500],
+[0.28333,0.46667,0.25000,0.25000,0.56667,0.21667],
+[0.25000,0.38000,0.26000,0.29000,0.46000,0.19000],
+[0.30000,0.43333,0.25000,0.21667,0.44444,0.25556],
+[0.29118,0.40000,0.26765,0.29706,0.40882,0.23824],
+[0.32576,0.44848,0.26818,0.27576,0.41970,0.23333],
+[0.31538,0.40000,0.21154,0.24846,0.39385,0.25615],
+[0.30891,0.39729,0.24535,0.28178,0.40155,0.26744],
+[0.32140,0.40525,0.26459,0.27198,0.40895,0.25370],
+[0.32212,0.40780,0.25643,0.26920,0.40673,0.25624],
+];
+
+     var data;
+     var chart;
+
+      // Load the Visualization API and the piechart package.
+      google.load('visualization', '1', {'packages':['corechart']});
+
+      // Set a callback to run when the Google Visualization API is loaded.
+      google.setOnLoadCallback(drawChart);
+
+      // Callback that creates and populates a data table,
+      // instantiates the pie chart, passes in the data and
+      // draws it.
+      function drawChart() {
+
+        // Create our data table.
+        data = new google.visualization.DataTable();
+        data.addColumn('string', 'Topping');
+        for (var i = 0; i < header.length; i++) {
+          data.addColumn('number', header[i]);
+        }
+        for (var i = 0; i < numbers.length; i++) {
+          var row = [];
+          row.push(i.toString());
+          for (var j = 0; j < numbers[i].length; j++) {
+            row.push(numbers[i][j]);
+          }
+          data.addRow(row);
+        }
+
+        // Set chart options
+        var options = {'title':'Monte Carlo stuff',
+                       'width':1000,
+                       'height':800};
+
+        // Instantiate and draw our chart, passing in some options.
+        chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+        google.visualization.events.addListener(chart, 'select', selectHandler);
+        chart.draw(data, options);
+      }
+
+      function selectHandler() {
+        var selectedItem = chart.getSelection()[0];
+        var value = data.getValue(selectedItem.row, 0);
+        alert('The user selected ' + value);
+      }
+
+    </script>
+  </head>
+  <body>
+    <!--Div that will hold the pie chart-->
+    <div id="chart_div" style="width:1000; height:800"></div>
+  </body>
+</html>
