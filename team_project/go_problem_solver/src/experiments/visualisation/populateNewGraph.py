@@ -7,6 +7,8 @@ data = open(data_filename, "r")
 output = open(html_output_filename, "w")
 
 header = data.readline()
+header = header.replace("(", "\"(")
+header = header.replace(")", ")\"")
 numbers = ""
 for line in data:
 	numbers += line
