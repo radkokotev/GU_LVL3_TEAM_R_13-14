@@ -22,13 +22,11 @@ import custom_java_utils.CheckFailException;
 
 public class GuiBoardBuild extends GuiBoard implements MouseListener, 
 													   ActionListener {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -775669390589182229L;
+	
+	private static final long serialVersionUID = 4466021000645463248L;
 	private Stone current;
 	private GoPlayingBoard gpb;
-	private JComboBox<String> combo;
+	private JComboBox combo;
 	private boolean isNextStoneTarget;
 	
 	//Constants for combo box
@@ -38,7 +36,7 @@ public class GuiBoardBuild extends GuiBoard implements MouseListener,
 	private static final String NONE = "Empty";
 	private static final String TARGET_STONE ="Target stone";
 	
-	private static final File DEFAULT_BOARD = new File(System.getProperty("user.home") + "/git/GU_LVL3_TEAM_R_13-14/team_project/go_problem_solver/src/gui/defaultBoardforBuildMode.go");
+	private static final String DEFAULT_BOARD = "src/gui/defaultBoardforBuildMode.go";
 	
 	public GuiBoardBuild(JFrame frame) {
 		super(frame);
@@ -54,7 +52,7 @@ public class GuiBoardBuild extends GuiBoard implements MouseListener,
 		importFileItem.addActionListener(this);
 	    exportFileItem.addActionListener(this);
 	    
-	    combo = new JComboBox<String>();
+	    combo = new JComboBox();
 	    combo.addItem(BLACK);
 	    combo.addItem(WHITE);
 	    combo.addItem(INNER_BORDER);
@@ -97,7 +95,8 @@ public class GuiBoardBuild extends GuiBoard implements MouseListener,
 			}
 		
 		if(gpb.getTarget() != null){
-			Intersection target = intersections[gpb.getTarget().x()][gpb.getTarget().y()];
+			Intersection target = intersections[gpb.getTarget().getVerticalCoordinate()]
+					[gpb.getTarget().getHorizontalCoordinate()];
 			g2.setPaint(Color.RED);
 			g2.fillOval(target.center.x - sqWidth/4, target.center.y - sqWidth/4, sqWidth/2, sqWidth/2);
 		}
@@ -153,7 +152,7 @@ public class GuiBoardBuild extends GuiBoard implements MouseListener,
 			try {
 		        if (returnVal == JFileChooser.APPROVE_OPTION) {
 		            File file = fc.getSelectedFile();
-		            gpb = new GoPlayingBoard(file);
+		            gpb = new GoPlayingBoard(file.getAbsolutePath());
 					repaint();
 		        }
 			} catch (FileNotFoundException e1) {

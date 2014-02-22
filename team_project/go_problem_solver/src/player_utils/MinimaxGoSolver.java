@@ -27,7 +27,8 @@ public class MinimaxGoSolver {
 	}
 	
 	public boolean isPositionTerminal(GoPlayingBoard board) {
-		if (board.getCellAt(cellToCapture.x(), cellToCapture.y()).isEmpty()) {
+		if (board.getCellAt(cellToCapture.getVerticalCoordinate(), 
+				cellToCapture.getHorizontalCoordinate()).isEmpty()) {
 			// the target stone was captured
 			return true;
 		}
@@ -78,7 +79,8 @@ public class MinimaxGoSolver {
 		//System.out.println(depth);
 		depth++;
 		if (isPositionTerminal(board)) {
-			if (board.getCellAt(cellToCapture.x(), cellToCapture.y()).isEmpty()) {
+			if (board.getCellAt(cellToCapture.getVerticalCoordinate(), 
+					cellToCapture.getHorizontalCoordinate()).isEmpty()) {
 				return infinity;
 			}
 			return (-infinity);
@@ -115,7 +117,8 @@ public class MinimaxGoSolver {
 		//System.out.println(depth);
 		depth++;
 		if (isPositionTerminal(board)) {
-			if (board.getCellAt(cellToCapture.x(), cellToCapture.y()).isEmpty()) {
+			if (board.getCellAt(cellToCapture.getVerticalCoordinate(), 
+					cellToCapture.getHorizontalCoordinate()).isEmpty()) {
 				return infinity;
 			}
 			return (-infinity);

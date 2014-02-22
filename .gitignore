@@ -57,4 +57,11 @@ local.properties
 *.tdo
 
 /bin
+<<<<<<< HEAD
 *~
+=======
+
+## Linux stuff
+*~
+
+>>>>>>> player_utils

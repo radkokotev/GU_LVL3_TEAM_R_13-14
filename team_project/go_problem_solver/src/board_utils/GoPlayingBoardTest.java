@@ -8,13 +8,19 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.TreeSet;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import custom_java_utils.CheckFailException;
+import custom_java_utils.ProjectPathUtils;
 
 public class GoPlayingBoardTest {
-	
 	static final String DEFAULT_DIRECTORY = System.getProperty("user.dir");
+	private static String workspaceDirectory;
+	
+	@Before public void initialize() {
+	       workspaceDirectory = ProjectPathUtils.getWorkspaceDir();
+	}
 	
 	@Test
 	public void testGetCountPiecesOnBoard() {
@@ -43,7 +49,7 @@ public class GoPlayingBoardTest {
 			throws FileNotFoundException, CheckFailException {
 		// Empty board
 		GoPlayingBoard board = 
-				new GoPlayingBoard("src/board_utils/test_data/empty_board");
+				new GoPlayingBoard(workspaceDirectory + "/src/board_utils/test_data/empty_board");
 		for (int i = 0; i < 19; i++) {
 			for (int j = 0; j < 19; j++) {
 				assertTrue(board.getCellAt(i, j).isEmpty());
@@ -51,7 +57,7 @@ public class GoPlayingBoardTest {
 		}
 		
 		board = 
-				new GoPlayingBoard("src/board_utils/test_data/diagonal_board");
+				new GoPlayingBoard(workspaceDirectory + "/src/board_utils/test_data/diagonal_board");
 		for (int i = 0; i < 19; i++) {
 			for (int j = 0; j < 19; j++) {
 				if (i == j && i % 2 == 0) {
@@ -67,10 +73,10 @@ public class GoPlayingBoardTest {
 		}
 	}
 	
-	@Test(expected=CheckFailException.class)
+	@Test(expected=ArrayIndexOutOfBoundsException.class)
 	public void testGoPlayingBoardParserBadInput() 
 			throws FileNotFoundException, CheckFailException {
-		new GoPlayingBoard("src/board_utils/test_data/bad_input");
+		new GoPlayingBoard(workspaceDirectory + "/src/board_utils/test_data/bad_input");
 	}
 
 	@Test
@@ -79,7 +85,7 @@ public class GoPlayingBoardTest {
 		GoPlayingBoard board = new GoPlayingBoard();
 		
 		assertEquals(board, 
-				new GoPlayingBoard("src/board_utils/test_data/empty_board"));
+				new GoPlayingBoard(workspaceDirectory + "/src/board_utils/test_data/empty_board"));
 		
 		// Make board the diagonal board represented in test_data
 		for (int i = 0; i < 19; i++) {
@@ -93,13 +99,13 @@ public class GoPlayingBoardTest {
 		}
 		
 		assertEquals(board, 
-				new GoPlayingBoard("src/board_utils/test_data/diagonal_board"));
+				new GoPlayingBoard(workspaceDirectory + "/src/board_utils/test_data/diagonal_board"));
 		
 	}
 	
 	@Test
 	public void testFindGroupOf() throws FileNotFoundException, CheckFailException{
-		GoPlayingBoard board = new GoPlayingBoard(new File(DEFAULT_DIRECTORY + "/src/gui/defaultBoardforBuildMode.go"));
+		GoPlayingBoard board = new GoPlayingBoard(DEFAULT_DIRECTORY + "/src/gui/defaultBoardforBuildMode.go");
 		board.setCellAt(0, 0, new GoCell(Stone.BLACK, 0 , 0));
 		board.setCellAt(0, 1, new GoCell(Stone.BLACK, 0 , 1));
 		board.setCellAt(0, 2, new GoCell(Stone.BLACK, 0 , 2));
@@ -114,7 +120,7 @@ public class GoPlayingBoardTest {
 	
 	@Test
 	public void getCloseCellsOfGroup() throws FileNotFoundException, CheckFailException{
-		GoPlayingBoard board = new GoPlayingBoard(new File(DEFAULT_DIRECTORY + "/src/gui/defaultBoardforBuildMode.go"));
+		GoPlayingBoard board = new GoPlayingBoard(DEFAULT_DIRECTORY + "/src/gui/defaultBoardforBuildMode.go");
 		board.setCellAt(0, 0, new GoCell(Stone.BLACK, 0 , 0));
 		board.setCellAt(0, 1, new GoCell(Stone.BLACK, 0 , 1));
 		board.setCellAt(0, 2, new GoCell(Stone.BLACK, 0 , 2));

@@ -43,7 +43,7 @@ public class Model {
 		if(filename == null)
 			currentBoard = new GoPlayingBoard();
 		else {
-			currentBoard = new GoPlayingBoard(filename);
+			currentBoard = new GoPlayingBoard(filename.getAbsolutePath());
 			gui.setPlayersColours(currentBoard.getFirstPlayerColour());
 		}
 		history = BoardHistory.getSingleton();
@@ -86,7 +86,8 @@ public class Model {
 		try {
 			decision = minimax.minimaxDecision();
 			if(decision != null)
-				System.out.println(decision.x() + " " + decision.y() + " " + decision);
+				System.out.println(decision.getVerticalCoordinate() + " " + 
+						decision.getHorizontalCoordinate() + " " + decision);
 			else
 				System.out.println("null");
 		} catch(CheckFailException e){
@@ -94,7 +95,7 @@ public class Model {
 			e.printStackTrace();
 		}
 		if(decision != null) {
-			addStone(decision.x(), decision.y());
+			addStone(decision.getVerticalCoordinate(), decision.getHorizontalCoordinate());
 		}
 	}
 	

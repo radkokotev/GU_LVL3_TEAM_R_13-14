@@ -60,7 +60,7 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	 * @throws CheckFailException when the given file does not have the 
 	 * dimensions of a Go playing board
 	 */
-	public GoPlayingBoard(File fileName) 
+	public GoPlayingBoard(String fileName) 
 			throws FileNotFoundException, CheckFailException {
 		this();
 		FileInputStream inputStream = new FileInputStream(fileName);
@@ -133,10 +133,10 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	 */
 	public GoCell[] getNeighboursOf(GoCell cell) {
 		GoCell[] neighbours = new GoCell[4];
-		neighbours[0] = this.getCellAt(cell.x() - 1, cell.y());
-		neighbours[1] = this.getCellAt(cell.x() + 1, cell.y());
-		neighbours[2] = this.getCellAt(cell.x(), cell.y() - 1);
-		neighbours[3] = this.getCellAt(cell.x(), cell.y() + 1);
+		neighbours[0] = this.getCellAt(cell.getVerticalCoordinate() - 1, cell.getHorizontalCoordinate());
+		neighbours[1] = this.getCellAt(cell.getVerticalCoordinate() + 1, cell.getHorizontalCoordinate());
+		neighbours[2] = this.getCellAt(cell.getVerticalCoordinate(), cell.getHorizontalCoordinate() - 1);
+		neighbours[3] = this.getCellAt(cell.getVerticalCoordinate(), cell.getHorizontalCoordinate() + 1);
 		return neighbours;
 	}
 	
@@ -150,10 +150,10 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 		GoCell[] neighbours = getNeighboursOf(cell);
 		for(int i = 0; i < neighbours.length; i++)
 			allAround[i] = neighbours[i];
-		allAround[4] = this.getCellAt(cell.x() - 1, cell.y() - 1);
-		allAround[5] = this.getCellAt(cell.x() + 1, cell.y() + 1);
-		allAround[6] = this.getCellAt(cell.x() + 1, cell.y() - 1);
-		allAround[7] = this.getCellAt(cell.x() - 1, cell.y() + 1);
+		allAround[4] = this.getCellAt(cell.getVerticalCoordinate() - 1, cell.getHorizontalCoordinate() - 1);
+		allAround[5] = this.getCellAt(cell.getVerticalCoordinate() + 1, cell.getHorizontalCoordinate() + 1);
+		allAround[6] = this.getCellAt(cell.getVerticalCoordinate() + 1, cell.getHorizontalCoordinate() - 1);
+		allAround[7] = this.getCellAt(cell.getVerticalCoordinate() - 1, cell.getHorizontalCoordinate() + 1);
 		return allAround;
 	}
 	
@@ -288,7 +288,15 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 		String result = "";
 		for (int i = 0; i < HEIGHT; i++) {
 			for (int j = 0; j < WIDTH; j++) {
-				result += this.board[i][j].toString() + "\t";
+				if (this.board[i][j].getContent() == Stone.BLACK) {
+					result += BLACK;
+				} else if (this.board[i][j].getContent() == Stone.WHITE) {
+					result += WHITE;
+				} else if (this.board[i][j].getContent() == Stone.NONE) {
+					result += NONE;
+				} else {
+					result += '?';
+				}
 			}
 			result += "\n";
 		}
@@ -344,7 +352,7 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	 */
 	public void toFile(File file) throws FileNotFoundException{
 		PrintWriter writer = new PrintWriter(file.toString());
-		writer.printf("BLACK COMPUTER KILL %d %d\r\n", target.x(), target.y());
+		writer.printf("BLACK COMPUTER KILL %d %d\r\n", target.getVerticalCoordinate(), target.getHorizontalCoordinate());
 		for (GoCell[] row : board) {
 			for (GoCell cell : row) {
 				String c = "";

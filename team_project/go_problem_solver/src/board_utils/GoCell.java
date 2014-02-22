@@ -5,40 +5,40 @@ package board_utils;
  */
 public class GoCell extends Cell<Stone> implements Comparable<GoCell> {
 	private Stone stone;
-	private int x;
-	private int y;
+	private int verticalCoordinate;
+	private int horizontalCoordinate;
 	
 	/**
 	 * Constructor a cell with no stone in it.
 	 */
 	public GoCell() {
 		this.stone = Stone.NONE;
-		this.x = -1;
-		this.y = -1;
+		this.verticalCoordinate = -1;
+		this.horizontalCoordinate = -1;
 	}
 	
 	/**
 	 * Constructor for a cell containing the given stone
 	 * @param the stone to be placed in that cell
 	 */
-	public GoCell(Stone stone, int x, int y) {
+	public GoCell(Stone stone, int verticalCoordinate, int horizontalCoordinate) {
 		this.stone = stone;
-		this.x = x;
-		this.y = y;
+		this.verticalCoordinate = verticalCoordinate;
+		this.horizontalCoordinate = horizontalCoordinate;
 	}
 	
 	/**
 	 * @return Vertical coordinates of the cell
 	 */
-	public int x() {
-		return this.x;
+	public int getVerticalCoordinate() {
+		return this.verticalCoordinate;
 	}
 
 	/**
 	 * @return Horizontal coordinates of the cell 
 	 */
-	public int y() {
-		return this.y;
+	public int getHorizontalCoordinate() {
+		return this.horizontalCoordinate;
 	}
 	
 	/**
@@ -73,7 +73,7 @@ public class GoCell extends Cell<Stone> implements Comparable<GoCell> {
 	
 	@Override
 	public String toString() {
-		return stone.name() + " " + x + " " + y;
+		return stone.name() + " " + verticalCoordinate + " " + horizontalCoordinate;
 	}
 	
 	@Override
@@ -86,22 +86,24 @@ public class GoCell extends Cell<Stone> implements Comparable<GoCell> {
 		}
 		
 		GoCell other = (GoCell) obj;
-		return this.stone == other.stone && this.x == other.x && this.y == other.y;
+		return this.stone == other.stone && 
+				this.verticalCoordinate == other.verticalCoordinate && 
+				this.horizontalCoordinate == other.horizontalCoordinate;
 	}
 	
 	@Override
 	public GoCell clone(){
-		return new GoCell(this.stone, this.x, this.y);
+		return new GoCell(this.stone, this.verticalCoordinate, this.horizontalCoordinate);
 	}
 
 	@Override
 	public int compareTo(GoCell other) {
 		int result;
-		result = this.x - other.x;
+		result = this.verticalCoordinate - other.verticalCoordinate;
 		if (result != 0) {
 			return result;
 		}
-		result = this.y - other.y;
+		result = this.horizontalCoordinate - other.horizontalCoordinate;
 		if (result != 0) {
 			return result;
 		}

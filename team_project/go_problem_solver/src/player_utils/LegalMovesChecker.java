@@ -37,13 +37,16 @@ public class LegalMovesChecker implements LegalityChecker{
 	@Override
 	public boolean isMoveLegal(Cell<?> c) {
 		GoCell cell = (GoCell) c;
-		if (newBoard.getCellAt(cell.x(), cell.y()) == null) {
+		if (newBoard.getCellAt(cell.getVerticalCoordinate(), 
+				cell.getHorizontalCoordinate()) == null) {
 			return false;
 		}
-		if (!newBoard.getCellAt(cell.x(), cell.y()).isEmpty()) {
+		if (!newBoard.getCellAt(cell.getVerticalCoordinate(), 
+				cell.getHorizontalCoordinate()).isEmpty()) {
 			return false;
 		}
-		newBoard.setCellAt(cell.x(), cell.y(), cell);
+		newBoard.setCellAt(cell.getVerticalCoordinate(), 
+				cell.getHorizontalCoordinate(), cell);
 		if (!captureOponent(cell).isEmpty()){
 			if (getLiberties(cell) == 0) {
 				this.reset();
@@ -121,7 +124,8 @@ public class LegalMovesChecker implements LegalityChecker{
 	 * @param stone the type of stone that is to be removed
 	 */
 	private void removeOponentsStone(GoCell cell, Stone stone) {
-		newBoard.setCellAt(cell.x(), cell.y(), new GoCell(Stone.NONE, cell.x(), cell.y()));
+		newBoard.setCellAt(cell.getVerticalCoordinate(), cell.getHorizontalCoordinate(), 
+				new GoCell(Stone.NONE, cell.getVerticalCoordinate(), cell.getHorizontalCoordinate()));
 		for (GoCell neighbour : newBoard.getNeighboursOf(cell)) {
 			if (neighbour != null && !neighbour.isEmpty() && 
 					neighbour.getContent() == stone) {

@@ -2,8 +2,8 @@ package player_utils;
 
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map.Entry;
 import java.util.Stack;
+import java.util.concurrent.ConcurrentHashMap;
 
 import board_utils.GoPlayingBoard;
 
@@ -11,10 +11,10 @@ import board_utils.GoPlayingBoard;
  * A singleton to keep the history of all boards that have been played
  */
 public class BoardHistory {
-	private static BoardHistory instance;
-	private static HashMap<Integer, LinkedList<GoPlayingBoard>> boards;
+	private HashMap<Integer, LinkedList<GoPlayingBoard>> boards;
 	private Stack<GoPlayingBoard> allMoves;
 	private Stack<GoPlayingBoard> undoMoves;
+	private static ConcurrentHashMap<Long, BoardHistory> instancePool;
 
 	/**
 	 * Default constructor to create an instance of the history
@@ -30,11 +30,17 @@ public class BoardHistory {
 	 * deep copy of the given history
 	 * @param boards existing history to clone into the new instance 
 	 */
-	public static BoardHistory getSingleton() {
-		if (instance == null) {
-			instance = new BoardHistory();
+	public static synchronized BoardHistory getSingleton() {
+		if (instancePool == null) {
+			instancePool = new ConcurrentHashMap<Long, BoardHistory>();
 		}
-		return instance;
+		long threadId = Thread.currentThread().getId();
+		BoardHistory result = instancePool.get(threadId);
+		if (result == null) {
+			result = new BoardHistory();
+			instancePool.put(threadId, result);
+		}
+		return result;
 	}
 	/**
 	 * Adding the given board to the board history by making a deep copy of it.
@@ -54,7 +60,7 @@ public class BoardHistory {
 	}
 
 	/**
-	 * Removing given board
+	 * Removing the given board from the board history.
 	 * @param board the board to be removed
 	 */
 	public void remove(GoPlayingBoard board) {
@@ -119,7 +125,9 @@ public class BoardHistory {
 		return false;
 	}
 	
-	public static void wipeHistory() {
-		instance = null;
+	public static synchronized void wipeHistory() {
+		if (instancePool != null) {
+			instancePool.remove(Thread.currentThread().getId());
+		}
 	}
 }

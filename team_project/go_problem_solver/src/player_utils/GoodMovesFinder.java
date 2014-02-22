@@ -84,7 +84,7 @@ public class GoodMovesFinder {
 	private void countPieces() throws CheckFailException {
 		for(CellValuePair pair : goodMoves) {
 			GoPlayingBoard newBoard = currentBoard.clone();
-			newBoard.setCellAt(pair.cell.x(), pair.cell.y(), pair.cell);
+			newBoard.setCellAt(pair.cell.getVerticalCoordinate(), pair.cell.getHorizontalCoordinate(), pair.cell);
 			LegalMovesChecker checker = new LegalMovesChecker(newBoard);
 			if(!checker.captureOponent(pair.cell).isEmpty()) {
 				newBoard = checker.getNewBoard();
@@ -101,7 +101,7 @@ public class GoodMovesFinder {
 	private void addAtariPoints() throws CheckFailException {
 		for(CellValuePair pair : goodMoves) {
 			GoPlayingBoard newBoard = currentBoard.clone();
-			newBoard.setCellAt(pair.cell.x(), pair.cell.y(), pair.cell);
+			newBoard.setCellAt(pair.cell.getVerticalCoordinate(), pair.cell.getHorizontalCoordinate(), pair.cell);
 			LegalMovesChecker checker = new LegalMovesChecker(newBoard);
 			if(!checker.captureOponent(pair.cell).isEmpty()) {
 				newBoard = checker.getNewBoard();
@@ -123,7 +123,7 @@ public class GoodMovesFinder {
 	private void isKillingHimself() throws CheckFailException {
 		for(CellValuePair pair : goodMoves){
 			GoPlayingBoard newBoard = currentBoard.clone();
-			newBoard.setCellAt(pair.cell.x(), pair.cell.y(), pair.cell);
+			newBoard.setCellAt(pair.cell.getVerticalCoordinate(), pair.cell.getHorizontalCoordinate(), pair.cell);
 			LegalMovesChecker newChecker = new LegalMovesChecker(newBoard);
 			LegalMovesChecker oldChecker = new LegalMovesChecker(currentBoard);
 			if(!newChecker.captureOponent(pair.cell).isEmpty()) {
@@ -148,7 +148,7 @@ public class GoodMovesFinder {
 			LegalMovesChecker checker = new LegalMovesChecker(currentBoard);
 			for(GoCell cell : currentBoard.getNeighboursOf(pair.cell)){
 				if(cell != null && !GoCell.areOposite(cell, pair.cell) && checker.getLiberties(cell) == 1) {
-					newBoard.setCellAt(pair.cell.x(), pair.cell.y(), pair.cell);
+					newBoard.setCellAt(pair.cell.getVerticalCoordinate(), pair.cell.getHorizontalCoordinate(), pair.cell);
 					checker = new LegalMovesChecker(newBoard);
 					if(!checker.captureOponent(pair.cell).isEmpty()) {
 						newBoard = checker.getNewBoard();
@@ -200,7 +200,7 @@ public class GoodMovesFinder {
 		GoPlayingBoard newBoard = currentBoard.clone();
 		LegalMovesChecker checker = new LegalMovesChecker(currentBoard);
 		for(CellValuePair pair : goodMoves) {
-			newBoard.setCellAt(pair.cell.x(), pair.cell.y(), pair.cell);
+			newBoard.setCellAt(pair.cell.getVerticalCoordinate(), pair.cell.getHorizontalCoordinate(), pair.cell);
 			checker = new LegalMovesChecker(newBoard);
 			if(!checker.captureOponent(pair.cell).isEmpty()) {
 				newBoard = checker.getNewBoard();
