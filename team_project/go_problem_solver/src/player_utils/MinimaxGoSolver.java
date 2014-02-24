@@ -6,7 +6,7 @@ import board_utils.GoCell;
 import board_utils.GoPlayingBoard;
 import custom_java_utils.CheckFailException;
 
-public class MinimaxGoSolver {
+public class MinimaxGoSolver implements GoSolverAlgorithm{
 	private GoPlayingBoard board;
 	private GoCell cellToCapture;
 	private static final long infinity = Integer.MAX_VALUE;
@@ -45,7 +45,7 @@ public class MinimaxGoSolver {
 		return true;
 	}
 	
-	public GoCell minimaxDecision() throws CheckFailException {
+	public GoCell decision() throws CheckFailException {
 		LegalMovesChecker checker = new LegalMovesChecker(board);
 		ArrayList<CellValuePair> decisionMinimaxValues = 
 				new ArrayList<MinimaxGoSolver.CellValuePair>();

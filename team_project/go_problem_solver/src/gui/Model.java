@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 import player_utils.BoardHistory;
+import player_utils.GoSolverAlgorithm;
+import player_utils.GoSolverAlgorithmChooser;
 import player_utils.LegalMovesChecker;
 import player_utils.MinimaxGoSolver;
 import board_utils.GoCell;
@@ -14,6 +16,9 @@ import custom_java_utils.CheckFailException;
 
 public class Model {
 	
+	public static final String ALPHABETASTRING = "Alpha Beta";
+	public static final String MINIMAXSTRING = "Mini Max";
+	public static final String MONTECARLOSTRING = "Monte Carlo";
 	public static final String HUMANSTRING = "Human";
 	public static final String COMPUTERSTRING = "Computer";
 	public static final String BlACKSTRING = "Black";
@@ -23,7 +28,11 @@ public class Model {
 	private LegalMovesChecker checker;
 	private boolean[][] legalMoves;
 	private BoardHistory history;
-	private MinimaxGoSolver minimax;
+	
+	// TODO 
+	private GoSolverAlgorithmChooser algorithmChooser;
+	private GoSolverAlgorithm algorithm;
+	
 	private GuiBoardPlay gui;
 	
 	public Model(GuiBoardPlay g) throws FileNotFoundException, CheckFailException {
@@ -72,25 +81,28 @@ public class Model {
 		}
 	}
 	
-	public void computerMove(){
+	public void computerMove() {
 		try {
 			Thread.sleep(1500);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		minimax = new MinimaxGoSolver(currentBoard, currentBoard.getTarget());
-		if(minimax.isPositionTerminal(currentBoard))
-			return;
+		
+		if (currentBoard.toPlayNext().equals(currentBoard.getFirstPlayer()))
+			algorithmChooser = new GoSolverAlgorithmChooser(currentBoard, currentBoard.getTarget(), currentBoard.getFirstPlayerAlgorithmName());
+		else
+			algorithmChooser = new GoSolverAlgorithmChooser(currentBoard, currentBoard.getTarget(), currentBoard.getSecondPlayerAlgorithmName());
+		algorithm = algorithmChooser.getAlgorithm();
 		GoCell decision = null;
 		try {
-			decision = minimax.minimaxDecision();
+			decision = algorithm.decision();
 			if(decision != null)
 				System.out.println(decision.getVerticalCoordinate() + " " + 
 						decision.getHorizontalCoordinate() + " " + decision);
 			else
 				System.out.println("null");
-		} catch(CheckFailException e){
+		} catch(CheckFailException | InterruptedException e){
 			System.out.println("Game is finished.");
 			e.printStackTrace();
 		}
@@ -203,6 +215,17 @@ public class Model {
 		else if(t.equals(WHITESTRING))
 			currentBoard.setSecondPlayerColour(Stone.WHITE);
 	}
+	
+	
+	// TODO Distinguish algorithm choices between players
+	public void setPlayer1AlgorithmName(String name) {
+		currentBoard.setFirstPlayerAlgorithmName(name);;
+	}
+	
+	public void setPlayer2AlgorithmName(String name) {
+		currentBoard.setSecondPlayerAlgorithmName(name);;
+	}
+	
 	
 	public void undoMove() {
 		history.undoMove();

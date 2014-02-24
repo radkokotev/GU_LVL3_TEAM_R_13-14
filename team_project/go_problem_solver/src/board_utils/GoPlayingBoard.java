@@ -117,6 +117,10 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 		toPlayNext = toPlayNext == firstPlayer ? secondPlayer : firstPlayer;
 	}
 	
+	public Player getFirstPlayer(){
+		return firstPlayer;
+	}
+	
 	public Player getNextPlayer(){
 		return toPlayNext;
 	}
@@ -231,6 +235,14 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	public Stone getFirstPlayerColour() {
 		return firstPlayer.colour;
 	}
+	
+	public String getFirstPlayerAlgorithmName() {
+		return firstPlayer.algorithmName;
+	}
+	
+	public String getSecondPlayerAlgorithmName() {
+		return secondPlayer.algorithmName;
+	}
 
 	@Override
 	public GoCell getCellAt(int x, int y) {
@@ -275,12 +287,20 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 		firstPlayer.colour = t;
 	}
 	
+	public void setFirstPlayerAlgorithmName(String name){
+		firstPlayer.algorithmName = name;
+	}
+	
 	public void setSecondPlayerType(Player.Type t){
 		secondPlayer.type = t;
 	}
 	
 	public void setSecondPlayerColour(Stone t){
 		secondPlayer.colour = t;
+	}
+	
+	public void setSecondPlayerAlgorithmName(String name){
+		secondPlayer.algorithmName = name;
 	}
 	
 	@Override

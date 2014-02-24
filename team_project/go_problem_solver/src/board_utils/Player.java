@@ -4,6 +4,7 @@ public class Player {
 	public enum Type { HUMAN, COMPUTER };
 	public Stone colour;
 	public Type type;
+	public String algorithmName;
 		
 	public Player(Stone stone, Type t){
 		colour = stone;
@@ -20,5 +21,9 @@ public class Player {
 	
 	public Player(Type t){
 		this(Stone.BLACK, t);
+	}
+	
+	public void setAlgorithmName(String name){
+		algorithmName = name;
 	}
 }

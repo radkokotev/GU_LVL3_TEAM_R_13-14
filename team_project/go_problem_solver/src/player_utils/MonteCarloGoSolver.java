@@ -7,7 +7,7 @@ import board_utils.GoCell;
 import board_utils.GoPlayingBoard;
 import custom_java_utils.CheckFailException;
 
-public class MonteCarloGoSolver {
+public class MonteCarloGoSolver implements GoSolverAlgorithm{
 	private GoPlayingBoard board;
 	private GoCell cellToCapture;
 	private static final long infinity = Integer.MAX_VALUE;

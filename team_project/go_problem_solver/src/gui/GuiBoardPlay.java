@@ -36,11 +36,14 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 	private static final long serialVersionUID = -5583632264766625487L;
 	private Model model;
 	private boolean drawLegalMoves;
-	private JButton undoMoveItem, start, reset;
+	private JButton undoMoveItem, redoMoveItem, start, reset;
 	private JComboBox<String> player1Type;
 	private JComboBox<String> player1Colour;
+	private JComboBox<String> player1Algorithm;
 	private JComboBox<String> player2Type;
 	private JComboBox<String> player2Colour;
+	private JComboBox<String> player2Algorithm;
+	
 	private File lastImportedFilename;
 	
 	public GuiBoardPlay(JFrame frame) throws FileNotFoundException, CheckFailException {
@@ -54,33 +57,54 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 		addMouseListener(this);
 		importFileItem.addActionListener(this);
 	    exportFileItem.addActionListener(this);
-	    
-	    undoMoveItem = new JButton("Undo");
-		menuBar.add(undoMoveItem);
+		
+		JPanel playersPanel = new JPanel(new GridLayout(3,4,10,5));
+		
+		undoMoveItem = new JButton("Undo");
+		playersPanel.add(undoMoveItem);
 		undoMoveItem.addActionListener(this);
 		
-		JPanel playersPanel = new JPanel(new GridLayout(2,4,10,5));
+		redoMoveItem = new JButton("Redo");
+		playersPanel.add(redoMoveItem);
+		redoMoveItem.addActionListener(this);
+		
+		start = new JButton("Start");
+		playersPanel.add(start);
+		start.addActionListener(this);
+		
+		reset = new JButton("Reset");
+		playersPanel.add(reset);
+		reset.addActionListener(this);
+		
 		playersPanel.add(new JLabel("Player 1: "));
-		player1Type = new JComboBox<String>(new String[]{Model.COMPUTERSTRING, Model.HUMANSTRING});
+		player1Type = new JComboBox<String>(new String[]{Model.HUMANSTRING, Model.COMPUTERSTRING});
 		playersPanel.add(player1Type);
 		player1Type.addActionListener(this);
 		player1Colour = new JComboBox<String>(new String[]{Model.BlACKSTRING, Model.WHITESTRING});
 		playersPanel.add(player1Colour);
 		player1Colour.addActionListener(this);
-		start = new JButton("Start");
-		playersPanel.add(start);
-		start.addActionListener(this);
+		
+		// TODO add alg chooser to GUI
+		player1Algorithm = new JComboBox<String>(new String[]{Model.ALPHABETASTRING, Model.MINIMAXSTRING, Model.MONTECARLOSTRING});
+		playersPanel.add(player1Algorithm);
+		player1Algorithm.addActionListener(this);
+		player1Algorithm.setVisible(false);
+		player1Algorithm.setSelectedIndex(-1);
+		
 		
 		playersPanel.add(new JLabel("Player 2: "));
-		player2Type = new JComboBox<String>(new String[]{Model.COMPUTERSTRING, Model.HUMANSTRING});
+		player2Type = new JComboBox<String>(new String[]{Model.HUMANSTRING, Model.COMPUTERSTRING});
 		playersPanel.add(player2Type);
 		player2Type.addActionListener(this);
 		player2Colour = new JComboBox<String>(new String[]{Model.WHITESTRING, Model.BlACKSTRING});
 		playersPanel.add(player2Colour);
 		player2Colour.addActionListener(this);
-		reset = new JButton("Reset");
-		playersPanel.add(reset);
-		reset.addActionListener(this);
+		
+		player2Algorithm = new JComboBox<String>(new String[]{Model.ALPHABETASTRING, Model.MINIMAXSTRING, Model.MONTECARLOSTRING});
+		playersPanel.add(player2Algorithm);
+		player2Algorithm.addActionListener(this);
+		player2Algorithm.setVisible(false);
+		player2Algorithm.setSelectedIndex(-1);
 		
 		frame.setTitle("Go game solver [Play mode]");
 		frame.getContentPane().add(this, BorderLayout.CENTER);
@@ -195,10 +219,22 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 			repaint();
 		} else if(e.getSource().equals(player1Type)) {
 			model.setFirstPlayerType(((JComboBox) e.getSource()).getSelectedItem());
+			if (((JComboBox) e.getSource()).getSelectedItem().equals("Computer")) 
+				player1Algorithm.setVisible(true);
+			else
+				player1Algorithm.setVisible(false);
 		} else if(e.getSource().equals(player1Colour)) {
 			model.setFirstPlayerColour(((JComboBox) e.getSource()).getSelectedItem());
 		} else if(e.getSource().equals(player2Type)) {
 			model.setSecondPlayerType(((JComboBox) e.getSource()).getSelectedItem());
+			if (((JComboBox) e.getSource()).getSelectedItem().equals("Computer")) 
+				player2Algorithm.setVisible(true);
+			else
+				player2Algorithm.setVisible(false);
+		} else if (e.getSource().equals(player1Algorithm)) {
+			model.setPlayer1AlgorithmName((String) ((JComboBox) e.getSource()).getSelectedItem());
+		} else if (e.getSource().equals(player2Algorithm)) {
+			model.setPlayer2AlgorithmName((String) ((JComboBox) e.getSource()).getSelectedItem());
 		} else if(e.getSource().equals(player2Colour)) {
 			model.setSecondPlayerColour(((JComboBox) e.getSource()).getSelectedItem());
 		} else if(e.getSource().equals(start)) {
