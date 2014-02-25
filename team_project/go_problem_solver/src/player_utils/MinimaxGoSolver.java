@@ -16,16 +16,6 @@ public class MinimaxGoSolver implements GoSolverAlgorithm{
 		this.cellToCapture = cell.clone();
 	}
 	
-	private class CellValuePair implements Comparable<CellValuePair>{
-		public GoCell cell;
-		public long minimaxValue;
-		
-		@Override
-		public int compareTo(CellValuePair other) {
-			return (int) (this.minimaxValue - other.minimaxValue);
-		}
-	}
-	
 	public boolean isPositionTerminal(GoPlayingBoard board) {
 		if (board.getCellAt(cellToCapture.getVerticalCoordinate(), 
 				cellToCapture.getHorizontalCoordinate()).isEmpty()) {
@@ -48,7 +38,7 @@ public class MinimaxGoSolver implements GoSolverAlgorithm{
 	public GoCell decision() throws CheckFailException {
 		LegalMovesChecker checker = new LegalMovesChecker(board);
 		ArrayList<CellValuePair> decisionMinimaxValues = 
-				new ArrayList<MinimaxGoSolver.CellValuePair>();
+				new ArrayList<CellValuePair>();
 		GoodMovesFinder finder = new GoodMovesFinder(board.clone());
 		for(GoCell cell : finder.getGoodMoves()) {
 			System.out.println(0 + " " + cell);
@@ -57,7 +47,7 @@ public class MinimaxGoSolver implements GoSolverAlgorithm{
 				cellValuePair.cell = cell;
 				GoPlayingBoard newBoard = checker.getNewBoard();
 				newBoard.oppositeToPlayNext();
-				cellValuePair.minimaxValue = minimize(newBoard, 0);
+				cellValuePair.value = minimize(newBoard, 0);
 				decisionMinimaxValues.add(cellValuePair);
 				BoardHistory.getSingleton().remove(newBoard);
 			}
@@ -66,9 +56,9 @@ public class MinimaxGoSolver implements GoSolverAlgorithm{
 		GoCell bestMove = null;
 		long bestValue = (-infinity);
 		for (CellValuePair pair : decisionMinimaxValues) {
-			System.out.println(pair.cell + " "  + pair.minimaxValue);
-			if (pair.minimaxValue >= bestValue) {
-				bestValue = pair.minimaxValue;
+			System.out.println(pair.cell + " "  + pair.value);
+			if (pair.value >= bestValue) {
+				bestValue = (long) pair.value;
 				bestMove = pair.cell;
 			}
 		}

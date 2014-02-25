@@ -20,15 +20,12 @@ public class GoSolverAlgorithmChooser {
 	public GoSolverAlgorithm getAlgorithm() {
 		GoSolverAlgorithm algorithm = null;
 		System.out.println("NAME IS : " + name);
-		switch (name) {
-		case Model.MINIMAXSTRING: algorithm = new MinimaxGoSolver(board, cell);
-			break;
-		case Model.ALPHABETASTRING: algorithm = new AlphaBetaGoSolver(board, cell);
-			break;
-		case Model.MONTECARLOSTRING: algorithm = new MinimaxGoSolver(board, cell);
-			break;
-		default: 
-			return null;
+		if (name.equals(Model.MINIMAXSTRING)) {
+			algorithm = new MinimaxGoSolver(board, cell);
+		} else if (name.equals(Model.ALPHABETASTRING)) {
+			algorithm = new AlphaBetaGoSolver(board, cell);
+		} else if (name.equals(Model.MONTECARLOSTRING)) {
+			algorithm = new MinimaxGoSolver(board, cell);
 		}
 		return algorithm;
 	}

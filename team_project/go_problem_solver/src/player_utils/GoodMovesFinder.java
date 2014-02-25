@@ -12,24 +12,6 @@ import custom_java_utils.CheckFailException;
  * Class for implementing heuristics
  */
 public class GoodMovesFinder {
-	
-	private class CellValuePair implements Comparable<CellValuePair>{
-		public GoCell cell;
-		public long value = 0;
-		
-		/* 
-		 * if other < this then return <0
-		 * if other > this then return >0
-		 * if this == other then return 0
-		 * It actually should be reverse, but I want to Collections.sort()
-		 * to work that it would sort in descending order.
-		 * 
-		 */
-		public int compareTo(CellValuePair other) {
-			return (int) (other.value - this.value);
-		}
-	}
-		
 	/*
 	 * Good moves in order. Actually all possible moves will be returned, 
 	 * but best moves first. 
@@ -111,8 +93,9 @@ public class GoodMovesFinder {
 			for(GoCell neighbour : newBoard.getNeighboursOf(pair.cell))
 				if (neighbour != null 
 						&& GoCell.areOposite(neighbour, pair.cell) 
-						&& checker.getLiberties(neighbour) == 1)
+						&& checker.getLiberties(neighbour) == 1) {
 					pair.value += ATARI_POINTS;
+				}
 		}
 	}
 	
@@ -155,8 +138,9 @@ public class GoodMovesFinder {
 						BoardHistory.getSingleton().remove(newBoard);
 					}
 					newBoard.oppositeToPlayNext();
-					if(checker.getLiberties(pair.cell) > 1)
+					if(checker.getLiberties(pair.cell) > 1) {
 						pair.value += GROUP_SAVER_REWARD;
+					}
 					break;
 					
 				}
@@ -208,19 +192,21 @@ public class GoodMovesFinder {
 			}
 			newBoard.oppositeToPlayNext();
 			for(GoCell cell : newBoard.getCloseCellsOfGroup(pair.cell)){
-				if(cell.getContent() == Stone.NONE && doesLookLikeEye(cell, newBoard))
+				if(cell.getContent() == Stone.NONE && doesLookLikeEye(cell, newBoard)) {
 					pair.value += EYE_POINTS;
+				}
 			}
 		}
 	}
 	
 	public GoCell[] getGoodMoves(){
-		Collections.sort(goodMoves);
+		Collections.sort(goodMoves, Collections.reverseOrder());
 		GoCell[] result = new GoCell[goodMoves.size()];
 		int i = 0;
 		for(CellValuePair pair : goodMoves) {
 			result[i++] = pair.cell;
-			System.out.print(pair.cell + " " + pair.value + " ");
+			System.out.print(pair.cell + ":" + pair.cell.getVerticalCoordinate()
+					+ "," + pair.cell.getHorizontalCoordinate() + " --> "+ pair.value + " ");
 		}
 		System.out.println();
 		return result;

@@ -192,7 +192,7 @@ public class GuiBoardBuild extends GuiBoard implements MouseListener,
 			frame.getContentPane().removeAll();;
 			try {
 				frame.getContentPane().add(new GuiBoardPlay(frame, gpb), BorderLayout.CENTER);
-			} catch (FileNotFoundException | CheckFailException e1) {
+			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}

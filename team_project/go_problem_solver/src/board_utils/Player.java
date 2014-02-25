@@ -26,4 +26,14 @@ public class Player {
 	public void setAlgorithmName(String name){
 		algorithmName = name;
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (!o.getClass().equals(this.getClass())) {
+			return false;
+		}
+		Player other = (Player) o;
+		return this.colour.equals(other.colour);
+		
+	}
 }

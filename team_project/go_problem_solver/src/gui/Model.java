@@ -7,7 +7,6 @@ import player_utils.BoardHistory;
 import player_utils.GoSolverAlgorithm;
 import player_utils.GoSolverAlgorithmChooser;
 import player_utils.LegalMovesChecker;
-import player_utils.MinimaxGoSolver;
 import board_utils.GoCell;
 import board_utils.GoPlayingBoard;
 import board_utils.Player;
@@ -102,7 +101,7 @@ public class Model {
 						decision.getHorizontalCoordinate() + " " + decision);
 			else
 				System.out.println("null");
-		} catch(CheckFailException | InterruptedException e){
+		} catch(Exception e){
 			System.out.println("Game is finished.");
 			e.printStackTrace();
 		}

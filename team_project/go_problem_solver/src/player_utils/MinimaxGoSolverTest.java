@@ -42,7 +42,7 @@ public class MinimaxGoSolverTest {
 				"/src/player_utils/test_data/small_board_for_minimax");
 		board.setToPlayNext(Stone.BLACK);
 		MinimaxGoSolver solver = new MinimaxGoSolver(board, board.getCellAt(18, 18));
-		assertEquals(new GoCell(Stone.BLACK, 18, 17), solver.minimaxDecision());
+		assertEquals(new GoCell(Stone.BLACK, 18, 17), solver.decision());
 	}
 	
 	@Test
@@ -51,7 +51,7 @@ public class MinimaxGoSolverTest {
 				"/src/player_utils/test_data/small_board_for_minimax_white");
 		board.setToPlayNext(Stone.WHITE);
 		MinimaxGoSolver solver = new MinimaxGoSolver(board, board.getCellAt(18, 18));
-		assertEquals(new GoCell(Stone.WHITE, 18, 17), solver.minimaxDecision());
+		assertEquals(new GoCell(Stone.WHITE, 18, 17), solver.decision());
 	}
 	
 	@Test
@@ -61,7 +61,7 @@ public class MinimaxGoSolverTest {
 		board.setToPlayNext(Stone.WHITE);
 		MinimaxGoSolver solver = new MinimaxGoSolver(board, board.getCellAt(14, 1));
 		assertEquals(Stone.BLACK, board.getCellAt(14, 1).getContent());
-		assertEquals(new GoCell(Stone.WHITE, 14, 0), solver.minimaxDecision());
+		assertEquals(new GoCell(Stone.WHITE, 14, 0), solver.decision());
 	}
 	
 	@Test
@@ -70,6 +70,6 @@ public class MinimaxGoSolverTest {
 				"/src/player_utils/test_data/unsettled_three_black");
 		board.setToPlayNext(Stone.BLACK);
 		MinimaxGoSolver solver = new MinimaxGoSolver(board, board.getCellAt(14, 1));
-		assertEquals(new GoCell(Stone.BLACK, 14, 0), solver.minimaxDecision());
+		assertEquals(new GoCell(Stone.BLACK, 14, 0), solver.decision());
 	}
 }

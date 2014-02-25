@@ -24,6 +24,8 @@ public class GoodMovesFinderTest {
 		board.setCellAt(0, 2, new GoCell(Stone.NONE, 0, 2));
 		board.setCellAt(1, 2, new GoCell(Stone.NONE, 1, 2));
 		board.setToPlayNext(Stone.BLACK);
+		board.setFirstPlayerColour(Stone.BLACK);
+		board.setSecondPlayerColour(Stone.WHITE);
 		GoodMovesFinder finder = new GoodMovesFinder(board);
 		GoCell[] correct = new GoCell[3];
 		correct[0] = new GoCell(Stone.BLACK, 0, 2);

@@ -37,12 +37,12 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 	private Model model;
 	private boolean drawLegalMoves;
 	private JButton undoMoveItem, redoMoveItem, start, reset;
-	private JComboBox<String> player1Type;
-	private JComboBox<String> player1Colour;
-	private JComboBox<String> player1Algorithm;
-	private JComboBox<String> player2Type;
-	private JComboBox<String> player2Colour;
-	private JComboBox<String> player2Algorithm;
+	private JComboBox player1Type;
+	private JComboBox player1Colour;
+	private JComboBox player1Algorithm;
+	private JComboBox player2Type;
+	private JComboBox player2Colour;
+	private JComboBox player2Algorithm;
 	
 	private File lastImportedFilename;
 	
@@ -77,15 +77,15 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 		reset.addActionListener(this);
 		
 		playersPanel.add(new JLabel("Player 1: "));
-		player1Type = new JComboBox<String>(new String[]{Model.HUMANSTRING, Model.COMPUTERSTRING});
+		player1Type = new JComboBox(new String[]{Model.HUMANSTRING, Model.COMPUTERSTRING});
 		playersPanel.add(player1Type);
 		player1Type.addActionListener(this);
-		player1Colour = new JComboBox<String>(new String[]{Model.BlACKSTRING, Model.WHITESTRING});
+		player1Colour = new JComboBox(new String[]{Model.BlACKSTRING, Model.WHITESTRING});
 		playersPanel.add(player1Colour);
 		player1Colour.addActionListener(this);
 		
 		// TODO add alg chooser to GUI
-		player1Algorithm = new JComboBox<String>(new String[]{Model.ALPHABETASTRING, Model.MINIMAXSTRING, Model.MONTECARLOSTRING});
+		player1Algorithm = new JComboBox(new String[]{Model.ALPHABETASTRING, Model.MINIMAXSTRING, Model.MONTECARLOSTRING});
 		playersPanel.add(player1Algorithm);
 		player1Algorithm.addActionListener(this);
 		player1Algorithm.setVisible(false);
@@ -93,14 +93,14 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 		
 		
 		playersPanel.add(new JLabel("Player 2: "));
-		player2Type = new JComboBox<String>(new String[]{Model.HUMANSTRING, Model.COMPUTERSTRING});
+		player2Type = new JComboBox(new String[]{Model.HUMANSTRING, Model.COMPUTERSTRING});
 		playersPanel.add(player2Type);
 		player2Type.addActionListener(this);
-		player2Colour = new JComboBox<String>(new String[]{Model.WHITESTRING, Model.BlACKSTRING});
+		player2Colour = new JComboBox(new String[]{Model.WHITESTRING, Model.BlACKSTRING});
 		playersPanel.add(player2Colour);
 		player2Colour.addActionListener(this);
 		
-		player2Algorithm = new JComboBox<String>(new String[]{Model.ALPHABETASTRING, Model.MINIMAXSTRING, Model.MONTECARLOSTRING});
+		player2Algorithm = new JComboBox(new String[]{Model.ALPHABETASTRING, Model.MINIMAXSTRING, Model.MONTECARLOSTRING});
 		playersPanel.add(player2Algorithm);
 		player2Algorithm.addActionListener(this);
 		player2Algorithm.setVisible(false);

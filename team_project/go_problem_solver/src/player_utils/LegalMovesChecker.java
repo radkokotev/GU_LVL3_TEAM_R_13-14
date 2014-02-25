@@ -47,7 +47,7 @@ public class LegalMovesChecker implements LegalityChecker{
 		}
 		newBoard.setCellAt(cell.getVerticalCoordinate(), 
 				cell.getHorizontalCoordinate(), cell);
-		if (captureOponent(cell) != null){
+		if (captureOponent(cell).isEmpty()) {
 			if (getLiberties(cell) == 0) {
 				this.reset();
 				return false;
@@ -73,8 +73,7 @@ public class LegalMovesChecker implements LegalityChecker{
 		for (GoCell neighbour : this.newBoard.getNeighboursOf(cell)) {
 			if (neighbour != null && GoCell.areOposite(cell, neighbour)) {
 				if (getLiberties(neighbour) == 0) {
-					removeOponentsStone(neighbour, neighbour.getContent());
-					captured.add(neighbour);
+					removeOponentsStone(neighbour, neighbour.getContent(), captured);
 				}
 			}
 		}
@@ -123,13 +122,15 @@ public class LegalMovesChecker implements LegalityChecker{
 	 * @param cell a cell that is a member of that group
 	 * @param stone the type of stone that is to be removed
 	 */
-	private void removeOponentsStone(GoCell cell, Stone stone) {
+	private void removeOponentsStone(GoCell cell, Stone stone, ArrayList<GoCell> captured) {
+		captured.add(newBoard.getCellAt(
+				cell.getVerticalCoordinate(), cell.getHorizontalCoordinate()));
 		newBoard.setCellAt(cell.getVerticalCoordinate(), cell.getHorizontalCoordinate(), 
 				new GoCell(Stone.NONE, cell.getVerticalCoordinate(), cell.getHorizontalCoordinate()));
 		for (GoCell neighbour : newBoard.getNeighboursOf(cell)) {
 			if (neighbour != null && !neighbour.isEmpty() && 
 					neighbour.getContent() == stone) {
-				removeOponentsStone(neighbour, stone);
+				removeOponentsStone(neighbour, stone, captured);
 			}
 		}
 	}

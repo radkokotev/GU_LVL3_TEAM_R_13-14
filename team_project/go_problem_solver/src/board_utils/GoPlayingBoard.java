@@ -114,7 +114,7 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	 * A setter for the value of toPlayNext. The new value would be of the opposite colour.
 	 */
 	public void oppositeToPlayNext() {
-		toPlayNext = toPlayNext == firstPlayer ? secondPlayer : firstPlayer;
+		toPlayNext = (toPlayNext.equals(firstPlayer) ? secondPlayer : firstPlayer);
 	}
 	
 	public Player getFirstPlayer(){
