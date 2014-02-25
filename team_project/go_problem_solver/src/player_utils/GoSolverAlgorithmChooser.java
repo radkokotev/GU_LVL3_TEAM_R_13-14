@@ -14,10 +14,12 @@ public class GoSolverAlgorithmChooser {
 		this.board = board;
 		this.cell = cell;
 		this.name = name;
+		System.out.println("NAME RECEIVED : " + name);
 	}
 
 	public GoSolverAlgorithm getAlgorithm() {
 		GoSolverAlgorithm algorithm = null;
+		System.out.println("NAME IS : " + name);
 		switch (name) {
 		case Model.MINIMAXSTRING: algorithm = new MinimaxGoSolver(board, cell);
 			break;
@@ -25,6 +27,8 @@ public class GoSolverAlgorithmChooser {
 			break;
 		case Model.MONTECARLOSTRING: algorithm = new MinimaxGoSolver(board, cell);
 			break;
+		default: 
+			return null;
 		}
 		return algorithm;
 	}

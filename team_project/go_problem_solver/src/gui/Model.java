@@ -28,8 +28,6 @@ public class Model {
 	private LegalMovesChecker checker;
 	private boolean[][] legalMoves;
 	private BoardHistory history;
-	
-	// TODO 
 	private GoSolverAlgorithmChooser algorithmChooser;
 	private GoSolverAlgorithm algorithm;
 	
@@ -65,7 +63,7 @@ public class Model {
 	}
 	
 	public void start() {
-		if(currentBoard.isNextPlayerComputer())
+		if(currentBoard.isNextPlayerComputer()) 
 			computerMove();
 	}
 	
@@ -77,6 +75,8 @@ public class Model {
 		removeOpponent(x, y);
 		gui.paintImmediately(0, 0, gui.getSize().width, gui.getSize().height);
 		if(currentBoard.isNextPlayerComputer()){
+			// TODO This is wrong. Computer should not be next to play on initialise
+			System.out.println("Next player is computer !!!!!!!!!!!!!");
 			computerMove();
 		}
 	}
