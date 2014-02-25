@@ -118,7 +118,7 @@ public class MonteCarloGoSolver {
 			threads.add(t);
 			t.start();
 		}
-		System.out.println("Running with " + Thread.activeCount() + " threads");
+		//System.out.println("Running with " + Thread.activeCount() + " threads");
 		for (Thread t : threads) {
 			t.join();
 		}
