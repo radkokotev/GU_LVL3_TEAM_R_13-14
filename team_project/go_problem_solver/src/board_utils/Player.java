@@ -12,11 +12,11 @@ public class Player {
 	}
 	
 	public Player(){
-		this(Stone.BLACK, Type.COMPUTER);
+		this(Stone.BLACK, Type.HUMAN);
 	}
 	
 	public Player(Stone stone){
-		this(stone, Type.COMPUTER);
+		this(stone, Type.HUMAN);
 	}
 	
 	public Player(Type t){

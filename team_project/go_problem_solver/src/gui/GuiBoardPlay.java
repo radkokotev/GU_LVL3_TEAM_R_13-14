@@ -217,6 +217,9 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 		} else if(e.getSource().equals(undoMoveItem)) {
 			model.undoMove();
 			repaint();
+		} else if(e.getSource().equals(redoMoveItem)) {
+			model.redoMove();
+			repaint();
 		} else if(e.getSource().equals(player1Type)) {
 			model.setFirstPlayerType(((JComboBox) e.getSource()).getSelectedItem());
 			if (((JComboBox) e.getSource()).getSelectedItem().equals("Computer")) 

@@ -72,10 +72,9 @@ public class Model {
 		checker = new LegalMovesChecker(currentBoard);
 		legalMoves = checker.getLegalityArray();
 		removeOpponent(x, y);
+		history.add(currentBoard);
 		gui.paintImmediately(0, 0, gui.getSize().width, gui.getSize().height);
 		if(currentBoard.isNextPlayerComputer()){
-			// TODO This is wrong. Computer should not be next to play on initialise
-			System.out.println("Next player is computer !!!!!!!!!!!!!");
 			computerMove();
 		}
 	}
@@ -88,10 +87,12 @@ public class Model {
 			e.printStackTrace();
 		}
 		
-		if (currentBoard.toPlayNext().equals(currentBoard.getFirstPlayer()))
-			algorithmChooser = new GoSolverAlgorithmChooser(currentBoard, currentBoard.getTarget(), currentBoard.getFirstPlayerAlgorithmName());
+		if (currentBoard.toPlayNext().equals(currentBoard.getFirstPlayer().colour))
+			algorithmChooser = new GoSolverAlgorithmChooser(currentBoard, currentBoard.getTarget(), 
+					currentBoard.getFirstPlayerAlgorithmName());
 		else
-			algorithmChooser = new GoSolverAlgorithmChooser(currentBoard, currentBoard.getTarget(), currentBoard.getSecondPlayerAlgorithmName());
+			algorithmChooser = new GoSolverAlgorithmChooser(currentBoard, currentBoard.getTarget(), 
+					currentBoard.getSecondPlayerAlgorithmName());
 		algorithm = algorithmChooser.getAlgorithm();
 		GoCell decision = null;
 		try {
@@ -124,14 +125,9 @@ public class Model {
 				checker = new LegalMovesChecker(currentBoard);
 				legalMoves = checker.getLegalityArray();
 			}
-			else 
-				//this method will be called on each move, so history will be updated each time when
-				//there will be no stones killed.
-				history.add(currentBoard);
 		} catch(Exception e){
 			System.out.println("new board = old board");
 		}
-		
 	}
 	
 	public int getTotalNumberOfStones(){
@@ -229,16 +225,14 @@ public class Model {
 	public void undoMove() {
 		history.undoMove();
 		GoPlayingBoard last = history.getLastMove();
-		if (last != null) {
-			currentBoard = last;
-			checker = new LegalMovesChecker(currentBoard);
-			legalMoves = checker.getLegalityArray();
-		}
+		currentBoard = last;
+		checker = new LegalMovesChecker(currentBoard);
+		legalMoves = checker.getLegalityArray();
 	}
 	
 	public void redoMove() {
 		history.redoMove();
-		currentBoard = history.getUndoMove();
+		currentBoard = history.getLastMove();
 	}
 
 }
