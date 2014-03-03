@@ -24,14 +24,14 @@ public class MonteCarloPercentageStability {
 	 * Constants to work with the following file naming convention
 	 * "problem_<problem #>_moves<# of initial legal moves>"
 	 */
-	private static final int PROBLEM_NUMBER = 1;
-	private static final int FIRST_INPUT_FILENAME_SUFFIX = 5;
-	private static final int LAST_INPUT_FILENAME_SUFFIX = 8;
+	private static int problem_number = 1;
+	private static int first_input_filename_suffix = 5;
+	private static int last_input_filename_suffix = 8;
 	
 	/**
 	 * A prefix to distinguish between runs on different machines
 	 */
-	private static final String OUTPUT_FILE_SUFFIX = "bo720-2-1";
+	private static String output_file_suffix = "bo720-2-1";
 	
 	private static void writeToFile(ArrayList<CellValuePair> currentValues) {
 		if (previousValues == null) {
@@ -93,21 +93,29 @@ public class MonteCarloPercentageStability {
 		return result;
 	}
 	
+	private static void handleArguments(String[] args) {
+		output_file_suffix = args[0];
+		problem_number = Integer.parseInt(args[1]);
+		first_input_filename_suffix = Integer.parseInt(args[2]);
+		last_input_filename_suffix = Integer.parseInt(args[3]);
+	}
+	
 	public static void main(String[] args) throws 
 			FileNotFoundException, CheckFailException, InterruptedException {
+		handleArguments(args);
 		workspaceDirectory = ProjectPathUtils.getWorkspaceDir();
-		for (int fileSuffix = FIRST_INPUT_FILENAME_SUFFIX;
-				fileSuffix <= LAST_INPUT_FILENAME_SUFFIX; 
+		for (int fileSuffix = first_input_filename_suffix;
+				fileSuffix <= last_input_filename_suffix; 
 				fileSuffix++) {
-			String filename = String.format("problem_%d_moves_%d", PROBLEM_NUMBER, fileSuffix);
+			String filename = String.format("problem_%d_moves_%d", problem_number, fileSuffix);
 			printWriter = new PrintWriter(new File(
-					"output_" + filename + "_" + OUTPUT_FILE_SUFFIX));
+					"output_" + filename + "_" + output_file_suffix));
 			int i;
-			for (i = 0; !seemsToConverge(100 + (i * 100), filename); i++) {
+			for (i = 0; !seemsToConverge(5*Math.pow(2, i), filename); i++) {
 				System.out.println("Currenbtly at " + i);
 			}
 			// Make one further iteration to confirm results
-			seemsToConverge(1000 + (++i * 100), filename);
+			seemsToConverge(5*Math.pow(2, i + 1), filename);
 			System.out.println("Reached up to " + i + "\n");
 			printWriter.close();
 			previousValues = null;
