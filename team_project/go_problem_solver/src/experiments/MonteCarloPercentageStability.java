@@ -65,7 +65,19 @@ public class MonteCarloPercentageStability {
 		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory +
 				"/src/experiments/data/" + filename);
 		board.setToPlayNext(Stone.BLACK);
-		MonteCarloGoSolver solver = new MonteCarloGoSolver(board, board.getCellAt(9, 13), (int) games);
+		GoCell target = null;
+		switch (problem_number) {
+			case (1):
+				target = board.getCellAt(9, 13);
+				break;
+			case (2):
+				target = board.getCellAt(15, 15);
+				break;
+			case (3):
+				target = board.getCellAt(16, 9);
+				break;
+		}
+		MonteCarloGoSolver solver = new MonteCarloGoSolver(board, target, (int) games);
 		GoCell move = solver.decision();
 		if (new GoCell(Stone.BLACK, 8, 10).equals(move)) {
 			//System.out.println("Solved correctly");
