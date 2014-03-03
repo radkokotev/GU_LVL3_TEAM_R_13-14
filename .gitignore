@@ -1,3 +1,6 @@
+## Project specific
+experimental_results/
+
 ## Java specific
 *.jar
 *.war
