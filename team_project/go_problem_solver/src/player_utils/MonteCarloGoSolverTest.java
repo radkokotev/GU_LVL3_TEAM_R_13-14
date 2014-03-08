@@ -88,7 +88,7 @@ public class MonteCarloGoSolverTest {
 				"/src/player_utils/test_data/problem_1_from_handout");
 		board.setToPlayNext(Stone.BLACK);
 		MonteCarloGoSolver solver = new MonteCarloGoSolver(board, board.getCellAt(9, 13), 
-				10, System.currentTimeMillis() + 1000 * 10); // Run for 30 seconds
+				10, System.currentTimeMillis() + 1000 * 10); // Run for 10 seconds
 		assertEquals(new GoCell(Stone.BLACK, 8, 10), solver.decision());
 	}
 }

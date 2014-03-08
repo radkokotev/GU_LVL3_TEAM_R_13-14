@@ -32,7 +32,7 @@ public class Minimax_Test1 {
 	
 	/*
 	 * Unsettled Three - the only one that is right lol
-	 */
+	 *
 	@Test
 	public void testMinimaxProblem1() throws FileNotFoundException, CheckFailException, InterruptedException {
 		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory + 
@@ -86,18 +86,19 @@ public class Minimax_Test1 {
 		assertEquals(Stone.BLACK, board.getCellAt(5, 16).getContent());
 		assertEquals(new GoCell(Stone.WHITE, 5, 18), solver.minimaxDecision());
 	}
-	
+	*/
 	//
 	@Test
 	public void testMinimaxProblem7() throws FileNotFoundException, CheckFailException, InterruptedException {
 		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory +
 				"/src/test/test_data/problem7_interioreye_1");
 		board.setToPlayNext(Stone.WHITE);
-		MinimaxGoSolver solver = new MinimaxGoSolver(board, board.getCellAt(15, 15));
+		MonteCarloGoSolver solver = new MonteCarloGoSolver(board, board.getCellAt(15, 15), 
+				10, System.currentTimeMillis() + 1000 * 120);
 		assertEquals(Stone.BLACK, board.getCellAt(15, 15).getContent());
-		assertEquals(new GoCell(Stone.WHITE, 18, 17), solver.minimaxDecision());
+		assertEquals(new GoCell(Stone.WHITE, 18, 17), solver.decision());
 	}
-	
+	/*
 	@Test
 	public void testMinimaxProblem8() throws FileNotFoundException, CheckFailException, InterruptedException {
 		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory +
@@ -126,5 +127,5 @@ public class Minimax_Test1 {
 		MinimaxGoSolver solver = new MinimaxGoSolver(board, board.getCellAt(14, 1));
 		assertEquals(Stone.BLACK, board.getCellAt(14, 1).getContent());
 		assertEquals(new GoCell(Stone.WHITE, 14, 0), solver.minimaxDecision());
-	}	
+	}	*/
 }

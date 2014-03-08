@@ -1,6 +1,7 @@
 package player_utils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Random;
 
 import board_utils.GoCell;
@@ -17,7 +18,7 @@ public class MonteCarloGoSolver {
 	private Integer countGamesPlayed = 0;
 	private ArrayList<CellValuePair> monteCarloValues;
 	ArrayList<GoPlayingBoard> legalMoves;
-	private static final int THREAD_COUNT = 2;
+	private static final int THREAD_COUNT = 1;
 	
 	/**
 	 * Simple constructor to make a decision by using the MonteCarlo method. 
@@ -98,7 +99,7 @@ public class MonteCarloGoSolver {
 		for (int i = 0; i < board.getWidth(); i++) {
 			for (int j = 0; j < board.getHeight(); j++) {
 				GoCell cell = new GoCell(board.toPlayNext(), i, j);
-				if (checker.isMoveLegal(cell)) {
+				if (checker.isMoveLegal(cell) > 0) {
 					CellValuePair cellValuePair = new CellValuePair();
 					cellValuePair.cell = cell;
 					GoPlayingBoard newBoard = checker.getNewBoard();
@@ -130,8 +131,8 @@ public class MonteCarloGoSolver {
 				bestValue = pair.value;
 				bestMove = pair.cell;
 			}
-			/*System.out.println(pair.cell.getVerticalCoordinate() + "," + 
-					pair.cell.getHorizontalCoordinate() + " -> " + pair.value);*/
+			System.out.println(pair.cell.getVerticalCoordinate() + "," + 
+					pair.cell.getHorizontalCoordinate() + " -> " + pair.value);
 		}
 		return bestMove;
 	}
@@ -146,7 +147,8 @@ public class MonteCarloGoSolver {
 	 */
 	private void monteCarloEvaluation(GoPlayingBoard board, CellValuePair pair) 
 			throws CheckFailException {
-		int winCount = 0;
+		double winCount = 0;
+		int countKoRuleViolations = 0;
 		int gamesToPlay = gamesPerThreadRun;
 		// Play that many random games
 		for (;gamesToPlay > 0; gamesToPlay--) {
@@ -158,29 +160,50 @@ public class MonteCarloGoSolver {
 				LegalMovesChecker checker = new LegalMovesChecker(newBoard);
 				// Find all legal moves for the current board
 				ArrayList<GoCell> legalMoves = new ArrayList<GoCell>();
+				HashSet<GoCell> koViolations = new HashSet<GoCell>(); 
 				for (int i = 0; i < newBoard.getWidth(); i++) {
 					for (int j = 0; j < newBoard.getHeight(); j++) {
 						GoCell currCell = new GoCell(newBoard.toPlayNext(), i, j);
-						if (checker.isMoveLegal(currCell)) {
+						int legality = checker.isMoveLegal(currCell); 
+						if (legality >= 0) {
 							legalMoves.add(currCell);
+							if (legality == 0) {
+								koViolations.add(currCell);
+							}
 						}
 						checker.reset();
 					}
 				}
 				// No more legal moves => this is a terminal state
-				if (legalMoves.isEmpty()) {
+				if (legalMoves.isEmpty() || 
+						(legalMoves.size() == koViolations.size() && legalMoves.size() < 2)) {
 					break;
 				}
 				// Pick a random move to be played next
 				Random randomGenerator = new Random();
-				checker.isMoveLegal(legalMoves.get(randomGenerator.nextInt(legalMoves.size())));
+				GoCell nextMove = legalMoves.get(randomGenerator.nextInt(legalMoves.size()));
+				if (koViolations.contains(nextMove)) {
+					// TODO take a second look into making this more general
+					if (nextMove.getContent() == cellToCapture.getContent()) {
+						countKoRuleViolations--;
+					} else {
+						countKoRuleViolations++;
+					}
+				}
+				checker.isMoveLegal(nextMove);
 				newBoard = checker.getNewBoard();
 				newBoard.oppositeToPlayNext();
 				boardsPlayed.add(newBoard);
+				if (countKoRuleViolations != 0) {
+					//System.out.println(newBoard);
+					//System.out.println("The KO rule violations are " + countKoRuleViolations);
+				}
 			}
 			if (newBoard.getCellAt(cellToCapture.getVerticalCoordinate(), 
 					cellToCapture.getHorizontalCoordinate()).isEmpty()) {
-				winCount++;
+				winCount += 1 - (countKoRuleViolations);
+			} else {
+				winCount += countKoRuleViolations;
 			}
 			// Remove all played boards from history
 			for (GoPlayingBoard playedBoard : boardsPlayed) {
@@ -205,6 +228,7 @@ public class MonteCarloGoSolver {
 		public void run() {
 			try {
 				while (true) {
+					//System.out.println("Still running 1");
 					// Iterate over all initial legal moves and play a number of games for each
 					for (int i = 0; i < legalMoves.size(); i++) {
 						monteCarloEvaluation(legalMoves.get(i), monteCarloValues.get(i));
@@ -219,6 +243,7 @@ public class MonteCarloGoSolver {
 					if (finishTime > 0 && System.currentTimeMillis() > finishTime) {
 						break;
 					}
+					//System.out.println("Still running 2");
 				}
 			} catch (CheckFailException e) {
 				e.printStackTrace();

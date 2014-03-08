@@ -47,14 +47,16 @@ public class BoardHistory {
 	 * @param board the board to be added
 	 */
 	public void add(GoPlayingBoard board) {
-		if (!boards.containsKey(board.getCountPiecesOnBoard())) {
-			LinkedList<GoPlayingBoard> list = new LinkedList<GoPlayingBoard>();
-			list.add(board.clone());
-			boards.put(board.getCountPiecesOnBoard(), list);
-		} else {
-			LinkedList<GoPlayingBoard> list = boards.get(board
-					.getCountPiecesOnBoard());
-			list.add(board.clone());
+		if(!hasBeenPlayed(board)) {
+			if (!boards.containsKey(board.getCountPiecesOnBoard())) {
+				LinkedList<GoPlayingBoard> list = new LinkedList<GoPlayingBoard>();
+				list.add(board.clone());
+				boards.put(board.getCountPiecesOnBoard(), list);
+			} else {
+				LinkedList<GoPlayingBoard> list = boards.get(board
+						.getCountPiecesOnBoard());
+				list.add(board.clone());
+			}
 		}
 		allMoves.add(board.clone());
 	}

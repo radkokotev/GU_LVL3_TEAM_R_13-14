@@ -15,9 +15,10 @@ public interface LegalityChecker {
 	/**
 	 * Determines whether the given cell is a legal move on the current board
 	 * @param cell the move to be made
-	 * @return null if the move is illegal, the new board otherwise.
+	 * @return 0 if move is illegal due to KO rule violation, -1 if illegal for other 
+	 * reasons and 1 if the given move is legal 
 	 */
-	public boolean isMoveLegal(Cell<?> cell);
+	public int isMoveLegal(Cell<?> cell);
 	
 	/**
 	 * Get the board that is produced after the move is made.

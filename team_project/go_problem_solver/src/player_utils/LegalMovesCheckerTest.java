@@ -62,33 +62,33 @@ public class LegalMovesCheckerTest {
 	public void testIsMoveLegalNoKo() throws FileNotFoundException, CheckFailException {
 		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory + "/src/player_utils/test_data/liberties_board");
 		LegalMovesChecker checker = new LegalMovesChecker(board);
-		assertTrue(checker.isMoveLegal(new GoCell(Stone.BLACK, 0, 1)));
+		assertTrue(checker.isMoveLegal(new GoCell(Stone.BLACK, 0, 1)) > 0);
 		checker.reset();
-		assertTrue(checker.isMoveLegal(new GoCell(Stone.WHITE, 4, 4)));
+		assertTrue(checker.isMoveLegal(new GoCell(Stone.WHITE, 4, 4)) > 0);
 		checker.reset();
-		assertTrue(checker.isMoveLegal(new GoCell(Stone.WHITE, 12, 12)));
+		assertTrue(checker.isMoveLegal(new GoCell(Stone.WHITE, 12, 12)) > 0);
 		checker.reset();
-		assertFalse(checker.isMoveLegal(new GoCell(Stone.WHITE, 12, 18)));
+		assertFalse(checker.isMoveLegal(new GoCell(Stone.WHITE, 12, 18)) > 0);
 		checker.reset();
-		assertTrue(checker.isMoveLegal(new GoCell(Stone.BLACK, 14, 16)));
+		assertTrue(checker.isMoveLegal(new GoCell(Stone.BLACK, 14, 16)) > 0);
 		GoPlayingBoard newBoard = checker.getNewBoard();
 		assertNotSame(board, newBoard);
 		assertNotSame(board.getCellAt(14, 16), newBoard.getCellAt(14, 16));
 		assertEquals(Stone.BLACK, newBoard.getCellAt(14, 16).getContent());
 		checker.reset();
-		assertTrue(checker.isMoveLegal(new GoCell(Stone.BLACK, 14, 18)));
+		assertTrue(checker.isMoveLegal(new GoCell(Stone.BLACK, 14, 18)) > 0);
 		checker.reset();
-		assertFalse(checker.isMoveLegal(new GoCell(Stone.BLACK, 0, 18)));
+		assertFalse(checker.isMoveLegal(new GoCell(Stone.BLACK, 0, 18)) > 0);
 		checker.reset();
-		assertTrue(checker.isMoveLegal(new GoCell(Stone.WHITE, 0, 18)));
+		assertTrue(checker.isMoveLegal(new GoCell(Stone.WHITE, 0, 18)) > 0);
 		checker.reset();
-		assertFalse(checker.isMoveLegal(new GoCell(Stone.BLACK, 0, 0)));
+		assertFalse(checker.isMoveLegal(new GoCell(Stone.BLACK, 0, 0)) > 0);
 		checker.reset();
-		assertFalse(checker.isMoveLegal(new GoCell(Stone.WHITE, 21, 5)));
+		assertFalse(checker.isMoveLegal(new GoCell(Stone.WHITE, 21, 5)) > 0);
 		checker.reset();
-		assertFalse(checker.isMoveLegal(new GoCell(Stone.BLACK, 5, 25)));
+		assertFalse(checker.isMoveLegal(new GoCell(Stone.BLACK, 5, 25)) > 0);
 		checker.reset();
-		assertFalse(checker.isMoveLegal(new GoCell(Stone.WHITE, -4, 30)));
+		assertFalse(checker.isMoveLegal(new GoCell(Stone.WHITE, -4, 30)) > 0);
 		checker.reset();
 	}
 
@@ -97,11 +97,12 @@ public class LegalMovesCheckerTest {
 		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory + "/src/player_utils/test_data/liberties_board");
 		BoardHistory.getSingleton().add(board); 
 		LegalMovesChecker checker = new LegalMovesChecker(board);
-		assertTrue(checker.isMoveLegal(new GoCell(Stone.BLACK, 14, 1)));
-		assertFalse(checker.isMoveLegal(new GoCell(Stone.WHITE, 14, 0)));
-		assertTrue(checker.isMoveLegal(new GoCell(Stone.WHITE, 14, 18)));
-		assertTrue(checker.isMoveLegal(new GoCell(Stone.BLACK, 3, 16)));
-		assertTrue(checker.isMoveLegal(new GoCell(Stone.WHITE, 3, 15)));
+		assertTrue(checker.isMoveLegal(new GoCell(Stone.BLACK, 14, 1)) > 0);
+		// Move is illegal due to KO rule violation
+		assertEquals(0, checker.isMoveLegal(new GoCell(Stone.WHITE, 14, 0)));
+		assertTrue(checker.isMoveLegal(new GoCell(Stone.WHITE, 14, 18)) > 0);
+		assertTrue(checker.isMoveLegal(new GoCell(Stone.BLACK, 3, 16)) > 0);
+		assertTrue(checker.isMoveLegal(new GoCell(Stone.WHITE, 3, 15)) > 0);
 	}
 	
 	@Test
@@ -133,7 +134,7 @@ public class LegalMovesCheckerTest {
 		String result = "";
 		for (int i = 0; i < 19; i++) {
 			for (int j = 0; j < 19; j++) {
-				if (checker.isMoveLegal(new GoCell(Stone.BLACK, i, j))) {
+				if (checker.isMoveLegal(new GoCell(Stone.BLACK, i, j)) > 0) {
 					result += "Y";
 				} else {
 					result += "N";
@@ -164,7 +165,7 @@ public class LegalMovesCheckerTest {
 		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory + "/src/player_utils/test_data/unsettled_three_white");
 		board.setToPlayNext(Stone.BLACK);
 		LegalMovesChecker checker = new LegalMovesChecker(board);
-		assertTrue(checker.isMoveLegal(new GoCell(Stone.BLACK, 13, 0)));
-		assertTrue(checker.isMoveLegal(new GoCell(Stone.WHITE, 14, 0)));
+		assertTrue(checker.isMoveLegal(new GoCell(Stone.BLACK, 13, 0)) > 0);
+		assertTrue(checker.isMoveLegal(new GoCell(Stone.WHITE, 14, 0)) > 0);
 	}
 }

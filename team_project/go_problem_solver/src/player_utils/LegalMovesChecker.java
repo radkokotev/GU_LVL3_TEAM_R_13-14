@@ -34,31 +34,31 @@ public class LegalMovesChecker implements LegalityChecker{
 	}
 	
 	@Override
-	public boolean isMoveLegal(Cell<?> c) {
+	public int isMoveLegal(Cell<?> c) {
 		GoCell cell = (GoCell) c;
 		if (newBoard.getCellAt(cell.getVerticalCoordinate(), 
 				cell.getHorizontalCoordinate()) == null) {
-			return false;
+			return -1;
 		}
 		if (!newBoard.getCellAt(cell.getVerticalCoordinate(), 
 				cell.getHorizontalCoordinate()).isEmpty()) {
-			return false;
+			return -1;
 		}
 		newBoard.setCellAt(cell.getVerticalCoordinate(), 
 				cell.getHorizontalCoordinate(), cell);
 		if (!captureOponent(cell)){
 			if (getLiberties(cell) == 0) {
 				this.reset();
-				return false;
+				return -1;
 			}
 		}
 		if (history.hasBeenPlayed(newBoard)) {
-			this.reset();
-			return false;
+			//this.reset();
+			return 0;
 		}
 		//this.newBoard.getHistory().add(newBoard);
 		//this.newBoard.setToPlayNext((Stone)c.getContent() == Stone.BLACK ? Stone.WHITE : Stone.BLACK);
-		return true;
+		return 1;
 	}
 
 	/**
@@ -155,7 +155,7 @@ public class LegalMovesChecker implements LegalityChecker{
 		Stone stone = this.originalBoard.toPlayNext();
 		for (int i = 0; i < this.originalBoard.getHeight(); i++) {
 			for (int j = 0; j < this.originalBoard.getWidth(); j++) {
-				legalityArray[i][j] = this.isMoveLegal(new GoCell(stone, i, j));
+				legalityArray[i][j] = this.isMoveLegal(new GoCell(stone, i, j)) > 0;
 				this.reset();
 			}
 		}

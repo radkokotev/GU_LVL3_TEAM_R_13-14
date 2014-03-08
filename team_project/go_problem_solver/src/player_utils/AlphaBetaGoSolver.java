@@ -37,7 +37,7 @@ public class AlphaBetaGoSolver {
 		LegalMovesChecker checker = new LegalMovesChecker(board);
 		for (int i = 0; i < board.getWidth(); i++) {
 			for (int j = 0; j < board.getHeight(); j++) {
-				if (checker.isMoveLegal(new GoCell(board.toPlayNext(), i, j))) {
+				if (checker.isMoveLegal(new GoCell(board.toPlayNext(), i, j)) > 0) {
 					checker.reset();
 					return false;  // there is a legal move
 				}
@@ -55,7 +55,7 @@ public class AlphaBetaGoSolver {
 		for (int i = 0; i < board.getWidth(); i++) {
 			for (int j = 0; j < board.getHeight(); j++) {
 				GoCell cell = new GoCell(board.toPlayNext(), i, j);
-				if (checker.isMoveLegal(cell)) {
+				if (checker.isMoveLegal(cell) > 0) {
 					CellValuePair cellValuePair = new CellValuePair();
 					cellValuePair.cell = cell;
 					GoPlayingBoard newBoard = checker.getNewBoard();
@@ -90,7 +90,7 @@ public class AlphaBetaGoSolver {
 		boolean foundMax = false;
 		for (int i = 0; i < board.getWidth()&& !foundMax; i++) {
 			for (int j = 0; j < board.getHeight() && !foundMax; j++) {
-				if (checker.isMoveLegal(new GoCell(board.toPlayNext(), i, j))) {
+				if (checker.isMoveLegal(new GoCell(board.toPlayNext(), i, j)) > 0) {
 					GoPlayingBoard newBoard = checker.getNewBoard();
 					newBoard.oppositeToPlayNext();
 					alpha = Math.max(alpha, minimize(newBoard, alpha, beta));
@@ -117,7 +117,7 @@ public class AlphaBetaGoSolver {
 		boolean foundMin = false;
 		for (int i = 0; i < board.getWidth() && !foundMin; i++) {
 			for (int j = 0; j < board.getHeight() && !foundMin; j++) {
-				if (checker.isMoveLegal(new GoCell(board.toPlayNext(), i, j))) {
+				if (checker.isMoveLegal(new GoCell(board.toPlayNext(), i, j)) > 0) {
 					GoPlayingBoard newBoard = checker.getNewBoard();
 					newBoard.oppositeToPlayNext();
 					beta = Math.min(beta, maximize(newBoard, alpha, beta));
