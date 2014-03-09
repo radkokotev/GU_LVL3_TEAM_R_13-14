@@ -201,9 +201,9 @@ public class MonteCarloGoSolver {
 			}
 			if (newBoard.getCellAt(cellToCapture.getVerticalCoordinate(), 
 					cellToCapture.getHorizontalCoordinate()).isEmpty()) {
-				winCount += 1 - (countKoRuleViolations);
+				winCount += 1 - (countKoRuleViolations / 0.1);
 			} else {
-				winCount += countKoRuleViolations;
+				winCount -= countKoRuleViolations / 0.1;
 			}
 			// Remove all played boards from history
 			for (GoPlayingBoard playedBoard : boardsPlayed) {

@@ -37,7 +37,7 @@ public class MinimaxGoSolver {
 		LegalMovesChecker checker = new LegalMovesChecker(board);
 		for (int i = 0; i < board.getWidth(); i++) {
 			for (int j = 0; j < board.getHeight(); j++) {
-				if (checker.isMoveLegal(new GoCell(board.toPlayNext(), i, j)) > 0) {
+				if ( checker.isMoveLegal(new GoCell(board.toPlayNext(), i, j)) > 0) {
 					checker.reset();
 					return false;  // there is a legal move
 				}

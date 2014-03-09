@@ -94,7 +94,7 @@ public class Minimax_Test1 {
 				"/src/test/test_data/problem7_interioreye_1");
 		board.setToPlayNext(Stone.WHITE);
 		MonteCarloGoSolver solver = new MonteCarloGoSolver(board, board.getCellAt(15, 15), 
-				10, System.currentTimeMillis() + 1000 * 120);
+				10, System.currentTimeMillis() + 1000 * 300);
 		assertEquals(Stone.BLACK, board.getCellAt(15, 15).getContent());
 		assertEquals(new GoCell(Stone.WHITE, 18, 17), solver.decision());
 	}
