@@ -75,21 +75,20 @@ public class AlphaBetaGoSolver implements GoSolverAlgorithm{
 			return (-infinity);
 		}
 		LegalMovesChecker checker = new LegalMovesChecker(board);
-		boolean foundMax = false;
-		for (int i = 0; i < board.getWidth()&& !foundMax; i++) {
-			for (int j = 0; j < board.getHeight() && !foundMax; j++) {
-				if (checker.isMoveLegal(new GoCell(board.toPlayNext(), i, j))) {
-					GoPlayingBoard newBoard = checker.getNewBoard();
-					newBoard.oppositeToPlayNext();
-					alpha = Math.max(alpha, minimize(newBoard, alpha, beta));
-					if (alpha >= beta) {
-						foundMax = true;
-					}
-					BoardHistory.getSingleton().remove(newBoard);
+		GoodMovesFinder finder = new GoodMovesFinder(board.clone());
+		for (GoCell cell : finder.getGoodMoves()) {
+			if (checker.isMoveLegal(cell)) {
+				GoPlayingBoard newBoard = checker.getNewBoard();
+				newBoard.oppositeToPlayNext();
+				alpha = Math.max(alpha, minimize(newBoard, alpha, beta));
+				if (alpha >= beta) {
+					break;
 				}
-				checker.reset();
+				BoardHistory.getSingleton().remove(newBoard);
 			}
+			checker.reset();
 		}
+
 		return alpha;
 	}
 	
@@ -102,20 +101,19 @@ public class AlphaBetaGoSolver implements GoSolverAlgorithm{
 			return (-infinity);
 		}
 		LegalMovesChecker checker = new LegalMovesChecker(board);
-		boolean foundMin = false;
-		for (int i = 0; i < board.getWidth() && !foundMin; i++) {
-			for (int j = 0; j < board.getHeight() && !foundMin; j++) {
-				if (checker.isMoveLegal(new GoCell(board.toPlayNext(), i, j))) {
-					GoPlayingBoard newBoard = checker.getNewBoard();
-					newBoard.oppositeToPlayNext();
-					beta = Math.min(beta, maximize(newBoard, alpha, beta));
-					if (alpha >= beta) {
-						foundMin = true;
-					}
-					BoardHistory.getSingleton().remove(newBoard);
+		GoodMovesFinder finder = new GoodMovesFinder(board.clone());
+		for (GoCell cell : finder.getGoodMoves()) {
+
+			if (checker.isMoveLegal(cell)) {
+				GoPlayingBoard newBoard = checker.getNewBoard();
+				newBoard.oppositeToPlayNext();
+				beta = Math.min(beta, maximize(newBoard, alpha, beta));
+				if (alpha >= beta) {
+					break;
 				}
-				checker.reset();
+				BoardHistory.getSingleton().remove(newBoard);
 			}
+			checker.reset();
 		}
 		return beta;
 	}

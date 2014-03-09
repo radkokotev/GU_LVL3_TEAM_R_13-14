@@ -6,7 +6,7 @@ import board_utils.GoCell;
 import board_utils.GoPlayingBoard;
 import custom_java_utils.CheckFailException;
 
-public class MinimaxGoSolver implements GoSolverAlgorithm{
+public class MinimaxGoSolver implements GoSolverAlgorithm {
 	private GoPlayingBoard board;
 	private GoCell cellToCapture;
 	private static final long infinity = Integer.MAX_VALUE;
@@ -14,6 +14,18 @@ public class MinimaxGoSolver implements GoSolverAlgorithm{
 	public MinimaxGoSolver(GoPlayingBoard board, GoCell cell) {
 		this.board = board.clone();
 		this.cellToCapture = cell.clone();
+	}
+	
+	private class CellValuePair implements Comparable<CellValuePair>{
+		public GoCell cell;
+		public long minimaxValue;
+		
+		@Override
+		public int compareTo(CellValuePair other) {
+			if (this.minimaxValue < other.minimaxValue) return -1;
+			if (this.minimaxValue > other.minimaxValue) return 1;
+			return 0;
+		}
 	}
 	
 	public boolean isPositionTerminal(GoPlayingBoard board) {
@@ -38,27 +50,29 @@ public class MinimaxGoSolver implements GoSolverAlgorithm{
 	public GoCell decision() throws CheckFailException {
 		LegalMovesChecker checker = new LegalMovesChecker(board);
 		ArrayList<CellValuePair> decisionMinimaxValues = 
-				new ArrayList<CellValuePair>();
-		GoodMovesFinder finder = new GoodMovesFinder(board.clone());
-		for(GoCell cell : finder.getGoodMoves()) {
-			System.out.println(0 + " " + cell);
-			if (checker.isMoveLegal(cell)) {
-				CellValuePair cellValuePair = new CellValuePair();
-				cellValuePair.cell = cell;
-				GoPlayingBoard newBoard = checker.getNewBoard();
-				newBoard.oppositeToPlayNext();
-				cellValuePair.value = minimize(newBoard, 0);
-				decisionMinimaxValues.add(cellValuePair);
-				BoardHistory.getSingleton().remove(newBoard);
+				new ArrayList<MinimaxGoSolver.CellValuePair>();
+		
+		for (int i = 0; i < board.getWidth(); i++) {
+			for (int j = 0; j < board.getHeight(); j++) {
+				GoCell cell = new GoCell(board.toPlayNext(), i, j);
+				if (checker.isMoveLegal(cell)) {
+					CellValuePair cellValuePair = new CellValuePair();
+					cellValuePair.cell = cell;
+					GoPlayingBoard newBoard = checker.getNewBoard();
+					newBoard.oppositeToPlayNext();
+					cellValuePair.minimaxValue = minimize(newBoard, 0);
+					decisionMinimaxValues.add(cellValuePair);
+					BoardHistory.getSingleton().remove(newBoard);
+				}
+				checker.reset();
 			}
-			checker.reset();
 		}
 		GoCell bestMove = null;
 		long bestValue = (-infinity);
 		for (CellValuePair pair : decisionMinimaxValues) {
-			System.out.println(pair.cell + " "  + pair.value);
-			if (pair.value >= bestValue) {
-				bestValue = (long) pair.value;
+			System.out.println("pair" + pair.minimaxValue);
+			if (pair.minimaxValue >= bestValue) {
+				bestValue = pair.minimaxValue;
 				bestMove = pair.cell;
 			}
 		}
@@ -66,7 +80,7 @@ public class MinimaxGoSolver implements GoSolverAlgorithm{
 	}
 	
 	private long maximize(GoPlayingBoard board, int depth) throws CheckFailException {
-		//System.out.println(depth);
+		if(depth <= 0) System.out.println(depth);
 		depth++;
 		if (isPositionTerminal(board)) {
 			if (board.getCellAt(cellToCapture.getVerticalCoordinate(), 
@@ -78,21 +92,20 @@ public class MinimaxGoSolver implements GoSolverAlgorithm{
 		ArrayList<Long> minimaxValues = new ArrayList<Long>();
 		LegalMovesChecker checker = new LegalMovesChecker(board);
 		boolean foundMax = false;
-		GoodMovesFinder finder = new GoodMovesFinder(board.clone());
-		for(GoCell cell : finder.getGoodMoves()) {
-			System.out.println(depth + " " + cell);
-			if (checker.isMoveLegal(cell)) {
-				GoPlayingBoard newBoard = checker.getNewBoard();
-				newBoard.oppositeToPlayNext();
-				long currMinimaxValue = minimize(newBoard, depth);
-				minimaxValues.add(currMinimaxValue);  // there is a legal move
-				if (currMinimaxValue >= infinity) {
-					foundMax = true;
+		for (int i = 0; i < board.getWidth()&& !foundMax; i++) {
+			for (int j = 0; j < board.getHeight() && !foundMax; j++) {
+				if (checker.isMoveLegal(new GoCell(board.toPlayNext(), i, j))) {
+					GoPlayingBoard newBoard = checker.getNewBoard();
+					newBoard.oppositeToPlayNext();
+					long currMinimaxValue = minimize(newBoard, depth);
+					minimaxValues.add(currMinimaxValue);  // there is a legal move
+					if (currMinimaxValue >= infinity) {
+						foundMax = true;
+					}
+					BoardHistory.getSingleton().remove(newBoard);
 				}
-				BoardHistory.getSingleton().remove(newBoard);
+				checker.reset();
 			}
-			checker.reset();
-			if(foundMax) break;
 		}
 		long maxValue = (-infinity);
 		for (long value : minimaxValues) {
@@ -104,7 +117,7 @@ public class MinimaxGoSolver implements GoSolverAlgorithm{
 	}
 	
 	private long minimize(GoPlayingBoard board, int depth) throws CheckFailException {
-		//System.out.println(depth);
+		if(depth <= 0) System.out.println(depth);
 		depth++;
 		if (isPositionTerminal(board)) {
 			if (board.getCellAt(cellToCapture.getVerticalCoordinate(), 
@@ -116,21 +129,20 @@ public class MinimaxGoSolver implements GoSolverAlgorithm{
 		ArrayList<Long> minimaxValues = new ArrayList<Long>();
 		LegalMovesChecker checker = new LegalMovesChecker(board);
 		boolean foundMin = false;
-		GoodMovesFinder finder = new GoodMovesFinder(board.clone());
-		for(GoCell cell : finder.getGoodMoves()) {
-			System.out.println(depth + " " + cell);
-			if (checker.isMoveLegal(cell)) {
-				GoPlayingBoard newBoard = checker.getNewBoard();
-				newBoard.oppositeToPlayNext();
-				long currMinimaxValue = maximize(newBoard, depth);
-				minimaxValues.add(currMinimaxValue);  // there is a legal move
-				if (currMinimaxValue <= -infinity) {
-					foundMin = true;
+		for (int i = 0; i < board.getWidth() && !foundMin; i++) {
+			for (int j = 0; j < board.getHeight() && !foundMin; j++) {
+				if (checker.isMoveLegal(new GoCell(board.toPlayNext(), i, j))) {
+					GoPlayingBoard newBoard = checker.getNewBoard();
+					newBoard.oppositeToPlayNext();
+					long currMinimaxValue = maximize(newBoard, depth);
+					minimaxValues.add(currMinimaxValue);  // there is a legal move
+					if (currMinimaxValue <= -infinity) {
+						foundMin = true;
+					}
+					BoardHistory.getSingleton().remove(newBoard);
 				}
-				BoardHistory.getSingleton().remove(newBoard);
+				checker.reset();
 			}
-			checker.reset();
-			if(foundMin) break;
 		}
 		long maxValue = infinity;
 		for (long value : minimaxValues) {
