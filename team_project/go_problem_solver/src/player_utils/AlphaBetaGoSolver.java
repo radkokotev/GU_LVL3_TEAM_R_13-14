@@ -40,20 +40,18 @@ public class AlphaBetaGoSolver implements GoSolverAlgorithm{
 		ArrayList<CellValuePair> decisionMinimaxValues = 
 				new ArrayList<CellValuePair>();
 		
-		for (int i = 0; i < board.getWidth(); i++) {
-			for (int j = 0; j < board.getHeight(); j++) {
-				GoCell cell = new GoCell(board.toPlayNext(), i, j);
-				if (checker.isMoveLegal(cell)) {
-					CellValuePair cellValuePair = new CellValuePair();
-					cellValuePair.cell = cell;
-					GoPlayingBoard newBoard = checker.getNewBoard();
-					newBoard.oppositeToPlayNext();
-					cellValuePair.value = minimize(newBoard, -infinity, infinity);
-					decisionMinimaxValues.add(cellValuePair);
-					BoardHistory.getSingleton().remove(newBoard);
-				}
-				checker.reset();
+		GoodMovesFinder finder = new GoodMovesFinder(board.clone());
+		for (GoCell cell : finder.getGoodMoves()) {
+			if (checker.isMoveLegal(cell)) {
+				CellValuePair cellValuePair = new CellValuePair();
+				cellValuePair.cell = cell;
+				GoPlayingBoard newBoard = checker.getNewBoard();
+				newBoard.oppositeToPlayNext();
+				cellValuePair.value = minimize(newBoard, -infinity, infinity);
+				decisionMinimaxValues.add(cellValuePair);
+				BoardHistory.getSingleton().remove(newBoard);
 			}
+			checker.reset();
 		}
 		GoCell bestMove = null;
 		long bestValue = (-infinity);
@@ -81,10 +79,10 @@ public class AlphaBetaGoSolver implements GoSolverAlgorithm{
 				GoPlayingBoard newBoard = checker.getNewBoard();
 				newBoard.oppositeToPlayNext();
 				alpha = Math.max(alpha, minimize(newBoard, alpha, beta));
+				BoardHistory.getSingleton().remove(newBoard);
 				if (alpha >= beta) {
 					break;
 				}
-				BoardHistory.getSingleton().remove(newBoard);
 			}
 			checker.reset();
 		}
@@ -103,15 +101,14 @@ public class AlphaBetaGoSolver implements GoSolverAlgorithm{
 		LegalMovesChecker checker = new LegalMovesChecker(board);
 		GoodMovesFinder finder = new GoodMovesFinder(board.clone());
 		for (GoCell cell : finder.getGoodMoves()) {
-
 			if (checker.isMoveLegal(cell)) {
 				GoPlayingBoard newBoard = checker.getNewBoard();
 				newBoard.oppositeToPlayNext();
 				beta = Math.min(beta, maximize(newBoard, alpha, beta));
+				BoardHistory.getSingleton().remove(newBoard);
 				if (alpha >= beta) {
 					break;
 				}
-				BoardHistory.getSingleton().remove(newBoard);
 			}
 			checker.reset();
 		}
