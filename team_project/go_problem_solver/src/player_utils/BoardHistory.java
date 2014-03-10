@@ -48,14 +48,15 @@ public class BoardHistory {
 	 */
 	public void add(GoPlayingBoard board) {
 		if(!hasBeenPlayed(board)) {
-			if (!boards.containsKey(board.getCountPiecesOnBoard())) {
+			int key = board.getCountPiecesOnBoard();
+			if (!boards.containsKey(key)) {
 				LinkedList<GoPlayingBoard> list = new LinkedList<GoPlayingBoard>();
 				list.add(board.clone());
-				boards.put(board.getCountPiecesOnBoard(), list);
+				boards.put(key, list);
 			} else {
-				LinkedList<GoPlayingBoard> list = boards.get(board
-						.getCountPiecesOnBoard());
+				LinkedList<GoPlayingBoard> list = boards.get(key);
 				list.add(board.clone());
+				boards.put(key, list);
 			}
 		}
 		allMoves.add(board.clone());
@@ -66,12 +67,13 @@ public class BoardHistory {
 	 * @param board the board to be removed
 	 */
 	public void remove(GoPlayingBoard board) {
-		if (!boards.containsKey(board.getCountPiecesOnBoard())) {
+		int key = board.getCountPiecesOnBoard();
+		if (!boards.containsKey(key)) {
 			return;
 		} else {
-			LinkedList<GoPlayingBoard> list = boards.get(board
-					.getCountPiecesOnBoard());
+			LinkedList<GoPlayingBoard> list = boards.get(key);
 			list.remove(board);
+			boards.put(key, list);
 		}
 	}
 
@@ -116,10 +118,11 @@ public class BoardHistory {
 	 * @return true if the given board is in the history, false - otherwise
 	 */
 	public boolean hasBeenPlayed(GoPlayingBoard board) {
-		if (!boards.containsKey(board.getCountPiecesOnBoard())) {
+		int key = board.getCountPiecesOnBoard();
+		if (!boards.containsKey(key)) {
 			return false;
 		}
-		for (GoPlayingBoard one : boards.get(board.getCountPiecesOnBoard())) {
+		for (GoPlayingBoard one : boards.get(key)) {
 			if (one.equals(board)) {
 				return true;
 			}

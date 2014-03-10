@@ -154,7 +154,16 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 
 	@Override
 	public int getCountPiecesOnBoard() {
-		return this.countPiecesOnBoard;
+		int count = 0;
+		for (int i = 0; i < this.board.length; i++) {
+			for (int j = 0; j < this.board[i].length; j++) {
+				if (board[i][j].getContent() == Stone.BLACK ||
+						board[i][j].getContent() == Stone.WHITE) {
+					count++;
+				}
+			}
+		}
+		return count;
 	}
 	
 	public int getNumberofBlackStones() {

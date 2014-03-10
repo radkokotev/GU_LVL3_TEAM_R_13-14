@@ -20,6 +20,8 @@ public class MonteCarloGoSolver {
 	ArrayList<GoPlayingBoard> legalMoves;
 	private static final int THREAD_COUNT = 1;
 	
+	boolean handlingKoFights;
+	
 	/**
 	 * Simple constructor to make a decision by using the MonteCarlo method. 
 	 * The default number of games per initial legal moves is 100 and the default 
@@ -33,6 +35,7 @@ public class MonteCarloGoSolver {
 		this.gamesPerMove = 100;
 		this.gamesPerThreadRun = 10;
 		this.finishTime = -1;
+		this.handlingKoFights = false;
 	}
 	
 	/**
@@ -62,6 +65,21 @@ public class MonteCarloGoSolver {
 		this.gamesPerThreadRun = gamesPerThreadRun;
 		this.gamesPerMove = -1;
 		this.finishTime = finishTime;
+	}
+	
+	/**
+	 * A constructor to limit the amount of time MonteCarlo runs for
+	 * @param board the starting position
+	 * @param cell the nominated victim cell
+	 * @param gamesPerThreadRun the number of games to be played for each 
+	 * legal move by each thread
+	 * @param finishTime the system time in milliseconds when the decision 
+	 * should be retrieved
+	 */
+	public MonteCarloGoSolver(GoPlayingBoard board, GoCell cell, 
+			int gamesPerThreadRun, long finishTime, boolean handlingKoFights) {
+		this(board, cell,gamesPerThreadRun, finishTime);
+		this.handlingKoFights = handlingKoFights;
 	}
 	
 //	private class CellValuePair implements Comparable<CellValuePair>{
@@ -127,12 +145,16 @@ public class MonteCarloGoSolver {
 		GoCell bestMove = null;
 		double bestValue = (-infinity);
 		for (CellValuePair pair : monteCarloValues) {
+			if (this.handlingKoFights) {
+				pair.value -= ((pair.attackerKoViolations - pair.defenderKoViolations) * 1.0 ) / 0.5;
+			}
 			if (pair.value > bestValue) {
 				bestValue = pair.value;
 				bestMove = pair.cell;
 			}
 			System.out.println(pair.cell.getVerticalCoordinate() + "," + 
-					pair.cell.getHorizontalCoordinate() + " -> " + pair.value);
+					pair.cell.getHorizontalCoordinate() + " -> " + pair.value + 
+					" att: " + pair.attackerKoViolations + " def: " + pair.defenderKoViolations);
 		}
 		return bestMove;
 	}
@@ -148,7 +170,8 @@ public class MonteCarloGoSolver {
 	private void monteCarloEvaluation(GoPlayingBoard board, CellValuePair pair) 
 			throws CheckFailException {
 		double winCount = 0;
-		int countKoRuleViolations = 0;
+		int attackerKoRuleViolations = 0;
+		int defenderKoRuleViolations = 0;
 		int gamesToPlay = gamesPerThreadRun;
 		// Play that many random games
 		for (;gamesToPlay > 0; gamesToPlay--) {
@@ -166,9 +189,11 @@ public class MonteCarloGoSolver {
 						GoCell currCell = new GoCell(newBoard.toPlayNext(), i, j);
 						int legality = checker.isMoveLegal(currCell); 
 						if (legality >= 0) {
-							legalMoves.add(currCell);
-							if (legality == 0) {
+							if (legality == 0 && this.handlingKoFights) {
+								legalMoves.add(currCell);
 								koViolations.add(currCell);
+							} else if (legality > 0) {
+								legalMoves.add(currCell);
 							}
 						}
 						checker.reset();
@@ -184,26 +209,38 @@ public class MonteCarloGoSolver {
 				GoCell nextMove = legalMoves.get(randomGenerator.nextInt(legalMoves.size()));
 				if (koViolations.contains(nextMove)) {
 					// TODO take a second look into making this more general
-					if (nextMove.getContent() == cellToCapture.getContent()) {
-						countKoRuleViolations--;
-					} else {
-						countKoRuleViolations++;
-					}
+					/*Random rndPenaltyChooser = new Random();
+					int randomPenalty = rndPenaltyChooser.nextInt(2);
+					switch(randomPenalty) {
+						case(0): {*/
+							if (nextMove.getContent() == cellToCapture.getContent()) {
+								// Defendant violates the KO rule 
+								defenderKoRuleViolations++;
+							} else {
+								attackerKoRuleViolations++;
+							}
+							break;
+						/*}
+						case (1): {
+							isOppositeToPlayNext = false;
+							if (nextMove.getContent() == cellToCapture.getContent()) {
+								//  Defendant skips a move due to a KO Rule violation 
+								countKoRuleViolations++;
+							} else {
+								countKoRuleViolations--;
+							}
+							break;
+						}
+					}*/
 				}
 				checker.isMoveLegal(nextMove);
 				newBoard = checker.getNewBoard();
 				newBoard.oppositeToPlayNext();
 				boardsPlayed.add(newBoard);
-				if (countKoRuleViolations != 0) {
-					//System.out.println(newBoard);
-					//System.out.println("The KO rule violations are " + countKoRuleViolations);
-				}
 			}
 			if (newBoard.getCellAt(cellToCapture.getVerticalCoordinate(), 
 					cellToCapture.getHorizontalCoordinate()).isEmpty()) {
-				winCount += 1 - (countKoRuleViolations / 0.1);
-			} else {
-				winCount -= countKoRuleViolations / 0.1;
+				winCount += 1;
 			}
 			// Remove all played boards from history
 			for (GoPlayingBoard playedBoard : boardsPlayed) {
@@ -212,6 +249,8 @@ public class MonteCarloGoSolver {
 		}
 		synchronized(monteCarloValues) {
 			pair.value += winCount;
+			pair.attackerKoViolations += attackerKoRuleViolations;
+			pair.defenderKoViolations += defenderKoRuleViolations;
 		}
 	}
 	
@@ -228,7 +267,6 @@ public class MonteCarloGoSolver {
 		public void run() {
 			try {
 				while (true) {
-					//System.out.println("Still running 1");
 					// Iterate over all initial legal moves and play a number of games for each
 					for (int i = 0; i < legalMoves.size(); i++) {
 						monteCarloEvaluation(legalMoves.get(i), monteCarloValues.get(i));
@@ -243,7 +281,6 @@ public class MonteCarloGoSolver {
 					if (finishTime > 0 && System.currentTimeMillis() > finishTime) {
 						break;
 					}
-					//System.out.println("Still running 2");
 				}
 			} catch (CheckFailException e) {
 				e.printStackTrace();

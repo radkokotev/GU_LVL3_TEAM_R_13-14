@@ -86,7 +86,7 @@ public class Minimax_Test1 {
 		assertEquals(Stone.BLACK, board.getCellAt(5, 16).getContent());
 		assertEquals(new GoCell(Stone.WHITE, 5, 18), solver.minimaxDecision());
 	}
-	*/
+	
 	//
 	@Test
 	public void testMinimaxProblem7() throws FileNotFoundException, CheckFailException, InterruptedException {
@@ -94,11 +94,11 @@ public class Minimax_Test1 {
 				"/src/test/test_data/problem7_interioreye_1");
 		board.setToPlayNext(Stone.WHITE);
 		MonteCarloGoSolver solver = new MonteCarloGoSolver(board, board.getCellAt(15, 15), 
-				10, System.currentTimeMillis() + 1000 * 300);
+				10, System.currentTimeMillis() + 1000 * 90);
 		assertEquals(Stone.BLACK, board.getCellAt(15, 15).getContent());
 		assertEquals(new GoCell(Stone.WHITE, 18, 17), solver.decision());
 	}
-	/*
+	
 	@Test
 	public void testMinimaxProblem8() throws FileNotFoundException, CheckFailException, InterruptedException {
 		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory +
@@ -128,4 +128,76 @@ public class Minimax_Test1 {
 		assertEquals(Stone.BLACK, board.getCellAt(14, 1).getContent());
 		assertEquals(new GoCell(Stone.WHITE, 14, 0), solver.minimaxDecision());
 	}	*/
+	
+	@Test
+	public void mins_2_testKoFightProblem_12_5() throws FileNotFoundException, CheckFailException, InterruptedException {
+		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory +
+				"/src/test/test_data/chapter_12_5");
+		board.setToPlayNext(Stone.WHITE);
+		System.out.println("Running an algorithm handling KO with penalties of 0.5 for 2 minutes");
+		MonteCarloGoSolver solver = new MonteCarloGoSolver(board, board.getCellAt(16, 5), 
+				20, System.currentTimeMillis() + 1000 * 120, true);
+		assertEquals(Stone.BLACK, board.getCellAt(16, 5).getContent());
+		assertEquals(new GoCell(Stone.WHITE, 17, 5), solver.decision());
+	}
+	
+	@Test
+	public void mins_5_testKoFightProblem_12_5() throws FileNotFoundException, CheckFailException, InterruptedException {
+		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory +
+				"/src/test/test_data/chapter_12_5");
+		board.setToPlayNext(Stone.WHITE);
+		System.out.println("Running an algorithm handling KO with penalties of 0.5 for 5 minutes");
+		MonteCarloGoSolver solver = new MonteCarloGoSolver(board, board.getCellAt(16, 5), 
+				50, System.currentTimeMillis() + 1000 * 300, true);
+		assertEquals(Stone.BLACK, board.getCellAt(16, 5).getContent());
+		assertEquals(new GoCell(Stone.WHITE, 17, 5), solver.decision());
+	}
+	
+	@Test
+	public void mins_9_testKoFightProblem_12_5() throws FileNotFoundException, CheckFailException, InterruptedException {
+		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory +
+				"/src/test/test_data/chapter_12_5");
+		board.setToPlayNext(Stone.WHITE);
+		System.out.println("Running an algorithm handling KO with penalties of 0.5 for 10 minutes");
+		MonteCarloGoSolver solver = new MonteCarloGoSolver(board, board.getCellAt(16, 5), 
+				50, System.currentTimeMillis() + 1000 * 600, true);
+		assertEquals(Stone.BLACK, board.getCellAt(16, 5).getContent());
+		assertEquals(new GoCell(Stone.WHITE, 17, 5), solver.decision());
+	}
+	
+	@Test
+	public void mins_2_testNoKoProblem_12_5() throws FileNotFoundException, CheckFailException, InterruptedException {
+		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory +
+				"/src/test/test_data/chapter_12_5");
+		board.setToPlayNext(Stone.WHITE);
+		System.out.println("Running simple Monte-Carlo 2 minutes");
+		MonteCarloGoSolver solver = new MonteCarloGoSolver(board, board.getCellAt(16, 5), 
+				20, System.currentTimeMillis() + 1000 * 120, false);
+		assertEquals(Stone.BLACK, board.getCellAt(16, 5).getContent());
+		assertEquals(new GoCell(Stone.WHITE, 17, 5), solver.decision());
+	}
+	
+	@Test
+	public void mins_5_testNoKoProblem_12_5() throws FileNotFoundException, CheckFailException, InterruptedException {
+		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory +
+				"/src/test/test_data/chapter_12_5");
+		board.setToPlayNext(Stone.WHITE);
+		System.out.println("Running simple Monte-Carlo 5 minutes");
+		MonteCarloGoSolver solver = new MonteCarloGoSolver(board, board.getCellAt(16, 5), 
+				50, System.currentTimeMillis() + 1000 * 300, false);
+		assertEquals(Stone.BLACK, board.getCellAt(16, 5).getContent());
+		assertEquals(new GoCell(Stone.WHITE, 17, 5), solver.decision());
+	}
+
+	@Test
+	public void mins_9_testNoKoProblem_12_5() throws FileNotFoundException, CheckFailException, InterruptedException {
+		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory +
+				"/src/test/test_data/chapter_12_5");
+		board.setToPlayNext(Stone.WHITE);
+		System.out.println("Running simple Monte-Carlo 10 minutes");
+		MonteCarloGoSolver solver = new MonteCarloGoSolver(board, board.getCellAt(16, 5), 
+				50, System.currentTimeMillis() + 1000 * 600, false);
+		assertEquals(Stone.BLACK, board.getCellAt(16, 5).getContent());
+		assertEquals(new GoCell(Stone.WHITE, 17, 5), solver.decision());
+	}
 }
