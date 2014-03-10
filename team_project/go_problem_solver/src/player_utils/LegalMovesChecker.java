@@ -3,6 +3,7 @@
  */
 package player_utils;
 
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -46,7 +47,7 @@ public class LegalMovesChecker implements LegalityChecker{
 		}
 		newBoard.setCellAt(cell.getVerticalCoordinate(), 
 				cell.getHorizontalCoordinate(), cell);
-		if (!captureOponent(cell)){
+		if (captureOponent(cell).isEmpty()) {
 			if (getLiberties(cell) == 0) {
 				this.reset();
 				return false;
@@ -56,8 +57,6 @@ public class LegalMovesChecker implements LegalityChecker{
 			this.reset();
 			return false;
 		}
-		//this.newBoard.getHistory().add(newBoard);
-		//this.newBoard.setToPlayNext((Stone)c.getContent() == Stone.BLACK ? Stone.WHITE : Stone.BLACK);
 		return true;
 	}
 
@@ -65,18 +64,16 @@ public class LegalMovesChecker implements LegalityChecker{
 	 * Removes and all opponent stones (if any) that have no liberties left 
 	 * after this move.
 	 * @param cell the new move that is being made
-	 * @return true if there were opponent stones that were killed, 
-	 * false - otherwise  
+	 * @return ArrayList of the removed groups, 
+	 *
 	 */
-	public boolean captureOponent(GoCell cell) {
+	public ArrayList<GoCell> captureOponent(GoCell cell) {
 		//System.out.println("Capture: " + cell.x() + " " + cell.y());
-		boolean captured = false;
+		ArrayList<GoCell> captured = new ArrayList<GoCell>();
 		for (GoCell neighbour : this.newBoard.getNeighboursOf(cell)) {
 			if (neighbour != null && GoCell.areOposite(cell, neighbour)) {
 				if (getLiberties(neighbour) == 0) {
-					removeOponentsStone(neighbour, neighbour.getContent());
-					//System.out.println("Removed: " + neighbour.x() + " " + neighbour.y());
-					captured = true;
+					removeOponentsStone(neighbour, neighbour.getContent(), captured);
 				}
 			}
 		}
@@ -125,13 +122,15 @@ public class LegalMovesChecker implements LegalityChecker{
 	 * @param cell a cell that is a member of that group
 	 * @param stone the type of stone that is to be removed
 	 */
-	private void removeOponentsStone(GoCell cell, Stone stone) {
+	private void removeOponentsStone(GoCell cell, Stone stone, ArrayList<GoCell> captured) {
+		captured.add(newBoard.getCellAt(
+				cell.getVerticalCoordinate(), cell.getHorizontalCoordinate()));
 		newBoard.setCellAt(cell.getVerticalCoordinate(), cell.getHorizontalCoordinate(), 
 				new GoCell(Stone.NONE, cell.getVerticalCoordinate(), cell.getHorizontalCoordinate()));
 		for (GoCell neighbour : newBoard.getNeighboursOf(cell)) {
 			if (neighbour != null && !neighbour.isEmpty() && 
 					neighbour.getContent() == stone) {
-				removeOponentsStone(neighbour, stone);
+				removeOponentsStone(neighbour, stone, captured);
 			}
 		}
 	}

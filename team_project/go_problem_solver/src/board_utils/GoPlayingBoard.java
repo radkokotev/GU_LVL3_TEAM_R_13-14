@@ -5,17 +5,21 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.Set;
+import java.util.TreeSet;
 
 import custom_java_utils.CheckFailException;
 import custom_java_utils.CheckUtils;
 
 public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	private GoCell[][] board;
-	private Stone toPlayNext;
-	private Player nextPlayer;
-	private int countPiecesOnBoard;
+	private Player toPlayNext;
+	private Player firstPlayer;
+	private Player secondPlayer;
 	private int blackStones;
+	private int whiteStones;
 	private GoCell target = null;
 	
 	// Board constants
@@ -30,8 +34,6 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	// Who is playing first from file?
 	private static final String FIRST_IS_WHITE = "WHITE";
 	private static final String FIRST_IS_BLACK = "BLACK";
-	private static final String HUMAN = "HUMAN";
-	private static final String COMPUTER = "COMPUTER";
 	
 	/**
 	 * Creates an empty Go playing board
@@ -43,9 +45,12 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 				board[i][j] = new GoCell(Stone.NONE, i, j);
 			}
 		}
-		toPlayNext = Stone.BLACK;
-		countPiecesOnBoard = 0;
+		
 		blackStones = 0;
+		whiteStones = 0;
+		firstPlayer = new Player();
+		secondPlayer = new Player(Stone.WHITE);
+		toPlayNext = firstPlayer;
 	}
 	
 	/**
@@ -65,9 +70,9 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 		String firstline = fileScanner.nextLine();
 		String[] fileArgs = firstline.split(" ");
 		if(fileArgs[0].equals(FIRST_IS_WHITE))
-			toPlayNext = Stone.WHITE;
+			toPlayNext.colour = Stone.WHITE;
 		else if(fileArgs[0].equals(FIRST_IS_BLACK))
-			toPlayNext = Stone.BLACK;
+			toPlayNext.colour = Stone.BLACK;
 		
 		for (int i = 0; fileScanner.hasNext(); i++) {
 			// TODO what happens if there are less than 19 lines in the file?
@@ -77,23 +82,17 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 			for (int j = 0; j < WIDTH; j++) {
 				Stone stone;
 				switch (line.charAt(j)) {
-					case (BLACK) : stone = Stone.BLACK; countPiecesOnBoard++; break;
-					case (WHITE) : stone = Stone.WHITE; countPiecesOnBoard++; break;
+					case (BLACK) : stone = Stone.BLACK; blackStones++; break;
+					case (WHITE) : stone = Stone.WHITE; whiteStones++; break;
 					case (NONE) : stone = Stone.NONE; break;
 					default : stone = Stone.INNER_BORDER;
 				}
 				this.board[i][j].setContent(stone);
 			}
 		}
-		if(!firstline.equals("")) {
-			target = getCellAt(Integer.valueOf(fileArgs[3]), Integer.valueOf(fileArgs[4])).clone();
-			if(fileArgs[1].equals(COMPUTER)){
-				nextPlayer = Player.COMPUTER;
-			} else if(fileArgs[1].equals(HUMAN)){
-				nextPlayer = Player.HUMAN;
-			}
-		} else 
-			nextPlayer = Player.COMPUTER;
+		if(!firstline.equals(""))
+			target = getCellAt(Integer.valueOf(fileArgs[2]), Integer.valueOf(fileArgs[3])).clone();
+		
 		fileScanner.close();
 	}
 	
@@ -101,29 +100,33 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	 * @return the colour of the stone to be placed next.
 	 */
 	public Stone toPlayNext() {
-		return this.toPlayNext;
+		return toPlayNext.colour;
 	}
 	
 	/**
 	 * A setter for the value of who is to play next.
 	 */
 	public void setToPlayNext(Stone stone) {
-		this.toPlayNext = stone;
+		toPlayNext.colour = stone;
 	}
 	
 	/**
 	 * A setter for the value of toPlayNext. The new value would be of the opposite colour.
 	 */
 	public void oppositeToPlayNext() {
-		this.toPlayNext = this.toPlayNext == Stone.BLACK ? Stone.WHITE : Stone.BLACK;
+		toPlayNext = (toPlayNext.equals(firstPlayer) ? secondPlayer : firstPlayer);
+	}
+	
+	public Player getFirstPlayer(){
+		return firstPlayer;
 	}
 	
 	public Player getNextPlayer(){
-		return nextPlayer;
+		return toPlayNext;
 	}
 	
-	public void oppositePlayer(){
-		nextPlayer = nextPlayer == Player.HUMAN ? Player.COMPUTER : Player.HUMAN;
+	public boolean isNextPlayerComputer(){
+		return toPlayNext.type == Player.Type.COMPUTER;
 	}
 	
 	/**
@@ -141,6 +144,53 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 		return neighbours;
 	}
 	
+	/**
+	 * @param cell the central cell
+	 * @return array of all eight cells which are around given cell, that may 
+	 * contain null values if some are outside of bounds
+	 */
+	public GoCell[] getCloseCellsOf(GoCell cell) {
+		GoCell[] allAround = new GoCell[8];
+		GoCell[] neighbours = getNeighboursOf(cell);
+		for(int i = 0; i < neighbours.length; i++)
+			allAround[i] = neighbours[i];
+		allAround[4] = this.getCellAt(cell.getVerticalCoordinate() - 1, cell.getHorizontalCoordinate() - 1);
+		allAround[5] = this.getCellAt(cell.getVerticalCoordinate() + 1, cell.getHorizontalCoordinate() + 1);
+		allAround[6] = this.getCellAt(cell.getVerticalCoordinate() + 1, cell.getHorizontalCoordinate() - 1);
+		allAround[7] = this.getCellAt(cell.getVerticalCoordinate() - 1, cell.getHorizontalCoordinate() + 1);
+		return allAround;
+	}
+	
+	/**
+	 * @param cell Cell from the group you want to find.
+	 * @param set of visited cells
+	 * @return array of group cells which are adjacent to given cell and same as 
+	 * colour as given cell
+	 */
+	public ArrayList<GoCell> findGroupOf(GoCell cell, Set<GoCell> visited){
+		ArrayList<GoCell> group = new ArrayList<GoCell>();
+		group.add(cell);
+		visited.add(cell);
+		for(GoCell neighbour : getNeighboursOf(cell)){
+			if(neighbour != null && neighbour.getContent() == cell.getContent()
+					&& !visited.contains(neighbour)) 
+				group.addAll(findGroupOf(neighbour, visited));
+		}
+		return group;
+	}
+	
+	public ArrayList<GoCell> getCloseCellsOfGroup(GoCell cell){
+		ArrayList<GoCell> group = findGroupOf(cell, new TreeSet<GoCell>());
+		ArrayList<GoCell> closeCells = new ArrayList<GoCell>();
+		for(GoCell groupMember : group){
+			for(GoCell closeCell : getCloseCellsOf(groupMember))
+				if(closeCell != null && !group.contains(closeCell)
+						&& !closeCells.contains(closeCell))
+					closeCells.add(closeCell);
+		}
+		return closeCells;
+	}
+	
 	
 	@Override
 	public int getWidth() {
@@ -154,7 +204,7 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 
 	@Override
 	public int getCountPiecesOnBoard() {
-		return this.countPiecesOnBoard;
+		return blackStones + whiteStones;
 	}
 	
 	public int getNumberofBlackStones() {
@@ -162,7 +212,15 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	}
 	
 	public int getNumberOfWhiteStones() {
-		return (countPiecesOnBoard - blackStones);
+		return whiteStones;
+	}
+	
+	public int getNumberOfOpponentStones() {
+		return toPlayNext.colour == Stone.BLACK ? blackStones : whiteStones;
+	}
+	
+	public int getNumberOfOwnStones() {
+		return toPlayNext.colour == Stone.BLACK ? whiteStones : blackStones;
 	}
 	
 	public void countAndSetBlackStones() {
@@ -172,6 +230,18 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 				if (x.getContent().equals(Stone.BLACK))
 					count++;
 		blackStones = count;
+	}
+	
+	public Stone getFirstPlayerColour() {
+		return firstPlayer.colour;
+	}
+	
+	public String getFirstPlayerAlgorithmName() {
+		return firstPlayer.algorithmName;
+	}
+	
+	public String getSecondPlayerAlgorithmName() {
+		return secondPlayer.algorithmName;
 	}
 
 	@Override
@@ -184,15 +254,16 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	
 	@Override
 	public void setCellAt(int x, int y, GoCell content) {
-		if (this.board[x][y].isEmpty() && !content.isEmpty()) {
-			this.countPiecesOnBoard++;
-			if (content.getContent().equals(Stone.BLACK))
-				blackStones++;
-		} else if (!this.board[x][y].isEmpty() && content.isEmpty()) {
-			this.countPiecesOnBoard--;
-			if(board[x][y].getContent() == Stone.BLACK)
-				blackStones--;
-		}
+		
+		if (content.getContent().equals(Stone.BLACK))
+			blackStones++;
+		else if(content.getContent().equals(Stone.WHITE))
+			whiteStones++;
+
+		if(board[x][y].getContent() == Stone.BLACK)
+			blackStones--;
+		else if(board[x][y].getContent() == Stone.WHITE)
+			whiteStones--;
 		
 		this.board[x][y] = content.clone();
 	}
@@ -206,6 +277,30 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	
 	public void setTarget(Stone content, int x, int y){
 		target = new GoCell(content, x, y);
+	}
+	
+	public void setFirstPlayerType(Player.Type t){
+		firstPlayer.type = t;
+	}
+	
+	public void setFirstPlayerColour(Stone t){
+		firstPlayer.colour = t;
+	}
+	
+	public void setFirstPlayerAlgorithmName(String name){
+		firstPlayer.algorithmName = name;
+	}
+	
+	public void setSecondPlayerType(Player.Type t){
+		secondPlayer.type = t;
+	}
+	
+	public void setSecondPlayerColour(Stone t){
+		secondPlayer.colour = t;
+	}
+	
+	public void setSecondPlayerAlgorithmName(String name){
+		secondPlayer.algorithmName = name;
 	}
 	
 	@Override
@@ -257,11 +352,12 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 				other.board[i][j] =this.board[i][j];
 			}
 		}
-		other.countPiecesOnBoard = this.countPiecesOnBoard;
 		other.toPlayNext = this.toPlayNext;
+		other.firstPlayer = this.firstPlayer;
+		other.secondPlayer = this.secondPlayer;
 		other.blackStones = this.blackStones;
+		other.whiteStones = this.whiteStones;
 		other.target = this.target;
-		other.nextPlayer = this.nextPlayer;
 		return other;
 	}
 	

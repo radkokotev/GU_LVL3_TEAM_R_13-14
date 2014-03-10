@@ -60,6 +60,8 @@ public class MonteCarloGoSolverTest {
 		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory +
 				"/src/player_utils/test_data/unsettled_three_white");
 		board.setToPlayNext(Stone.WHITE);
+		board.setFirstPlayerColour(Stone.WHITE);
+		board.setSecondPlayerColour(Stone.BLACK);
 		MonteCarloGoSolver solver = new MonteCarloGoSolver(board, board.getCellAt(14, 1));
 		assertEquals(new GoCell(Stone.WHITE, 14, 0), solver.decision());
 	}

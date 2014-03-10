@@ -6,7 +6,7 @@ import board_utils.GoCell;
 import board_utils.GoPlayingBoard;
 import custom_java_utils.CheckFailException;
 
-public class MinimaxGoSolver {
+public class MinimaxGoSolver implements GoSolverAlgorithm {
 	private GoPlayingBoard board;
 	private GoCell cellToCapture;
 	private static final long infinity = Integer.MAX_VALUE;
@@ -14,18 +14,6 @@ public class MinimaxGoSolver {
 	public MinimaxGoSolver(GoPlayingBoard board, GoCell cell) {
 		this.board = board.clone();
 		this.cellToCapture = cell.clone();
-	}
-	
-	private class CellValuePair implements Comparable<CellValuePair>{
-		public GoCell cell;
-		public long minimaxValue;
-		
-		@Override
-		public int compareTo(CellValuePair other) {
-			if (this.minimaxValue < other.minimaxValue) return -1;
-			if (this.minimaxValue > other.minimaxValue) return 1;
-			return 0;
-		}
 	}
 	
 	public boolean isPositionTerminal(GoPlayingBoard board) {
@@ -47,10 +35,10 @@ public class MinimaxGoSolver {
 		return true;
 	}
 	
-	public GoCell minimaxDecision() throws CheckFailException {
+	public GoCell decision() throws CheckFailException {
 		LegalMovesChecker checker = new LegalMovesChecker(board);
 		ArrayList<CellValuePair> decisionMinimaxValues = 
-				new ArrayList<MinimaxGoSolver.CellValuePair>();
+				new ArrayList<CellValuePair>();
 		
 		for (int i = 0; i < board.getWidth(); i++) {
 			for (int j = 0; j < board.getHeight(); j++) {
@@ -60,7 +48,7 @@ public class MinimaxGoSolver {
 					cellValuePair.cell = cell;
 					GoPlayingBoard newBoard = checker.getNewBoard();
 					newBoard.oppositeToPlayNext();
-					cellValuePair.minimaxValue = minimize(newBoard, 0);
+					cellValuePair.value = minimize(newBoard, 0);
 					decisionMinimaxValues.add(cellValuePair);
 					BoardHistory.getSingleton().remove(newBoard);
 				}
@@ -70,9 +58,9 @@ public class MinimaxGoSolver {
 		GoCell bestMove = null;
 		long bestValue = (-infinity);
 		for (CellValuePair pair : decisionMinimaxValues) {
-			System.out.println("pair" + pair.minimaxValue);
-			if (pair.minimaxValue >= bestValue) {
-				bestValue = pair.minimaxValue;
+			System.out.println("pair" + pair.value);
+			if (pair.value >= bestValue) {
+				bestValue = (long) pair.value;
 				bestMove = pair.cell;
 			}
 		}
