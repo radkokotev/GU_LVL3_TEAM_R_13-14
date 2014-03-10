@@ -11,6 +11,8 @@ public class MinimaxGoSolver implements GoSolverAlgorithm {
 	private GoCell cellToCapture;
 	private static final long infinity = Integer.MAX_VALUE;
 	
+	private boolean debug = false;
+	
 	public MinimaxGoSolver(GoPlayingBoard board, GoCell cell) {
 		this.board = board.clone();
 		this.cellToCapture = cell.clone();
@@ -43,6 +45,8 @@ public class MinimaxGoSolver implements GoSolverAlgorithm {
 		for (int i = 0; i < board.getWidth(); i++) {
 			for (int j = 0; j < board.getHeight(); j++) {
 				GoCell cell = new GoCell(board.toPlayNext(), i, j);
+				if (i == 18 && j == 14) debug = false;
+				else debug = false;
 				if (checker.isMoveLegal(cell)) {
 					CellValuePair cellValuePair = new CellValuePair();
 					cellValuePair.cell = cell;
@@ -56,11 +60,12 @@ public class MinimaxGoSolver implements GoSolverAlgorithm {
 			}
 		}
 		GoCell bestMove = null;
-		long bestValue = (-infinity);
+		double bestValue = (-infinity);
 		for (CellValuePair pair : decisionMinimaxValues) {
-			System.out.println("pair" + pair.value);
-			if (pair.value >= bestValue) {
-				bestValue = (long) pair.value;
+			System.out.println("pair" + pair.value + " (" + pair.cell.getVerticalCoordinate() +
+					"," + pair.cell.getHorizontalCoordinate());
+			if (pair.value > bestValue) {
+				bestValue = pair.value;
 				bestMove = pair.cell;
 			}
 		}
@@ -68,9 +73,11 @@ public class MinimaxGoSolver implements GoSolverAlgorithm {
 	}
 	
 	private long maximize(GoPlayingBoard board, int depth) throws CheckFailException {
+		if (debug) System.out.println("Max:\n" + board + "\n");
 		if(depth <= 0) System.out.println(depth);
 		depth++;
 		if (isPositionTerminal(board)) {
+			if (debug) System.out.println("Final!!!");
 			if (board.getCellAt(cellToCapture.getVerticalCoordinate(), 
 					cellToCapture.getHorizontalCoordinate()).isEmpty()) {
 				return infinity;
@@ -105,14 +112,19 @@ public class MinimaxGoSolver implements GoSolverAlgorithm {
 	}
 	
 	private long minimize(GoPlayingBoard board, int depth) throws CheckFailException {
+		if (debug) System.out.println("Min:\n" + board + "\n");
 		if(depth <= 0) System.out.println(depth);
 		depth++;
 		if (isPositionTerminal(board)) {
+			board.oppositeToPlayNext();
+			return maximize(board, depth);
+			/*
+			if (debug) System.out.println("Final!!!");
 			if (board.getCellAt(cellToCapture.getVerticalCoordinate(), 
 					cellToCapture.getHorizontalCoordinate()).isEmpty()) {
 				return infinity;
 			}
-			return (-infinity);
+			return (-infinity);*/
 		}
 		ArrayList<Long> minimaxValues = new ArrayList<Long>();
 		LegalMovesChecker checker = new LegalMovesChecker(board);

@@ -205,10 +205,10 @@ public class GoodMovesFinder {
 		int i = 0;
 		for(CellValuePair pair : goodMoves) {
 			result[i++] = pair.cell;
-			System.out.print(pair.cell + ":" + pair.cell.getVerticalCoordinate()
-					+ "," + pair.cell.getHorizontalCoordinate() + " --> "+ pair.value + " ");
+			/*System.out.print(pair.cell + ":" + pair.cell.getVerticalCoordinate()
+					+ "," + pair.cell.getHorizontalCoordinate() + " --> "+ pair.value + " ");*/
 		}
-		System.out.println();
+		//System.out.println();
 		return result;
 	}	
 }

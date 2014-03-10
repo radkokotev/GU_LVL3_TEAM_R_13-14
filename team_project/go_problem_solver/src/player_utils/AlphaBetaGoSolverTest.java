@@ -51,6 +51,8 @@ public class AlphaBetaGoSolverTest {
 		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory +
 				"/src/player_utils/test_data/small_board_for_minimax_white");
 		board.setToPlayNext(Stone.WHITE);
+		board.setFirstPlayerColour(Stone.WHITE);
+		board.setSecondPlayerColour(Stone.BLACK);
 		AlphaBetaGoSolver solver = new AlphaBetaGoSolver(board, board.getCellAt(18, 18));
 		assertEquals(new GoCell(Stone.WHITE, 18, 17), solver.decision());
 	}

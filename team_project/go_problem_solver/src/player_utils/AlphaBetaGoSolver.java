@@ -39,23 +39,27 @@ public class AlphaBetaGoSolver implements GoSolverAlgorithm{
 		LegalMovesChecker checker = new LegalMovesChecker(board);
 		ArrayList<CellValuePair> decisionMinimaxValues = 
 				new ArrayList<CellValuePair>();
-		
-		GoodMovesFinder finder = new GoodMovesFinder(board.clone());
-		for (GoCell cell : finder.getGoodMoves()) {
-			if (checker.isMoveLegal(cell)) {
-				CellValuePair cellValuePair = new CellValuePair();
-				cellValuePair.cell = cell;
-				GoPlayingBoard newBoard = checker.getNewBoard();
-				newBoard.oppositeToPlayNext();
-				cellValuePair.value = minimize(newBoard, -infinity, infinity);
-				decisionMinimaxValues.add(cellValuePair);
-				BoardHistory.getSingleton().remove(newBoard);
+		for (int i = 0; i < board.getWidth(); i++) {
+			for (int j = 0; j < board.getHeight(); j++) {
+				GoCell cell = new GoCell(board.toPlayNext(), i, j);
+				if (checker.isMoveLegal(cell)) {
+					System.out.println(0);
+					CellValuePair cellValuePair = new CellValuePair();
+					cellValuePair.cell = cell;
+					GoPlayingBoard newBoard = checker.getNewBoard();
+					newBoard.oppositeToPlayNext();
+					cellValuePair.value = minimize(newBoard, -infinity,	infinity);
+					decisionMinimaxValues.add(cellValuePair);
+					BoardHistory.getSingleton().remove(newBoard);
+				}
+				checker.reset();
 			}
-			checker.reset();
 		}
 		GoCell bestMove = null;
 		long bestValue = (-infinity);
 		for (CellValuePair pair : decisionMinimaxValues) {
+			System.out.println("pair" + pair.value + " (" + pair.cell.getVerticalCoordinate() +
+					"," + pair.cell.getHorizontalCoordinate());
 			if (pair.value > bestValue) {
 				bestValue = (long) pair.value;
 				bestMove = pair.cell;
@@ -92,11 +96,13 @@ public class AlphaBetaGoSolver implements GoSolverAlgorithm{
 	
 	private long minimize(GoPlayingBoard board, long alpha, long beta) throws CheckFailException {
 		if (isPositionTerminal(board)) {
+			board.oppositeToPlayNext();
+			return maximize(board, alpha, beta);/*
 			if (board.getCellAt(cellToCapture.getVerticalCoordinate(), 
 					cellToCapture.getHorizontalCoordinate()).isEmpty()) {
 				return infinity;
 			}
-			return (-infinity);
+			return (-infinity);*/
 		}
 		LegalMovesChecker checker = new LegalMovesChecker(board);
 		GoodMovesFinder finder = new GoodMovesFinder(board.clone());
