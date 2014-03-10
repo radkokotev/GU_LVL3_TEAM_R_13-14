@@ -10,18 +10,21 @@ public class MinimaxGoSolver implements GoSolverAlgorithm {
 	private GoPlayingBoard board;
 	private GoCell cellToCapture;
 	private static final long infinity = Integer.MAX_VALUE;
+	private long countLeafNodesDiscovered;
 	
 	private boolean debug = false;
 	
 	public MinimaxGoSolver(GoPlayingBoard board, GoCell cell) {
 		this.board = board.clone();
 		this.cellToCapture = cell.clone();
+		this.countLeafNodesDiscovered = 0;
 	}
 	
 	public boolean isPositionTerminal(GoPlayingBoard board) {
 		if (board.getCellAt(cellToCapture.getVerticalCoordinate(), 
 				cellToCapture.getHorizontalCoordinate()).isEmpty()) {
 			// the target stone was captured
+			this.countLeafNodesDiscovered++;
 			return true;
 		}
 		LegalMovesChecker checker = new LegalMovesChecker(board);
@@ -34,6 +37,7 @@ public class MinimaxGoSolver implements GoSolverAlgorithm {
 				checker.reset();
 			}
 		}
+		this.countLeafNodesDiscovered++;
 		return true;
 	}
 	
@@ -69,6 +73,7 @@ public class MinimaxGoSolver implements GoSolverAlgorithm {
 				bestMove = pair.cell;
 			}
 		}
+		System.out.println("Leaf Nodes = " + this.countLeafNodesDiscovered);
 		return bestMove;
 	}
 	

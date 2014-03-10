@@ -73,7 +73,7 @@ public class GoCell extends Cell<Stone> implements Comparable<GoCell> {
 	
 	@Override
 	public String toString() {
-		String returnString = stone.name() + " " + this.getVerticalCoordinate() + " " + this.getHorizontalCoordinate();
+		String returnString = stone.name();// + " " + this.getVerticalCoordinate() + " " + this.getHorizontalCoordinate();
 		return returnString;
 	}
 	
