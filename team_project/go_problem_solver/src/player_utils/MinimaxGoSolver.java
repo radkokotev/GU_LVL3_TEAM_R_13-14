@@ -100,7 +100,7 @@ public class MinimaxGoSolver implements GoSolverAlgorithm {
 					long currMinimaxValue = minimize(newBoard, depth);
 					minimaxValues.add(currMinimaxValue);  // there is a legal move
 					if (currMinimaxValue >= infinity) {
-						foundMax = true;
+						foundMax = false;
 					}
 					BoardHistory.getSingleton().remove(newBoard);
 				}
@@ -142,7 +142,7 @@ public class MinimaxGoSolver implements GoSolverAlgorithm {
 					long currMinimaxValue = maximize(newBoard, depth);
 					minimaxValues.add(currMinimaxValue);  // there is a legal move
 					if (currMinimaxValue <= -infinity) {
-						foundMin = true;
+						foundMin = false;
 					}
 					BoardHistory.getSingleton().remove(newBoard);
 				}
