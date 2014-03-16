@@ -22,6 +22,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import player_utils.BoardHistory;
@@ -43,6 +44,7 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 	private JComboBox player2Type;
 	private JComboBox player2Colour;
 	private JComboBox player2Algorithm;
+	private JTextField textField;
 	
 	private File lastImportedFilename;
 	
@@ -57,7 +59,11 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 		addMouseListener(this);
 		importFileItem.addActionListener(this);
 	    exportFileItem.addActionListener(this);
-		
+	    
+	    textField = new JTextField();
+	    textField.setFocusable(false);
+	    textField.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+	    
 		JPanel playersPanel = new JPanel(new GridLayout(3,4,10,5));
 		
 		undoMoveItem = new JButton("Undo");
@@ -108,11 +114,14 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 		
 		frame.setTitle("Go game solver [Play mode]");
 		frame.getContentPane().add(this, BorderLayout.CENTER);
+		frame.getContentPane().add(textField, BorderLayout.NORTH);
 		frame.getContentPane().add(playersPanel, BorderLayout.SOUTH);
-		frame.setBackground(new Color(242,186,107));
+		// TODO Windows won't accept a colour change
+		//frame.setBackground(new Color(242,186,107));
+		frame.getContentPane().setBackground(new Color(242,186,107));
 		frame.pack();
 		frame.setVisible(true);
-        frame.setSize(500, 500);
+        frame.setSize(500, 600);
 	}
 	
 	public GuiBoardPlay(JFrame frame, GoPlayingBoard gpb) throws FileNotFoundException, CheckFailException{
@@ -134,6 +143,10 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 			player1Colour.setSelectedItem(Model.BlACKSTRING);
 			player2Colour.setSelectedItem(Model.WHITESTRING);
 		}
+	}
+	
+	public void setTextField(String text) {
+		textField.setText(text);
 	}
 	
 	public void paint(Graphics g){
