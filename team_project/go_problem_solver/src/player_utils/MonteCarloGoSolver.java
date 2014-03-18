@@ -18,7 +18,7 @@ public class MonteCarloGoSolver {
 	private Integer countGamesPlayed = 0;
 	private ArrayList<CellValuePair> monteCarloValues;
 	ArrayList<GoPlayingBoard> legalMoves;
-	private static final int THREAD_COUNT = 1;
+	private static final int THREAD_COUNT = 4;
 	
 	boolean handlingKoFights;
 	
@@ -141,12 +141,28 @@ public class MonteCarloGoSolver {
 		for (Thread t : threads) {
 			t.join();
 		}
+
+		double bestValue = (-infinity);
+		double worstValue = infinity;
+		if (this.handlingKoFights) {
+			for (CellValuePair pair : monteCarloValues) {
+				pair.value /= this.countGamesPlayed;
+				if (pair.value > bestValue) {
+					bestValue = pair.value;
+				}
+				if (pair.value < worstValue) {
+					worstValue = pair.value;
+				}
+			}
+		}
+		double median = (bestValue - worstValue) / 2;
 		
 		GoCell bestMove = null;
-		double bestValue = (-infinity);
+		
 		for (CellValuePair pair : monteCarloValues) {
 			if (this.handlingKoFights) {
-				pair.value -= ((pair.attackerKoViolations - pair.defenderKoViolations) * 1.0 ) / 0.5;
+				double offset = pair.value - median;
+				pair.value -= ((pair.attackerKoViolations - pair.defenderKoViolations) * offset * 0.1);
 			}
 			if (pair.value > bestValue) {
 				bestValue = pair.value;
