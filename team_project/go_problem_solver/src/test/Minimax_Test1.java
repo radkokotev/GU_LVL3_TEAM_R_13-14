@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 
+import player_utils.AlphaBetaGoSolver;
 import player_utils.BoardHistory;
 import player_utils.MinimaxGoSolver;
 import board_utils.GoCell;
@@ -52,7 +53,7 @@ public class Minimax_Test1 {
 		assertEquals(Stone.BLACK, board.getCellAt(17, 4).getContent());
 		assertEquals(new GoCell(Stone.WHITE, 16, 4), solver.decision());
 	}
-
+/**
 	@Test
 	public void testMinimaxProblem_2_2() throws FileNotFoundException, CheckFailException, InterruptedException {
 		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory +
@@ -97,9 +98,17 @@ public class Minimax_Test1 {
 		MinimaxGoSolver solver = new MinimaxGoSolver(board, board.getCellAt(7, 2));
 		assertEquals(Stone.BLACK, board.getCellAt(7, 2).getContent());
 		assertEquals(new GoCell(Stone.WHITE, 7, 0), solver.decision());
+	}*/
+	
+	@Test
+	public void testMonteCarloProblem_other_problem() throws FileNotFoundException, CheckFailException, InterruptedException {
+		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory +
+				"/src/test/test_data/other_problem");
+		board.setToPlayNext(Stone.BLACK);
+		MinimaxGoSolver solver = new MinimaxGoSolver(board, board.getCellAt(4, 1));
+		assertEquals(Stone.WHITE, board.getCellAt(4, 1).getContent());
+		assertEquals(new GoCell(Stone.BLACK, 3, 0), solver.decision());
 	}
-	
-	
 /** Minimax is faster here
 	@Test
 	public void testMinimaxProblem_5_2() throws FileNotFoundException, CheckFailException, InterruptedException {
