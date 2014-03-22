@@ -6,7 +6,7 @@ import board_utils.GoCell;
 import board_utils.GoPlayingBoard;
 import custom_java_utils.CheckFailException;
 
-public class AlphaBetaGoSolver {
+public class AlphaBetaGoSolver implements GoSolverAlgorithm{
 	private GoPlayingBoard board;
 	private GoCell cellToCapture;
 	private static final long infinity = Integer.MAX_VALUE;
@@ -14,18 +14,6 @@ public class AlphaBetaGoSolver {
 	public AlphaBetaGoSolver(GoPlayingBoard board, GoCell cell) {
 		this.board = board.clone();
 		this.cellToCapture = cell.clone();
-	}
-	
-	private class CellValuePair implements Comparable<CellValuePair>{
-		public GoCell cell;
-		public long minimaxValue;
-		
-		@Override
-		public int compareTo(CellValuePair other) {
-			if (this.minimaxValue < other.minimaxValue) return -1;
-			if (this.minimaxValue > other.minimaxValue) return 1;
-			return 0;
-		}
 	}
 	
 	public boolean isPositionTerminal(GoPlayingBoard board) {
@@ -47,31 +35,29 @@ public class AlphaBetaGoSolver {
 		return true;
 	}
 	
-	public GoCell minimaxDecision() throws CheckFailException {
+	public GoCell decision() throws CheckFailException {
 		LegalMovesChecker checker = new LegalMovesChecker(board);
 		ArrayList<CellValuePair> decisionMinimaxValues = 
-				new ArrayList<AlphaBetaGoSolver.CellValuePair>();
+				new ArrayList<CellValuePair>();
 		
-		for (int i = 0; i < board.getWidth(); i++) {
-			for (int j = 0; j < board.getHeight(); j++) {
-				GoCell cell = new GoCell(board.toPlayNext(), i, j);
-				if (checker.isMoveLegal(cell)) {
-					CellValuePair cellValuePair = new CellValuePair();
-					cellValuePair.cell = cell;
-					GoPlayingBoard newBoard = checker.getNewBoard();
-					newBoard.oppositeToPlayNext();
-					cellValuePair.minimaxValue = minimize(newBoard, -infinity, infinity);
-					decisionMinimaxValues.add(cellValuePair);
-					BoardHistory.getSingleton().remove(newBoard);
-				}
-				checker.reset();
+		GoodMovesFinder finder = new GoodMovesFinder(board.clone());
+		for (GoCell cell : finder.getGoodMoves()) {
+			if (checker.isMoveLegal(cell)) {
+				CellValuePair cellValuePair = new CellValuePair();
+				cellValuePair.cell = cell;
+				GoPlayingBoard newBoard = checker.getNewBoard();
+				newBoard.oppositeToPlayNext();
+				cellValuePair.value = minimize(newBoard, -infinity, infinity);
+				decisionMinimaxValues.add(cellValuePair);
+				BoardHistory.getSingleton().remove(newBoard);
 			}
+			checker.reset();
 		}
 		GoCell bestMove = null;
 		long bestValue = (-infinity);
 		for (CellValuePair pair : decisionMinimaxValues) {
-			if (pair.minimaxValue > bestValue) {
-				bestValue = pair.minimaxValue;
+			if (pair.value > bestValue) {
+				bestValue = (long) pair.value;
 				bestMove = pair.cell;
 			}
 		}
@@ -87,21 +73,20 @@ public class AlphaBetaGoSolver {
 			return (-infinity);
 		}
 		LegalMovesChecker checker = new LegalMovesChecker(board);
-		boolean foundMax = false;
-		for (int i = 0; i < board.getWidth()&& !foundMax; i++) {
-			for (int j = 0; j < board.getHeight() && !foundMax; j++) {
-				if (checker.isMoveLegal(new GoCell(board.toPlayNext(), i, j))) {
-					GoPlayingBoard newBoard = checker.getNewBoard();
-					newBoard.oppositeToPlayNext();
-					alpha = Math.max(alpha, minimize(newBoard, alpha, beta));
-					if (alpha >= beta) {
-						foundMax = true;
-					}
-					BoardHistory.getSingleton().remove(newBoard);
+		GoodMovesFinder finder = new GoodMovesFinder(board.clone());
+		for (GoCell cell : finder.getGoodMoves()) {
+			if (checker.isMoveLegal(cell)) {
+				GoPlayingBoard newBoard = checker.getNewBoard();
+				newBoard.oppositeToPlayNext();
+				alpha = Math.max(alpha, minimize(newBoard, alpha, beta));
+				BoardHistory.getSingleton().remove(newBoard);
+				if (alpha >= beta) {
+					break;
 				}
-				checker.reset();
 			}
+			checker.reset();
 		}
+
 		return alpha;
 	}
 	
@@ -114,20 +99,18 @@ public class AlphaBetaGoSolver {
 			return (-infinity);
 		}
 		LegalMovesChecker checker = new LegalMovesChecker(board);
-		boolean foundMin = false;
-		for (int i = 0; i < board.getWidth() && !foundMin; i++) {
-			for (int j = 0; j < board.getHeight() && !foundMin; j++) {
-				if (checker.isMoveLegal(new GoCell(board.toPlayNext(), i, j))) {
-					GoPlayingBoard newBoard = checker.getNewBoard();
-					newBoard.oppositeToPlayNext();
-					beta = Math.min(beta, maximize(newBoard, alpha, beta));
-					if (alpha >= beta) {
-						foundMin = true;
-					}
-					BoardHistory.getSingleton().remove(newBoard);
+		GoodMovesFinder finder = new GoodMovesFinder(board.clone());
+		for (GoCell cell : finder.getGoodMoves()) {
+			if (checker.isMoveLegal(cell)) {
+				GoPlayingBoard newBoard = checker.getNewBoard();
+				newBoard.oppositeToPlayNext();
+				beta = Math.min(beta, maximize(newBoard, alpha, beta));
+				BoardHistory.getSingleton().remove(newBoard);
+				if (alpha >= beta) {
+					break;
 				}
-				checker.reset();
 			}
+			checker.reset();
 		}
 		return beta;
 	}

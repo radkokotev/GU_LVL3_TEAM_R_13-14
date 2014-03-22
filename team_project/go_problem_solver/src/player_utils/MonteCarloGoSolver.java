@@ -7,7 +7,7 @@ import board_utils.GoCell;
 import board_utils.GoPlayingBoard;
 import custom_java_utils.CheckFailException;
 
-public class MonteCarloGoSolver {
+public class MonteCarloGoSolver implements GoSolverAlgorithm{
 	private GoPlayingBoard board;
 	private GoCell cellToCapture;
 	private static final long infinity = Integer.MAX_VALUE;
@@ -63,16 +63,6 @@ public class MonteCarloGoSolver {
 		this.finishTime = finishTime;
 	}
 	
-	private class CellValuePair implements Comparable<CellValuePair>{
-		public GoCell cell;
-		public double value;
-		
-		@Override
-		public int compareTo(CellValuePair other) {
-			return Double.compare(this.value, other.value);
-		}
-	}
-	
 	public boolean isGoalAchieved(GoPlayingBoard board) {
 		if (board.getCellAt(cellToCapture.getVerticalCoordinate(), 
 				cellToCapture.getHorizontalCoordinate()).isEmpty()) {
@@ -92,7 +82,7 @@ public class MonteCarloGoSolver {
 	 */
 	public GoCell decision() throws CheckFailException, InterruptedException {
 		LegalMovesChecker checker = new LegalMovesChecker(board);
-		monteCarloValues = new ArrayList<MonteCarloGoSolver.CellValuePair>();
+		monteCarloValues = new ArrayList<CellValuePair>();
 		legalMoves = new ArrayList<GoPlayingBoard>();
 		// Find all initially legal moves
 		for (int i = 0; i < board.getWidth(); i++) {

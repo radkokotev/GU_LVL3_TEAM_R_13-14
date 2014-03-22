@@ -91,7 +91,8 @@ public class BoardHistory {
 	 */
 	public void redoMove() {
 		if (!undoMoves.isEmpty()) {
-			allMoves.push(undoMoves.pop().clone());		}
+			allMoves.push(undoMoves.pop());		
+		}
 	}
 	
 	/**

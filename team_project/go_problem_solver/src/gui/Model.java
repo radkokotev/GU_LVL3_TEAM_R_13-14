@@ -4,8 +4,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 import player_utils.BoardHistory;
+import player_utils.GoSolverAlgorithm;
+import player_utils.GoSolverAlgorithmChooser;
 import player_utils.LegalMovesChecker;
-import player_utils.MinimaxGoSolver;
 import board_utils.GoCell;
 import board_utils.GoPlayingBoard;
 import board_utils.Player;
@@ -14,63 +15,107 @@ import custom_java_utils.CheckFailException;
 
 public class Model {
 	
+	public static final String ALPHABETASTRING = "Alpha Beta";
+	public static final String MINIMAXSTRING = "Mini Max";
+	public static final String MONTECARLOSTRING = "Monte Carlo";
+	public static final String HUMANSTRING = "Human";
+	public static final String COMPUTERSTRING = "Computer";
+	public static final String BlACKSTRING = "Black";
+	public static final String WHITESTRING = "White";
+	
 	private GoPlayingBoard currentBoard;
 	private LegalMovesChecker checker;
 	private boolean[][] legalMoves;
 	private BoardHistory history;
-	private MinimaxGoSolver minimax;
+	private GoSolverAlgorithmChooser algorithmChooser;
+	private GoSolverAlgorithm algorithm;
+	
 	private GuiBoardPlay gui;
 	
-	public Model(GuiBoardPlay g) {
-		gui = g;
-		currentBoard = new GoPlayingBoard();
-		history = BoardHistory.getSingleton();
-		history.add(currentBoard);
-		checker = new LegalMovesChecker(currentBoard);
+	public Model(GuiBoardPlay g) throws FileNotFoundException, CheckFailException {
+		this(g, null, null);
 	}
 	
-	public Model(File fileName, GuiBoardPlay g) throws FileNotFoundException, CheckFailException {
-		BoardHistory.wipeHistory();
+	public Model(GuiBoardPlay g, File filename) throws FileNotFoundException, CheckFailException {
+		this(g, null, filename);
+	}
+	
+	public Model(GuiBoardPlay g, GoPlayingBoard board) throws FileNotFoundException, CheckFailException{
+		this(g, board, null);
+	}
+	
+	public Model(GuiBoardPlay g, GoPlayingBoard board, File filename) throws FileNotFoundException, CheckFailException {
 		gui = g;
-		currentBoard = new GoPlayingBoard(fileName.getAbsolutePath());
+		if(filename == null)
+			currentBoard = new GoPlayingBoard();
+		else {
+			currentBoard = new GoPlayingBoard(filename.getAbsolutePath());
+			gui.setPlayersColours(currentBoard.getFirstPlayerColour());
+		}
 		history = BoardHistory.getSingleton();
-		history.add(currentBoard);
 		checker = new LegalMovesChecker(currentBoard);
+		BoardHistory.wipeHistory();
+		history.add(currentBoard);
+		if(board != null)
+			currentBoard = board.clone();
 		legalMoves = checker.getLegalityArray();
-		if(currentBoard.getNextPlayer() == Player.COMPUTER)
+	}
+	
+	public void start() {
+		if(currentBoard.isNextPlayerComputer()) 
 			computerMove();
 	}
 	
 	public void addStone(int x, int y) {
 		currentBoard.setCellAt(x, y, new GoCell(currentBoard.toPlayNext(), x, y));
 		currentBoard.oppositeToPlayNext();
-		currentBoard.oppositePlayer();
 		checker = new LegalMovesChecker(currentBoard);
 		legalMoves = checker.getLegalityArray();
 		removeOpponent(x, y);
-		if(minimax != null && currentBoard.getNextPlayer() == Player.COMPUTER && !minimax.isPositionTerminal(currentBoard)){
+		history.add(currentBoard);
+		gui.paintImmediately(0, 0, gui.getSize().width, gui.getSize().height);
+		if(currentBoard.isNextPlayerComputer()){
 			computerMove();
 		}
 	}
 	
-	public void computerMove(){
-		minimax = new MinimaxGoSolver(currentBoard, currentBoard.getTarget());
+	public void computerMove() {
+		try {
+			Thread.sleep(1500);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		if (currentBoard.toPlayNext().equals(currentBoard.getFirstPlayer().colour))
+			algorithmChooser = new GoSolverAlgorithmChooser(currentBoard, currentBoard.getTarget(), 
+					currentBoard.getFirstPlayerAlgorithmName());
+		else
+			algorithmChooser = new GoSolverAlgorithmChooser(currentBoard, currentBoard.getTarget(), 
+					currentBoard.getSecondPlayerAlgorithmName());
 		GoCell decision = null;
 		try {
-			decision = minimax.minimaxDecision();
-			if(decision != null)
-				System.out.println(decision.getVerticalCoordinate() + " " + 
-						decision.getHorizontalCoordinate() + " " + decision);
-			else
-				System.out.println("null");
-		} catch(CheckFailException e){
+			if (currentBoard.getTarget() != null) {
+				algorithm = algorithmChooser.getAlgorithm();
+				if (algorithm != null) {
+					decision = algorithm.decision();
+					if(decision != null)
+						System.out.println(decision.getVerticalCoordinate() + " " + 
+								decision.getHorizontalCoordinate() + " " + decision);
+					else
+						System.out.println("Please select an algorithm");
+				}
+				else
+					setTextField("Could not make decision");
+			} 
+			else setTextField("Please select a target");
+		} catch(Exception e){
 			System.out.println("Game is finished.");
 			e.printStackTrace();
 		}
 		if(decision != null) {
 			addStone(decision.getVerticalCoordinate(), decision.getHorizontalCoordinate());
 		}
-		gui.repaint();
 	}
 	
 	public boolean isMoveLegal(int x, int y) {
@@ -81,22 +126,15 @@ public class Model {
 	}
 	
 	public void removeOpponent(int x, int y)  {
-		boolean isAnyKilled = false;
-		isAnyKilled = checker.captureOponent(currentBoard.getCellAt(x, y));
 		try {
-			if(isAnyKilled) {
+			if(checker.captureOponent(currentBoard.getCellAt(x, y)) != null) {
 				currentBoard = checker.getNewBoard();
 				checker = new LegalMovesChecker(currentBoard);
 				legalMoves = checker.getLegalityArray();
 			}
-			else 
-				//this method will be called on each move, so history will be updated each time when
-				//there will be no stones killed.
-				history.add(currentBoard);
 		} catch(Exception e){
 			System.out.println("new board = old board");
 		}
-		
 	}
 	
 	public int getTotalNumberOfStones(){
@@ -148,19 +186,65 @@ public class Model {
 		currentBoard.toFile(file);
 	}
 	
+	public void setFirstPlayerType(Object b){
+		String t = (String) b;
+		if(t.equals(HUMANSTRING))
+			currentBoard.setFirstPlayerType(Player.Type.HUMAN);
+		else if(t.equals(COMPUTERSTRING))
+			currentBoard.setFirstPlayerType(Player.Type.COMPUTER);
+	}
+	
+	public void setFirstPlayerColour(Object b){
+		String t = (String) b;
+		if(t.equals(BlACKSTRING))
+			currentBoard.setFirstPlayerColour(Stone.BLACK);
+		else if(t.equals(WHITESTRING))
+			currentBoard.setFirstPlayerColour(Stone.WHITE);
+	}
+	
+	public void setSecondPlayerType(Object b){
+		String t = (String) b;
+		if(t.equals(HUMANSTRING))
+			currentBoard.setSecondPlayerType(Player.Type.HUMAN);
+		else if(t.equals(COMPUTERSTRING))
+			currentBoard.setSecondPlayerType(Player.Type.COMPUTER);
+	}
+	
+	public void setSecondPlayerColour(Object b){
+		String t = (String) b;
+		if(t.equals(BlACKSTRING))
+			currentBoard.setSecondPlayerColour(Stone.BLACK);
+		else if(t.equals(WHITESTRING))
+			currentBoard.setSecondPlayerColour(Stone.WHITE);
+	}
+	
+	
+	// TODO Distinguish algorithm choices between players
+	public void setPlayer1AlgorithmName(String name) {
+		currentBoard.setFirstPlayerAlgorithmName(name);;
+	}
+	
+	public void setPlayer2AlgorithmName(String name) {
+		currentBoard.setSecondPlayerAlgorithmName(name);;
+	}
+	
+	public void setTextField(String text) {
+		gui.setTextField(text);
+	}
+	
+	
 	public void undoMove() {
 		history.undoMove();
 		GoPlayingBoard last = history.getLastMove();
-		if (last != null) {
-			currentBoard = last;
-			checker = new LegalMovesChecker(currentBoard);
-			legalMoves = checker.getLegalityArray();
-		}
+		currentBoard = last;
+		checker = new LegalMovesChecker(currentBoard);
+		legalMoves = checker.getLegalityArray();
 	}
 	
 	public void redoMove() {
 		history.redoMove();
-		currentBoard = history.getUndoMove();
+		currentBoard = history.getLastMove();
 	}
+	
 
 }

@@ -44,18 +44,18 @@ public class LegalMovesCheckerTest {
 	public void testCaptureOponent() throws FileNotFoundException, CheckFailException {
 		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory + "/src/player_utils/test_data/liberties_board");
 		LegalMovesChecker checker = new LegalMovesChecker(board);
-		assertFalse(checker.captureOponent(board.getCellAt(0, 0)));
-		assertFalse(checker.captureOponent(board.getCellAt(6, 6)));
-		assertTrue(checker.captureOponent(board.getCellAt(6, 18)));
-		assertFalse(checker.captureOponent(board.getCellAt(7, 17)));
-		assertFalse(checker.captureOponent(board.getCellAt(8, 18)));
-		assertTrue(checker.captureOponent(board.getCellAt(8, 8)));
-		assertFalse(checker.captureOponent(board.getCellAt(8, 8)));
-		assertFalse(checker.captureOponent(board.getCellAt(10, 8)));
-		assertTrue(checker.captureOponent(board.getCellAt(17, 0)));
-		assertFalse(checker.captureOponent(board.getCellAt(18, 1)));
-		assertFalse(checker.captureOponent(board.getCellAt(18, 18)));
-		assertFalse(checker.captureOponent(board.getCellAt(18, 14)));
+		assertTrue(checker.captureOponent(board.getCellAt(0, 0)).isEmpty());
+		assertTrue(checker.captureOponent(board.getCellAt(6, 6)).isEmpty());
+		assertFalse(checker.captureOponent(board.getCellAt(6, 18)).isEmpty());
+		assertTrue(checker.captureOponent(board.getCellAt(7, 17)).isEmpty());
+		assertTrue(checker.captureOponent(board.getCellAt(8, 18)).isEmpty());
+		assertFalse(checker.captureOponent(board.getCellAt(8, 8)).isEmpty());
+		assertTrue(checker.captureOponent(board.getCellAt(8, 8)).isEmpty());
+		assertTrue(checker.captureOponent(board.getCellAt(10, 8)).isEmpty());
+		assertFalse(checker.captureOponent(board.getCellAt(17, 0)).isEmpty());
+		assertTrue(checker.captureOponent(board.getCellAt(18, 1)).isEmpty());
+		assertTrue(checker.captureOponent(board.getCellAt(18, 18)).isEmpty());
+		assertTrue(checker.captureOponent(board.getCellAt(18, 14)).isEmpty());
 	}
 
 	@Test

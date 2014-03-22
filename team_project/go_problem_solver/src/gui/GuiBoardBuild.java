@@ -22,6 +22,7 @@ import custom_java_utils.CheckFailException;
 
 public class GuiBoardBuild extends GuiBoard implements MouseListener, 
 													   ActionListener {
+	
 	private static final long serialVersionUID = 4466021000645463248L;
 	private Stone current;
 	private GoPlayingBoard gpb;
@@ -66,6 +67,11 @@ public class GuiBoardBuild extends GuiBoard implements MouseListener,
 		frame.pack();
 		frame.setVisible(true);
         frame.setSize(500, 500);
+	}
+	
+	public GuiBoardBuild(JFrame frame,  GoPlayingBoard gpb){
+		this(frame);
+		this.gpb = gpb;		
 	}
 	
 	public void paint(Graphics g){
@@ -184,7 +190,12 @@ public class GuiBoardBuild extends GuiBoard implements MouseListener,
 			}
 		} else if(e.getSource().equals(modeMenuItem)){
 			frame.getContentPane().removeAll();;
-			frame.getContentPane().add(new GuiBoardPlay(frame), BorderLayout.CENTER);
+			try {
+				frame.getContentPane().add(new GuiBoardPlay(frame, gpb), BorderLayout.CENTER);
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 	}
 }

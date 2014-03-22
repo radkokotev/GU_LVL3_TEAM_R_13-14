@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -16,23 +17,40 @@ import java.io.FileNotFoundException;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import player_utils.BoardHistory;
+import board_utils.GoPlayingBoard;
 import board_utils.Stone;
 import custom_java_utils.CheckFailException;
 
 public class GuiBoardPlay extends GuiBoard implements ActionListener,
 													  MouseListener,
 													  ItemListener {
+	
 	private static final long serialVersionUID = -5583632264766625487L;
 	private Model model;
 	private boolean drawLegalMoves;
-	private JButton undoMoveItem;
+	private JButton undoMoveItem, redoMoveItem, start, reset;
+	private JComboBox player1Type;
+	private JComboBox player1Colour;
+	private JComboBox player1Algorithm;
+	private JComboBox player2Type;
+	private JComboBox player2Colour;
+	private JComboBox player2Algorithm;
+	private JTextField textField;
 	
-	public GuiBoardPlay(JFrame frame) {
+	private File lastImportedFilename;
+	
+	public GuiBoardPlay(JFrame frame) throws FileNotFoundException, CheckFailException {
 		super(frame);
+		lastImportedFilename = null;
 		model = new Model(this);
 		
 		JCheckBoxMenuItem showValidMoves = new JCheckBoxMenuItem("Show valid/invalid moves");
@@ -42,16 +60,73 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 		importFileItem.addActionListener(this);
 	    exportFileItem.addActionListener(this);
 	    
-	    undoMoveItem = new JButton("Undo");
-		menuBar.add(undoMoveItem);
-		undoMoveItem.addActionListener(this);
+	    textField = new JTextField();
+	    textField.setFocusable(false);
+	    textField.setBorder(javax.swing.BorderFactory.createEmptyBorder());
 	    
+		JPanel playersPanel = new JPanel(new GridLayout(3,4,10,5));
+		
+		undoMoveItem = new JButton("Undo");
+		playersPanel.add(undoMoveItem);
+		undoMoveItem.addActionListener(this);
+		
+		redoMoveItem = new JButton("Redo");
+		playersPanel.add(redoMoveItem);
+		redoMoveItem.addActionListener(this);
+		
+		start = new JButton("Start");
+		playersPanel.add(start);
+		start.addActionListener(this);
+		
+		reset = new JButton("Reset");
+		playersPanel.add(reset);
+		reset.addActionListener(this);
+		
+		playersPanel.add(new JLabel("Player 1: "));
+		player1Type = new JComboBox(new String[]{Model.HUMANSTRING, Model.COMPUTERSTRING});
+		playersPanel.add(player1Type);
+		player1Type.addActionListener(this);
+		player1Colour = new JComboBox(new String[]{Model.BlACKSTRING, Model.WHITESTRING});
+		playersPanel.add(player1Colour);
+		player1Colour.addActionListener(this);
+		
+		// TODO add alg chooser to GUI
+		player1Algorithm = new JComboBox(new String[]{Model.ALPHABETASTRING, Model.MINIMAXSTRING, Model.MONTECARLOSTRING});
+		playersPanel.add(player1Algorithm);
+		player1Algorithm.addActionListener(this);
+		player1Algorithm.setVisible(false);
+		player1Algorithm.setSelectedIndex(-1);
+		
+		
+		playersPanel.add(new JLabel("Player 2: "));
+		player2Type = new JComboBox(new String[]{Model.HUMANSTRING, Model.COMPUTERSTRING});
+		playersPanel.add(player2Type);
+		player2Type.addActionListener(this);
+		player2Colour = new JComboBox(new String[]{Model.WHITESTRING, Model.BlACKSTRING});
+		playersPanel.add(player2Colour);
+		player2Colour.addActionListener(this);
+		
+		player2Algorithm = new JComboBox(new String[]{Model.ALPHABETASTRING, Model.MINIMAXSTRING, Model.MONTECARLOSTRING});
+		playersPanel.add(player2Algorithm);
+		player2Algorithm.addActionListener(this);
+		player2Algorithm.setVisible(false);
+		player2Algorithm.setSelectedIndex(-1);
+		
 		frame.setTitle("Go game solver [Play mode]");
-		frame.getContentPane().add(this);
-		frame.setBackground(new Color(242,186,107));
+		frame.getContentPane().add(this, BorderLayout.CENTER);
+		frame.getContentPane().add(textField, BorderLayout.NORTH);
+		frame.getContentPane().add(playersPanel, BorderLayout.SOUTH);
+		// TODO Windows won't accept a colour change
+		//frame.setBackground(new Color(242,186,107));
+		frame.getContentPane().setBackground(new Color(242,186,107));
 		frame.pack();
 		frame.setVisible(true);
-        frame.setSize(500, 500);
+        frame.setSize(500, 600);
+	}
+	
+	public GuiBoardPlay(JFrame frame, GoPlayingBoard gpb) throws FileNotFoundException, CheckFailException{
+		this(frame);
+		model = new Model(this, gpb);
 	}
 	
 	private void drawStone(int x, int y){
@@ -60,10 +135,24 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 		}
 	}
 	
+	public void setPlayersColours(Stone firstPlayerColour){
+		if(firstPlayerColour == Stone.WHITE) {
+			player1Colour.setSelectedItem(Model.WHITESTRING);
+			player2Colour.setSelectedItem(Model.BlACKSTRING);
+		} else if(firstPlayerColour == Stone.BLACK){
+			player1Colour.setSelectedItem(Model.BlACKSTRING);
+			player2Colour.setSelectedItem(Model.WHITESTRING);
+		}
+	}
+	
+	public void setTextField(String text) {
+		textField.setText(text);
+	}
+	
 	public void paint(Graphics g){
 		super.paint(g);
 		Graphics2D g2 = (Graphics2D) g;
-		
+
 		//draw all stones
 		Stone[][] stones = model.getCurrentBoardLayout();
 		for(int i = 0; i < 19; i++)
@@ -102,7 +191,6 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 			g2.setPaint(Color.RED);
 			g2.fillOval(target.center.x - sqWidth/4, target.center.y - sqWidth/4, sqWidth/2, sqWidth/2);
 		}
-		
 	}
 
 	@Override
@@ -110,12 +198,14 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 		super.actionPerformed(e);
 		JFileChooser fc = new JFileChooser(DEFAULT_DIRECTORY);
 		fc.setMultiSelectionEnabled(false);
+		fc.setFileFilter(new FileNameExtensionFilter("Go problems files", "go"));
 		if(e.getSource().equals(importFileItem)) {
 			int returnVal = fc.showOpenDialog(this);
 			try {
 		        if (returnVal == JFileChooser.APPROVE_OPTION) {
 		            File file = fc.getSelectedFile();
-		            model = new Model(file, this);
+		            model = new Model(this, file);
+		            lastImportedFilename = file;
 					repaint();
 		        }
 			} catch (FileNotFoundException e1) {
@@ -135,10 +225,46 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 			}
 		} else if(e.getSource().equals(modeMenuItem)){
 			frame.getContentPane().removeAll();
-			frame.getContentPane().add(new GuiBoardBuild(frame), BorderLayout.CENTER);
+			frame.getContentPane().add(new GuiBoardBuild(frame, model.getCurrentBoard()), BorderLayout.CENTER);
 			BoardHistory.wipeHistory();
 		} else if(e.getSource().equals(undoMoveItem)) {
 			model.undoMove();
+			repaint();
+		} else if(e.getSource().equals(redoMoveItem)) {
+			model.redoMove();
+			repaint();
+		} else if(e.getSource().equals(player1Type)) {
+			model.setFirstPlayerType(((JComboBox) e.getSource()).getSelectedItem());
+			if (((JComboBox) e.getSource()).getSelectedItem().equals("Computer")) 
+				player1Algorithm.setVisible(true);
+			else
+				player1Algorithm.setVisible(false);
+		} else if(e.getSource().equals(player1Colour)) {
+			model.setFirstPlayerColour(((JComboBox) e.getSource()).getSelectedItem());
+		} else if(e.getSource().equals(player2Type)) {
+			model.setSecondPlayerType(((JComboBox) e.getSource()).getSelectedItem());
+			if (((JComboBox) e.getSource()).getSelectedItem().equals("Computer")) 
+				player2Algorithm.setVisible(true);
+			else
+				player2Algorithm.setVisible(false);
+		} else if (e.getSource().equals(player1Algorithm)) {
+			model.setPlayer1AlgorithmName((String) ((JComboBox) e.getSource()).getSelectedItem());
+		} else if (e.getSource().equals(player2Algorithm)) {
+			model.setPlayer2AlgorithmName((String) ((JComboBox) e.getSource()).getSelectedItem());
+		} else if(e.getSource().equals(player2Colour)) {
+			model.setSecondPlayerColour(((JComboBox) e.getSource()).getSelectedItem());
+		} else if(e.getSource().equals(start)) {
+			model.start();
+		} else if(e.getSource().equals(reset)) {
+			try {
+				model = new Model(this, lastImportedFilename);
+			} catch (FileNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (CheckFailException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			repaint();
 		}
 	}
@@ -149,7 +275,7 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 			for(int j = 0; j < BOARDSIZE; j++) {
 				if(intersections[i][j].contains(e.getPoint())) {
 					drawStone(i,j);
-		            repaint();
+					repaint();
 		        }
 		    }
 	}
