@@ -10,10 +10,20 @@ public class MinimaxGoSolver implements GoSolverAlgorithm {
 	private GoPlayingBoard board;
 	private GoCell cellToCapture;
 	private static final long infinity = Integer.MAX_VALUE;
+	private int playSurviveCoef;
 	
 	public MinimaxGoSolver(GoPlayingBoard board, GoCell cell) {
 		this.board = board.clone();
 		this.cellToCapture = cell.clone();
+		this.setPlaySurviveCoef();
+	}
+	
+	private void setPlaySurviveCoef() {
+		if (this.board.getFirstPlayer().colour == this.cellToCapture.getContent()) {
+			playSurviveCoef = -1;
+		} else {
+			playSurviveCoef = 1;
+		}
 	}
 	
 	public boolean isPositionTerminal(GoPlayingBoard board) {

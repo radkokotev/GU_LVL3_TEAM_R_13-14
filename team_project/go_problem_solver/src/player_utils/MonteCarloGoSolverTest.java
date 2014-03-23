@@ -67,6 +67,15 @@ public class MonteCarloGoSolverTest {
 	}
 	
 	@Test
+	public void testMonteCarloDecisionUnsettled3WhiteToSurvive() throws FileNotFoundException, CheckFailException, InterruptedException {
+		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory +
+				"/src/player_utils/test_data/unsettled_three_white");
+		board.setToPlayNext(Stone.BLACK);
+		MonteCarloGoSolver solver = new MonteCarloGoSolver(board, board.getCellAt(14, 1));
+		assertEquals(new GoCell(Stone.BLACK, 14, 0), solver.decision());
+	}
+	
+	@Test
 	public void testMonteCarloDecisionUnsettled3Black() throws FileNotFoundException, CheckFailException, InterruptedException {
 		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory +
 				"/src/player_utils/test_data/unsettled_three_black");
@@ -85,12 +94,23 @@ public class MonteCarloGoSolverTest {
 	}
 	
 	@Test
+	public void testProblem1FromHandoutToSurvive() throws FileNotFoundException, CheckFailException, InterruptedException {
+		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory +
+				"/src/player_utils/test_data/problem_1_from_handout");
+		board.setToPlayNext(Stone.WHITE);
+		board.setFirstPlayerColour(Stone.WHITE);
+		board.setSecondPlayerColour(Stone.BLACK);
+		MonteCarloGoSolver solver = new MonteCarloGoSolver(board, board.getCellAt(9, 13));
+		assertEquals(new GoCell(Stone.WHITE, 8, 10), solver.decision());
+	}
+	
+	@Test
 	public void testProblem1FromHandoutTimeLimit() throws FileNotFoundException, CheckFailException, InterruptedException {
 		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory +
 				"/src/player_utils/test_data/problem_1_from_handout");
 		board.setToPlayNext(Stone.BLACK);
 		MonteCarloGoSolver solver = new MonteCarloGoSolver(board, board.getCellAt(9, 13), 
-				10, System.currentTimeMillis() + 1000 * 10); // Run for 30 seconds
+				10, System.currentTimeMillis() + 1000 * 10); // Run for 10 seconds
 		assertEquals(new GoCell(Stone.BLACK, 8, 10), solver.decision());
 	}
 }

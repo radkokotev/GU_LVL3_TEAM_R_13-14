@@ -67,6 +67,15 @@ public class AlphaBetaGoSolverTest {
 	}
 	
 	@Test
+	public void testMinimaxDecisionUnsettled3WhiteToSurvive() throws FileNotFoundException, CheckFailException {
+		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory+
+				"/src/player_utils/test_data/unsettled_three_white");
+		board.setToPlayNext(Stone.BLACK);
+		AlphaBetaGoSolver solver = new AlphaBetaGoSolver(board, board.getCellAt(14, 1));
+		assertEquals(new GoCell(Stone.BLACK, 14, 0), solver.decision());
+	}
+	
+	@Test
 	public void testMinimaxDecisionUnsettled3Black() throws FileNotFoundException, CheckFailException {
 		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory +
 				"/src/player_utils/test_data/unsettled_three_black");
