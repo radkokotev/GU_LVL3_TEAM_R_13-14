@@ -15,6 +15,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 
+import custom_java_utils.ProjectPathUtils;
 import board_utils.GoCell;
 import board_utils.GoPlayingBoard;
 import board_utils.Stone;
@@ -36,7 +37,8 @@ public class GuiBoardBuild extends GuiBoard implements MouseListener,
 	private static final String NONE = "Empty";
 	private static final String TARGET_STONE ="Target stone";
 	
-	private static final String DEFAULT_BOARD = "src/gui/defaultBoardforBuildMode.go";
+	private static final String DEFAULT_BOARD = ProjectPathUtils.getWorkspaceDir() + 
+			"/src/gui/defaultBoardforBuildMode.go";
 	
 	public GuiBoardBuild(JFrame frame) {
 		super(frame);
