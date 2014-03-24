@@ -1,10 +1,10 @@
 #!/bin/bash
-for problem in 2
+for problem in 4
 do
-	for moves in {11..14}
+	for moves in {6..9}
 	do
 		echo "Working on problem ${problem} with ${moves} moves."
-		java -jar experiments_7.jar ${HOSTNAME} ${problem} ${moves} ${moves}
+		java -jar experiments_runner.jar ${HOSTNAME} ${problem} ${moves} ${moves}
 	done
 done
 

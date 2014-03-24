@@ -76,6 +76,9 @@ public class MonteCarloPercentageStability {
 			case (3):
 				target = board.getCellAt(16, 9);
 				break;
+			case (4):
+				target = board.getCellAt(17, 4);
+				break;
 		}
 		MonteCarloGoSolver solver = new MonteCarloGoSolver(board, target, (int) games);
 		GoCell move = solver.decision();
@@ -112,6 +115,10 @@ public class MonteCarloPercentageStability {
 		last_input_filename_suffix = Integer.parseInt(args[3]);
 	}
 	
+	/** 
+	 * Run with arguments
+	 * <output suffix> <problem #> <first input suffix> <last input suffix>
+	 */
 	public static void main(String[] args) throws 
 			FileNotFoundException, CheckFailException, InterruptedException {
 		handleArguments(args);
