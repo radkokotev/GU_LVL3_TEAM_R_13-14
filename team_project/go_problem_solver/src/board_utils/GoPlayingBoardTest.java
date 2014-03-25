@@ -14,7 +14,6 @@ import custom_java_utils.CheckFailException;
 import custom_java_utils.ProjectPathUtils;
 
 public class GoPlayingBoardTest {
-	static final String DEFAULT_DIRECTORY = System.getProperty("user.dir");
 	private static String workspaceDirectory;
 	
 	@Before public void initialize() {
@@ -104,7 +103,7 @@ public class GoPlayingBoardTest {
 	
 	@Test
 	public void testFindGroupOf() throws FileNotFoundException, CheckFailException{
-		GoPlayingBoard board = new GoPlayingBoard(DEFAULT_DIRECTORY + "/src/gui/defaultBoardforBuildMode.go");
+		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory + "/src/gui/defaultBoardforBuildMode.go");
 		board.setCellAt(0, 0, new GoCell(Stone.BLACK, 0 , 0));
 		board.setCellAt(0, 1, new GoCell(Stone.BLACK, 0 , 1));
 		board.setCellAt(0, 2, new GoCell(Stone.BLACK, 0 , 2));
@@ -119,7 +118,7 @@ public class GoPlayingBoardTest {
 	
 	@Test
 	public void getCloseCellsOfGroup() throws FileNotFoundException, CheckFailException{
-		GoPlayingBoard board = new GoPlayingBoard(DEFAULT_DIRECTORY + "/src/gui/defaultBoardforBuildMode.go");
+		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory + "/src/gui/defaultBoardforBuildMode.go");
 		board.setCellAt(0, 0, new GoCell(Stone.BLACK, 0 , 0));
 		board.setCellAt(0, 1, new GoCell(Stone.BLACK, 0 , 1));
 		board.setCellAt(0, 2, new GoCell(Stone.BLACK, 0 , 2));

@@ -93,15 +93,22 @@ public class Model {
 		else
 			algorithmChooser = new GoSolverAlgorithmChooser(currentBoard, currentBoard.getTarget(), 
 					currentBoard.getSecondPlayerAlgorithmName());
-		algorithm = algorithmChooser.getAlgorithm();
 		GoCell decision = null;
 		try {
-			decision = algorithm.decision();
-			if(decision != null)
-				System.out.println(decision.getVerticalCoordinate() + " " + 
-						decision.getHorizontalCoordinate() + " " + decision);
-			else
-				System.out.println("null");
+			if (currentBoard.getTarget() != null) {
+				algorithm = algorithmChooser.getAlgorithm();
+				if (algorithm != null) {
+					decision = algorithm.decision();
+					if(decision != null)
+						System.out.println(decision.getVerticalCoordinate() + " " + 
+								decision.getHorizontalCoordinate() + " " + decision);
+					else
+						System.out.println("Please select an algorithm");
+				}
+				else
+					setTextField("Could not make decision");
+			} 
+			else setTextField("Please select a target");
 		} catch(Exception e){
 			System.out.println("Game is finished.");
 			e.printStackTrace();
@@ -221,6 +228,10 @@ public class Model {
 		currentBoard.setSecondPlayerAlgorithmName(name);;
 	}
 	
+	public void setTextField(String text) {
+		gui.setTextField(text);
+	}
+	
 	
 	public void undoMove() {
 		history.undoMove();
@@ -234,5 +245,6 @@ public class Model {
 		history.redoMove();
 		currentBoard = history.getLastMove();
 	}
+	
 
 }

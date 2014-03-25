@@ -28,8 +28,8 @@ public class GoodMovesFinderTest {
 		board.setSecondPlayerColour(Stone.WHITE);
 		GoodMovesFinder finder = new GoodMovesFinder(board);
 		GoCell[] correct = new GoCell[3];
-		correct[0] = new GoCell(Stone.BLACK, 0, 2);
-		correct[1] = new GoCell(Stone.BLACK, 1, 1);
+		correct[0] = new GoCell(Stone.BLACK, 1, 1);
+		correct[1] = new GoCell(Stone.BLACK, 0, 2);
 		correct[2] = new GoCell(Stone.BLACK, 1, 2);
 		GoCell[] found = finder.getGoodMoves();
 		//assertArrayEquals(correct, found);

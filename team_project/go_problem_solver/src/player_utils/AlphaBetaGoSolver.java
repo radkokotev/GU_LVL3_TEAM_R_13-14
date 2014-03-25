@@ -11,11 +11,22 @@ public class AlphaBetaGoSolver implements GoSolverAlgorithm{
 	private GoCell cellToCapture;
 	private static final long infinity = Integer.MAX_VALUE;
 	private long countLeafNodesDiscovered;
+	private int playSurviveCoef;
+
 	
 	public AlphaBetaGoSolver(GoPlayingBoard board, GoCell cell) {
 		this.board = board.clone();
 		this.cellToCapture = cell.clone();
 		this.countLeafNodesDiscovered = 0;
+		this.setPlaySurviveCoef();
+	}
+	
+	private void setPlaySurviveCoef() {
+		if (this.board.getFirstPlayer().colour == this.cellToCapture.getContent()) {
+			playSurviveCoef = -1;
+		} else {
+			playSurviveCoef = 1;
+		}
 	}
 	
 	public boolean isPositionTerminal(GoPlayingBoard board) {
@@ -77,9 +88,9 @@ public class AlphaBetaGoSolver implements GoSolverAlgorithm{
 		if (isPositionTerminal(board)) {
 			if (board.getCellAt(cellToCapture.getVerticalCoordinate(), 
 					cellToCapture.getHorizontalCoordinate()).isEmpty()) {
-				return infinity;
+				return playSurviveCoef * infinity;
 			}
-			return (-infinity);
+			return playSurviveCoef * (-infinity);
 		}
 		LegalMovesChecker checker = new LegalMovesChecker(board);
 		GoodMovesFinder finder = new GoodMovesFinder(board.clone());
@@ -102,12 +113,7 @@ public class AlphaBetaGoSolver implements GoSolverAlgorithm{
 	private long minimize(GoPlayingBoard board, long alpha, long beta) throws CheckFailException {
 		if (isPositionTerminal(board)) {
 			board.oppositeToPlayNext();
-			return maximize(board, alpha, beta);/*
-			if (board.getCellAt(cellToCapture.getVerticalCoordinate(), 
-					cellToCapture.getHorizontalCoordinate()).isEmpty()) {
-				return infinity;
-			}
-			return (-infinity);*/
+			return maximize(board, alpha, beta);
 		}
 		LegalMovesChecker checker = new LegalMovesChecker(board);
 		GoodMovesFinder finder = new GoodMovesFinder(board.clone());

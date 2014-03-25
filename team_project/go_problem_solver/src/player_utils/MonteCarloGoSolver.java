@@ -18,6 +18,7 @@ public class MonteCarloGoSolver implements GoSolverAlgorithm{
 	private ArrayList<CellValuePair> monteCarloValues;
 	ArrayList<GoPlayingBoard> legalMoves;
 	private static final int THREAD_COUNT = 2;
+	private int playSurviveCoef;
 	
 	/**
 	 * Simple constructor to make a decision by using the MonteCarlo method. 
@@ -32,6 +33,7 @@ public class MonteCarloGoSolver implements GoSolverAlgorithm{
 		this.gamesPerMove = 100;
 		this.gamesPerThreadRun = 10;
 		this.finishTime = -1;
+		this.setPlaySurviveCoef();
 	}
 	
 	/**
@@ -61,6 +63,14 @@ public class MonteCarloGoSolver implements GoSolverAlgorithm{
 		this.gamesPerThreadRun = gamesPerThreadRun;
 		this.gamesPerMove = -1;
 		this.finishTime = finishTime;
+	}
+	
+	private void setPlaySurviveCoef() {
+		if (this.board.getFirstPlayer().colour == this.cellToCapture.getContent()) {
+			playSurviveCoef = 0;
+		} else {
+			playSurviveCoef = 1;
+		}
 	}
 	
 	public boolean isGoalAchieved(GoPlayingBoard board) {
@@ -170,7 +180,9 @@ public class MonteCarloGoSolver implements GoSolverAlgorithm{
 			}
 			if (newBoard.getCellAt(cellToCapture.getVerticalCoordinate(), 
 					cellToCapture.getHorizontalCoordinate()).isEmpty()) {
-				winCount++;
+				winCount += playSurviveCoef * 1;
+			} else {
+				winCount += (1 - playSurviveCoef) * 1;
 			}
 			// Remove all played boards from history
 			for (GoPlayingBoard playedBoard : boardsPlayed) {

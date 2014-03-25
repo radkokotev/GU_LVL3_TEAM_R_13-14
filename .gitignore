@@ -62,3 +62,4 @@ local.properties
 /bin
 ## Linux stuff
 *~
+team_project/go_problem_solver/experimental_results/*
