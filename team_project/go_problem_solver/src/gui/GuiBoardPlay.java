@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -38,14 +39,16 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 	private static final long serialVersionUID = -5583632264766625487L;
 	private Model model;
 	private boolean drawLegalMoves;
-	private JButton undoMoveItem, redoMoveItem, start, reset;
+	private JButton undoMoveItem, redoMoveItem, start, reset, set;
 	private JComboBox player1Type;
 	private JComboBox player1Colour;
 	private JComboBox player1Algorithm;
 	private JComboBox player2Type;
 	private JComboBox player2Colour;
 	private JComboBox player2Algorithm;
+	private JLabel noOfGamesTextField;
 	private JTextField textField;
+	private JTextField noOfGames;
 	
 	private File lastImportedFilename;
 	
@@ -66,6 +69,23 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 	    textField.setBorder(javax.swing.BorderFactory.createEmptyBorder());
 	    
 		JPanel playersPanel = new JPanel(new GridLayout(3,4,10,5));
+		JPanel randomGamePanel = new JPanel(new GridLayout(1, 3, 10, 5));
+		randomGamePanel.setBackground(Color.WHITE);
+		
+		noOfGamesTextField = new JLabel("No. of Random games");
+		randomGamePanel.add(noOfGamesTextField);
+		noOfGamesTextField.setVisible(false);
+		
+		noOfGames = new JTextField();
+		noOfGames.setText("No of games");
+		noOfGames.setHorizontalAlignment(JTextField.CENTER);
+		randomGamePanel.add(noOfGames);
+		noOfGames.setVisible(false);
+		
+		set = new JButton("Set");
+		randomGamePanel.add(set);
+		set.addActionListener(this);
+		set.setVisible(false);
 		
 		undoMoveItem = new JButton("Undo");
 		playersPanel.add(undoMoveItem);
@@ -114,8 +134,9 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 		player2Algorithm.setSelectedIndex(-1);
 		
 		frame.setTitle("Go game solver [Play mode]");
-		frame.getContentPane().add(this, BorderLayout.CENTER);
-		frame.getContentPane().add(textField, BorderLayout.NORTH);
+		frame.getContentPane().add(this);
+		frame.getContentPane().add(randomGamePanel, BorderLayout.NORTH);
+		frame.getContentPane().add(textField);
 		frame.getContentPane().add(playersPanel, BorderLayout.SOUTH);
 		// TODO Windows won't accept a colour change
 		//frame.setBackground(new Color(242,186,107));
@@ -240,6 +261,9 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 				player1Algorithm.setVisible(true);
 			else
 				player1Algorithm.setVisible(false);
+		} else if (e.getSource().equals(set)) {
+			System.out.println(noOfGames.getText());
+			model.setNoOfRandomGames(noOfGames.getText());
 		} else if(e.getSource().equals(player1Colour)) {
 			model.setFirstPlayerColour(((JComboBox) e.getSource()).getSelectedItem());
 			player2Colour.setSelectedItem(model.getOppositeColour(((JComboBox) e.getSource()).getSelectedItem()));
@@ -251,8 +275,28 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 				player2Algorithm.setVisible(false);
 		} else if (e.getSource().equals(player1Algorithm)) {
 			model.setPlayer1AlgorithmName((String) ((JComboBox) e.getSource()).getSelectedItem());
+			if (((JComboBox) e.getSource()).getSelectedItem() == Model.MONTECARLOSTRING) {
+				noOfGames.setText("100");
+				noOfGamesTextField.setVisible(true);
+				noOfGames.setVisible(true);
+				set.setVisible(true);
+			} else {
+				noOfGamesTextField.setVisible(false);
+				noOfGames.setVisible(false);
+				set.setVisible(false);
+			}
 		} else if (e.getSource().equals(player2Algorithm)) {
 			model.setPlayer2AlgorithmName((String) ((JComboBox) e.getSource()).getSelectedItem());
+			if (((JComboBox) e.getSource()).getSelectedItem() == Model.MONTECARLOSTRING) {
+				noOfGames.setText("100");
+				noOfGamesTextField.setVisible(true);
+				noOfGames.setVisible(true);
+				set.setVisible(true);
+			} else {
+				noOfGamesTextField.setVisible(false);
+				noOfGames.setVisible(false);
+				set.setVisible(false);
+			}
 		} else if(e.getSource().equals(player2Colour)) {
 			model.setSecondPlayerColour(((JComboBox) e.getSource()).getSelectedItem());
 			player1Colour.setSelectedItem(model.getOppositeColour(((JComboBox) e.getSource()).getSelectedItem()));

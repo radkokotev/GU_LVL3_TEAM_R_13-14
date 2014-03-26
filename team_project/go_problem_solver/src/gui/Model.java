@@ -30,7 +30,7 @@ public class Model {
 	private BoardHistory history;
 	private GoSolverAlgorithmChooser algorithmChooser;
 	private GoSolverAlgorithm algorithm;
-	
+	private int noOfRandomGames;
 	private GuiBoardPlay gui;
 	
 	public Model(GuiBoardPlay g) throws FileNotFoundException, CheckFailException {
@@ -100,8 +100,7 @@ public class Model {
 		try {
 			if (currentBoard.getTarget() != null) {
 				algorithm = algorithmChooser.getAlgorithm();
-				System.out.println(algorithm.toString());
-				algorithm.setNoOfGames(300);
+				algorithm.setNoOfGames(getNoOfRandomGames());
 				if (algorithm != null) {
 					decision = algorithm.decision();
 					if(decision != null)
@@ -191,6 +190,15 @@ public class Model {
 		currentBoard.toFile(file);
 	}
 	
+	public void setNoOfRandomGames(String num) {
+		int i = Integer.parseInt(num);
+		noOfRandomGames = i;
+	}
+	
+	public int getNoOfRandomGames() {
+		return noOfRandomGames;
+	}
+	 
 	/**
 	 * Return the opposite colour when called
 	 * @return Opposite colour from input
