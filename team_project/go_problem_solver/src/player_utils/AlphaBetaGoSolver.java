@@ -124,5 +124,10 @@ public class AlphaBetaGoSolver implements GoSolverAlgorithm{
 		}
 		return beta;
 	}
+
+	@Override
+	public void setNoOfGames(int num) {
+		System.out.println("Alpha-Beta set number");
+	}
 	
 }

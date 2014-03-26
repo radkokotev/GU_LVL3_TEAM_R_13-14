@@ -91,6 +91,7 @@ public class MonteCarloGoSolver implements GoSolverAlgorithm{
 	 * @throws InterruptedException 
 	 */
 	public GoCell decision() throws CheckFailException, InterruptedException {
+		System.out.println("Number of games played = " + gamesPerMove);
 		LegalMovesChecker checker = new LegalMovesChecker(board);
 		monteCarloValues = new ArrayList<CellValuePair>();
 		legalMoves = new ArrayList<GoPlayingBoard>();
@@ -230,5 +231,10 @@ public class MonteCarloGoSolver implements GoSolverAlgorithm{
 			BoardHistory.wipeHistory();
 		}
 
+	}
+
+	@Override
+	public void setNoOfGames(int num) {
+		this.gamesPerMove = num;
 	}
 }

@@ -25,7 +25,7 @@ public class GoSolverAlgorithmChooser {
 		} else if (name.equals(Model.ALPHABETASTRING)) {
 			algorithm = new AlphaBetaGoSolver(board, cell);
 		} else if (name.equals(Model.MONTECARLOSTRING)) {
-			algorithm = new MinimaxGoSolver(board, cell);
+			algorithm = new MonteCarloGoSolver(board, cell);
 		} 
 		return algorithm;
 	}

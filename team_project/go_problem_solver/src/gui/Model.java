@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.Cursor;
 import java.io.File;
 import java.io.FileNotFoundException;
 
@@ -16,8 +17,8 @@ import custom_java_utils.CheckFailException;
 public class Model {
 	
 	public static final String ALPHABETASTRING = "Alpha Beta";
-	public static final String MINIMAXSTRING = "Mini Max";
 	public static final String MONTECARLOSTRING = "Monte Carlo";
+	public static final String MINIMAXSTRING = "Mini Max";
 	public static final String HUMANSTRING = "Human";
 	public static final String COMPUTERSTRING = "Computer";
 	public static final String BlACKSTRING = "Black";
@@ -74,8 +75,10 @@ public class Model {
 		removeOpponent(x, y);
 		history.add(currentBoard);
 		gui.paintImmediately(0, 0, gui.getSize().width, gui.getSize().height);
-		if(currentBoard.isNextPlayerComputer()){
+		if(currentBoard.isNextPlayerComputer()) {
+			gui.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 			computerMove();
+			gui.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		}
 	}
 	
@@ -97,6 +100,8 @@ public class Model {
 		try {
 			if (currentBoard.getTarget() != null) {
 				algorithm = algorithmChooser.getAlgorithm();
+				System.out.println(algorithm.toString());
+				algorithm.setNoOfGames(300);
 				if (algorithm != null) {
 					decision = algorithm.decision();
 					if(decision != null)
