@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import player_utils.AlphaBetaGoSolver;
 import player_utils.BoardHistory;
-import player_utils.MonteCarloGoSolver;
+import player_utils.AlphaBetaGoSolver;
 import board_utils.GoCell;
 import board_utils.GoPlayingBoard;
 import board_utils.Stone;
@@ -29,7 +29,7 @@ public class AlphaBeta_Test1 {
 		//Reset board history
 		BoardHistory.wipeHistory();
 	}
-	/**
+
 	@Test
 	public void testAlphaBetaProblem1() throws FileNotFoundException, CheckFailException, InterruptedException {
 		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory + 
@@ -77,7 +77,7 @@ public class AlphaBeta_Test1 {
 	}
 	
 	@Test
-	public void testMinimaxProblem_1_6() throws FileNotFoundException, CheckFailException, InterruptedException {
+	public void testAlphaBetaProblem_1_6() throws FileNotFoundException, CheckFailException, InterruptedException {
 		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory +
 				"/src/test/test_data/problem_1_6");
 		board.setToPlayNext(Stone.WHITE);
@@ -89,7 +89,7 @@ public class AlphaBeta_Test1 {
 	}
 	
 	@Test
-	public void testMinimaxProblem_3_2() throws FileNotFoundException, CheckFailException, InterruptedException {
+	public void testAlphaBetaProblem_3_2() throws FileNotFoundException, CheckFailException, InterruptedException {
 		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory +
 				"/src/test/test_data/problem_3_2");
 		board.setToPlayNext(Stone.WHITE);
@@ -98,21 +98,23 @@ public class AlphaBeta_Test1 {
 		AlphaBetaGoSolver solver = new AlphaBetaGoSolver(board, board.getCellAt(7, 2));
 		assertEquals(Stone.BLACK, board.getCellAt(7, 2).getContent());
 		assertEquals(new GoCell(Stone.WHITE, 7, 0), solver.decision());
-	}*/
+	}
 	
+	/**
+	 * This problem has two good answers.
+	 */
 	@Test
-	public void testMonteCarloProblem_other_problem() throws FileNotFoundException, CheckFailException, InterruptedException {
+	public void testAlphaBetaProblem_other_problem() throws FileNotFoundException, CheckFailException, InterruptedException {
 		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory +
 				"/src/test/test_data/other_problem");
 		board.setToPlayNext(Stone.BLACK);
 		AlphaBetaGoSolver solver = new AlphaBetaGoSolver(board, board.getCellAt(4, 1));
 		assertEquals(Stone.WHITE, board.getCellAt(4, 1).getContent());
-		assertEquals(new GoCell(Stone.BLACK, 3, 0), solver.decision());
+		assertEquals(new GoCell(Stone.BLACK, 1, 0), solver.decision());
 	}
 	
-/** Weird behaviour	-- tests pass, but AB is much slower
 	@Test
-	public void testMinimaxProblem_5_2() throws FileNotFoundException, CheckFailException, InterruptedException {
+	public void testAlphaBetaProblem_5_2() throws FileNotFoundException, CheckFailException, InterruptedException {
 		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory +
 				"/src/test/test_data/problem_5_2");
 		board.setToPlayNext(Stone.BLACK);
@@ -120,5 +122,5 @@ public class AlphaBeta_Test1 {
 		assertEquals(Stone.WHITE, board.getCellAt(15, 1).getContent());
 		assertEquals(new GoCell(Stone.BLACK, 14, 0), solver.decision());
 	}
-*/
+
 }
