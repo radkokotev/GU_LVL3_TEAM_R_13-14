@@ -241,6 +241,7 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 				player1Algorithm.setVisible(false);
 		} else if(e.getSource().equals(player1Colour)) {
 			model.setFirstPlayerColour(((JComboBox) e.getSource()).getSelectedItem());
+			player2Colour.setSelectedItem(model.getOppositeColour(((JComboBox) e.getSource()).getSelectedItem()));
 		} else if(e.getSource().equals(player2Type)) {
 			model.setSecondPlayerType(((JComboBox) e.getSource()).getSelectedItem());
 			if (((JComboBox) e.getSource()).getSelectedItem().equals("Computer")) 
@@ -253,6 +254,7 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 			model.setPlayer2AlgorithmName((String) ((JComboBox) e.getSource()).getSelectedItem());
 		} else if(e.getSource().equals(player2Colour)) {
 			model.setSecondPlayerColour(((JComboBox) e.getSource()).getSelectedItem());
+			player1Colour.setSelectedItem(model.getOppositeColour(((JComboBox) e.getSource()).getSelectedItem()));
 		} else if(e.getSource().equals(start)) {
 			model.start();
 		} else if(e.getSource().equals(reset)) {

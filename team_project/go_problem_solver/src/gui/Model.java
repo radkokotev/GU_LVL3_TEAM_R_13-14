@@ -186,6 +186,18 @@ public class Model {
 		currentBoard.toFile(file);
 	}
 	
+	/**
+	 * Return the opposite colour when called
+	 * @return Opposite colour from input
+	 */
+	public Object getOppositeColour(Object c) {
+		String clr = (String) c;
+		if (clr.equals(Model.BlACKSTRING))
+			return Model.WHITESTRING;
+		else
+			return Model.BlACKSTRING;
+	}
+	
 	public void setFirstPlayerType(Object b){
 		String t = (String) b;
 		if(t.equals(HUMANSTRING))
