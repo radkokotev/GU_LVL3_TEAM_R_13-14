@@ -30,8 +30,8 @@ public class Model {
 	private BoardHistory history;
 	private GoSolverAlgorithmChooser algorithmChooser;
 	private GoSolverAlgorithm algorithm;
-	private int noOfRandomGames;
 	private GuiBoardPlay gui;
+	private int noOfRandomGames;
 	
 	public Model(GuiBoardPlay g) throws FileNotFoundException, CheckFailException {
 		this(g, null, null);
@@ -47,6 +47,7 @@ public class Model {
 	
 	public Model(GuiBoardPlay g, GoPlayingBoard board, File filename) throws FileNotFoundException, CheckFailException {
 		gui = g;
+		noOfRandomGames = 100;
 		if(filename == null)
 			currentBoard = new GoPlayingBoard();
 		else {
@@ -190,6 +191,10 @@ public class Model {
 		currentBoard.toFile(file);
 	}
 	
+	/**
+	 * Set number of random games for Monte Carlo to play
+	 * @param Number of games to play
+	 */
 	public void setNoOfRandomGames(String num) {
 		int i = Integer.parseInt(num);
 		noOfRandomGames = i;

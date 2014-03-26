@@ -46,7 +46,7 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 	private JComboBox player2Type;
 	private JComboBox player2Colour;
 	private JComboBox player2Algorithm;
-	private JLabel noOfGamesTextField;
+	private JLabel noOfGamesLabel;
 	private JTextField textField;
 	private JTextField noOfGames;
 	
@@ -72,12 +72,12 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 		JPanel randomGamePanel = new JPanel(new GridLayout(1, 3, 10, 5));
 		randomGamePanel.setBackground(Color.WHITE);
 		
-		noOfGamesTextField = new JLabel("No. of Random games");
-		randomGamePanel.add(noOfGamesTextField);
-		noOfGamesTextField.setVisible(false);
+		noOfGamesLabel = new JLabel("No. of Random games");
+		randomGamePanel.add(noOfGamesLabel);
+		noOfGamesLabel.setVisible(false);
 		
 		noOfGames = new JTextField();
-		noOfGames.setText("No of games");
+		noOfGames.setText("100");
 		noOfGames.setHorizontalAlignment(JTextField.CENTER);
 		randomGamePanel.add(noOfGames);
 		noOfGames.setVisible(false);
@@ -227,6 +227,19 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 		        if (returnVal == JFileChooser.APPROVE_OPTION) {
 		            File file = fc.getSelectedFile();
 		            model = new Model(this, file);
+		            // Reseting all field values
+					player1Type.setSelectedItem(player1Type.getSelectedItem());
+					player1Algorithm.setSelectedItem(player1Algorithm.getSelectedItem());
+					player1Colour.setSelectedItem(player1Colour.getSelectedItem());
+					player2Type.setSelectedItem(player2Type.getSelectedItem());
+					player2Algorithm.setSelectedItem(player2Algorithm.getSelectedItem());
+					player2Colour.setSelectedItem(player2Colour.getSelectedItem());
+					if (player1Algorithm.getSelectedItem() == "Monte Carlo" || player2Algorithm.getSelectedItem() == "Monte Carlo") {
+						noOfGames.setText("100");
+						noOfGamesLabel.setVisible(true);
+						noOfGames.setVisible(true);
+						set.setVisible(true);
+					}
 		            lastImportedFilename = file;
 					repaint();
 		        }
@@ -277,11 +290,11 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 			model.setPlayer1AlgorithmName((String) ((JComboBox) e.getSource()).getSelectedItem());
 			if (((JComboBox) e.getSource()).getSelectedItem() == Model.MONTECARLOSTRING) {
 				noOfGames.setText("100");
-				noOfGamesTextField.setVisible(true);
+				noOfGamesLabel.setVisible(true);
 				noOfGames.setVisible(true);
 				set.setVisible(true);
 			} else {
-				noOfGamesTextField.setVisible(false);
+				noOfGamesLabel.setVisible(false);
 				noOfGames.setVisible(false);
 				set.setVisible(false);
 			}
@@ -289,11 +302,11 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 			model.setPlayer2AlgorithmName((String) ((JComboBox) e.getSource()).getSelectedItem());
 			if (((JComboBox) e.getSource()).getSelectedItem() == Model.MONTECARLOSTRING) {
 				noOfGames.setText("100");
-				noOfGamesTextField.setVisible(true);
+				noOfGamesLabel.setVisible(true);
 				noOfGames.setVisible(true);
 				set.setVisible(true);
 			} else {
-				noOfGamesTextField.setVisible(false);
+				noOfGamesLabel.setVisible(false);
 				noOfGames.setVisible(false);
 				set.setVisible(false);
 			}
@@ -305,6 +318,19 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 		} else if(e.getSource().equals(reset)) {
 			try {
 				model = new Model(this, lastImportedFilename);
+				// Reseting all field values
+				player1Type.setSelectedItem(player1Type.getSelectedItem());
+				player1Algorithm.setSelectedItem(player1Algorithm.getSelectedItem());
+				player1Colour.setSelectedItem(player1Colour.getSelectedItem());
+				player2Type.setSelectedItem(player2Type.getSelectedItem());
+				player2Algorithm.setSelectedItem(player2Algorithm.getSelectedItem());
+				player2Colour.setSelectedItem(player2Colour.getSelectedItem());
+				if (player1Algorithm.getSelectedItem() == "Monte Carlo" || player2Algorithm.getSelectedItem() == "Monte Carlo") {
+					noOfGames.setText("100");
+					noOfGamesLabel.setVisible(true);
+					noOfGames.setVisible(true);
+					set.setVisible(true);
+				}
 			} catch (FileNotFoundException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
