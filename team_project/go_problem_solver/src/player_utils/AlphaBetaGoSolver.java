@@ -12,13 +12,14 @@ public class AlphaBetaGoSolver implements GoSolverAlgorithm{
 	private static final long infinity = Integer.MAX_VALUE;
 	private long countLeafNodesDiscovered;
 	private int playSurviveCoef;
-	private boolean minPassed = false;
+	private boolean minPassed;
 
 	
 	public AlphaBetaGoSolver(GoPlayingBoard board, GoCell cell) {
 		this.board = board.clone();
 		this.cellToCapture = cell.clone();
 		this.countLeafNodesDiscovered = 0;
+		this.minPassed = false;
 		this.setPlaySurviveCoef();
 	}
 	
