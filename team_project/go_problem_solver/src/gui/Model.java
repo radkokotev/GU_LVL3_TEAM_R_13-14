@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.Cursor;
 import java.io.File;
 import java.io.FileNotFoundException;
 
@@ -48,7 +49,10 @@ public class Model {
 		gui = g;
 		noOfRandomGames = 100;
 		if(filename == null)
-			currentBoard = new GoPlayingBoard();
+			if (currentBoard != null)
+				currentBoard = board;
+			else
+				currentBoard = new GoPlayingBoard();
 		else {
 			currentBoard = new GoPlayingBoard(filename.getAbsolutePath());
 			gui.setPlayersColours(currentBoard.getFirstPlayerColour());
@@ -63,11 +67,12 @@ public class Model {
 	}
 	
 	public void start() {
-		if(currentBoard.isNextPlayerComputer()) 
+		if(currentBoard.isNextPlayerComputer())
 			computerMove();
 	}
 	
 	public void addStone(int x, int y) {
+		checker = new LegalMovesChecker(currentBoard);
 		if (!checker.isMoveLegal(new GoCell(currentBoard.toPlayNext(), x,y))) {
 			return;
 		}
@@ -81,7 +86,9 @@ public class Model {
 		legalMoves = checker.getLegalityArray();
 		gui.paintImmediately(0, 0, gui.getSize().width, gui.getSize().height);
 		if(currentBoard.isNextPlayerComputer()){
+			gui.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 			computerMove();
+			gui.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		}
 	}
 	
