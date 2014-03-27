@@ -1,6 +1,7 @@
 package player_utils;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertArrayEquals;
 
 import org.junit.Test;
 
