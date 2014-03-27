@@ -131,20 +131,6 @@ public class Model {
 			return true;
 	}
 	
-	public void removeOpponent(int x, int y)  {
-		try {
-			if(!checker.captureOponent(currentBoard.getCellAt(x, y)).isEmpty()) {
-				System.out.println("before\n" + currentBoard);
-				currentBoard = checker.getNewBoard();
-				checker = new LegalMovesChecker(currentBoard);
-				legalMoves = checker.getLegalityArray();
-				System.out.println("after\n" + currentBoard);
-			}
-		} catch(Exception e){
-			System.out.println("new board = old board");
-		}
-	}
-	
 	public int getTotalNumberOfStones(){
 		return currentBoard.getCountPiecesOnBoard();
 	}
