@@ -75,6 +75,7 @@ public class Model {
 		legalMoves = checker.getLegalityArray();
 		removeOpponent(x, y);
 		history.add(currentBoard);
+		history.deleteUndoMoves();
 		gui.paintImmediately(0, 0, gui.getSize().width, gui.getSize().height);
 		if(currentBoard.isNextPlayerComputer()) {
 			gui.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));

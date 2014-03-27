@@ -154,6 +154,7 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 	private void drawStone(int x, int y){
 		if(model.isMoveLegal(x, y)) {
 			model.addStone(x, y);
+			textField.setText("To play next: " + model.getCurrentBoard().toPlayNext().toString());
 		}
 	}
 	
@@ -228,6 +229,7 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 		            File file = fc.getSelectedFile();
 		            model = new Model(this, file);
 		            // Reseting all field values
+		            textField.setText("To play next: " + model.getCurrentBoard().toPlayNext().toString());
 					player1Type.setSelectedItem(player1Type.getSelectedItem());
 					player1Algorithm.setSelectedItem(player1Algorithm.getSelectedItem());
 					player1Colour.setSelectedItem(player1Colour.getSelectedItem());
@@ -264,9 +266,11 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 			BoardHistory.wipeHistory();
 		} else if(e.getSource().equals(undoMoveItem)) {
 			model.undoMove();
+			textField.setText("To play next: " + model.getCurrentBoard().toPlayNext().toString());
 			repaint();
 		} else if(e.getSource().equals(redoMoveItem)) {
 			model.redoMove();
+			textField.setText("To play next: " + model.getCurrentBoard().toPlayNext().toString());
 			repaint();
 		} else if(e.getSource().equals(player1Type)) {
 			model.setFirstPlayerType(((JComboBox) e.getSource()).getSelectedItem());
@@ -280,6 +284,7 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 		} else if(e.getSource().equals(player1Colour)) {
 			model.setFirstPlayerColour(((JComboBox) e.getSource()).getSelectedItem());
 			player2Colour.setSelectedItem(model.getOppositeColour(((JComboBox) e.getSource()).getSelectedItem()));
+			textField.setText("To play next: " + model.getCurrentBoard().toPlayNext().toString());
 		} else if(e.getSource().equals(player2Type)) {
 			model.setSecondPlayerType(((JComboBox) e.getSource()).getSelectedItem());
 			if (((JComboBox) e.getSource()).getSelectedItem().equals("Computer")) 
@@ -313,6 +318,7 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 		} else if(e.getSource().equals(player2Colour)) {
 			model.setSecondPlayerColour(((JComboBox) e.getSource()).getSelectedItem());
 			player1Colour.setSelectedItem(model.getOppositeColour(((JComboBox) e.getSource()).getSelectedItem()));
+			textField.setText("To play next: " + model.getCurrentBoard().toPlayNext().toString());
 		} else if(e.getSource().equals(start)) {
 			model.start();
 		} else if(e.getSource().equals(reset)) {
