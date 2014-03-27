@@ -231,4 +231,9 @@ public class MonteCarloGoSolver implements GoSolverAlgorithm{
 		}
 
 	}
+
+	@Override
+	public void setNoOfGames(int num) {
+		this.gamesPerMove = num;
+	}
 }

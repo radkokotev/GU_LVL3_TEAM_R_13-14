@@ -91,7 +91,7 @@ public class BoardHistory {
 	 */
 	public void redoMove() {
 		if (!undoMoves.isEmpty()) {
-			allMoves.push(undoMoves.pop());		
+			allMoves.push(undoMoves.pop());
 		}
 	}
 	
@@ -107,6 +107,13 @@ public class BoardHistory {
 	 */
 	public GoPlayingBoard getUndoMove() {
 		return undoMoves.get(0).clone();
+	}
+	
+	/**
+	 * Method to wipe undo moves list
+	 */
+	public void deleteUndoMoves() {
+		undoMoves.removeAllElements();
 	}
 	
 	/**

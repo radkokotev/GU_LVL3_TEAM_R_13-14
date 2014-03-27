@@ -237,6 +237,7 @@ public class GoPlayingBoard extends PlayingBoard<GoCell> {
 	}
 	
 	public String getFirstPlayerAlgorithmName() {
+		System.out.println("FIRST PLAYER ALG NAME IS: " + firstPlayer.algorithmName);
 		return firstPlayer.algorithmName;
 	}
 	

@@ -7,8 +7,8 @@ import java.io.FileNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 
-import player_utils.MonteCarloGoSolver;
 import player_utils.BoardHistory;
+import player_utils.MonteCarloGoSolver;
 import board_utils.GoCell;
 import board_utils.GoPlayingBoard;
 import board_utils.Stone;
@@ -118,5 +118,4 @@ public class MonteCarlo_Test1 {
 		assertEquals(Stone.WHITE, board.getCellAt(14, 6).getContent());
 		assertEquals(new GoCell(Stone.BLACK, 16, 6), solver.decision());
 	}
-
 }

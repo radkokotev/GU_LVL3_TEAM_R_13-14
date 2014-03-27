@@ -7,4 +7,6 @@ public interface GoSolverAlgorithm {
 
 	GoCell decision() throws CheckFailException, InterruptedException;
 	
+	void setNoOfGames(int num);
+	
 }

@@ -12,14 +12,13 @@ public class AlphaBetaGoSolver implements GoSolverAlgorithm{
 	private static final long infinity = Integer.MAX_VALUE;
 	private long countLeafNodesDiscovered;
 	private int playSurviveCoef;
-	private boolean minPassed;
+	private boolean minPassed = false;
 
 	
 	public AlphaBetaGoSolver(GoPlayingBoard board, GoCell cell) {
 		this.board = board.clone();
 		this.cellToCapture = cell.clone();
 		this.countLeafNodesDiscovered = 0;
-		this.minPassed = false;
 		this.setPlaySurviveCoef();
 	}
 	
@@ -140,6 +139,11 @@ public class AlphaBetaGoSolver implements GoSolverAlgorithm{
 			checker.reset();
 		}
 		return beta;
+	}
+
+	@Override
+	public void setNoOfGames(int num) {
+		System.out.println("Alpha-Beta set number");
 	}
 	
 }

@@ -2,7 +2,6 @@ package gui;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Arrays;
 
 import player_utils.BoardHistory;
 import player_utils.GoSolverAlgorithm;
@@ -17,8 +16,8 @@ import custom_java_utils.CheckFailException;
 public class Model {
 	
 	public static final String ALPHABETASTRING = "Alpha Beta";
-	public static final String MINIMAXSTRING = "Mini Max";
 	public static final String MONTECARLOSTRING = "Monte Carlo";
+	public static final String MINIMAXSTRING = "Mini Max";
 	public static final String HUMANSTRING = "Human";
 	public static final String COMPUTERSTRING = "Computer";
 	public static final String BlACKSTRING = "Black";
@@ -30,8 +29,8 @@ public class Model {
 	private BoardHistory history;
 	private GoSolverAlgorithmChooser algorithmChooser;
 	private GoSolverAlgorithm algorithm;
-	
 	private GuiBoardPlay gui;
+	private int noOfRandomGames;
 	
 	public Model(GuiBoardPlay g) throws FileNotFoundException, CheckFailException {
 		this(g, null, null);
@@ -47,6 +46,7 @@ public class Model {
 	
 	public Model(GuiBoardPlay g, GoPlayingBoard board, File filename) throws FileNotFoundException, CheckFailException {
 		gui = g;
+		noOfRandomGames = 100;
 		if(filename == null)
 			currentBoard = new GoPlayingBoard();
 		else {
@@ -103,6 +103,7 @@ public class Model {
 		try {
 			if (currentBoard.getTarget() != null) {
 				algorithm = algorithmChooser.getAlgorithm();
+				algorithm.setNoOfGames(getNoOfRandomGames());
 				if (algorithm != null) {
 					decision = algorithm.decision();
 					if(decision != null)
@@ -178,6 +179,31 @@ public class Model {
 	 */
 	public void toFile(File file) throws FileNotFoundException{
 		currentBoard.toFile(file);
+	}
+	
+	/**
+	 * Set number of random games for Monte Carlo to play
+	 * @param Number of games to play
+	 */
+	public void setNoOfRandomGames(String num) {
+		int i = Integer.parseInt(num);
+		noOfRandomGames = i;
+	}
+	
+	public int getNoOfRandomGames() {
+		return noOfRandomGames;
+	}
+	 
+	/**
+	 * Return the opposite colour when called
+	 * @return Opposite colour from input
+	 */
+	public Object getOppositeColour(Object c) {
+		String clr = (String) c;
+		if (clr.equals(Model.BlACKSTRING))
+			return Model.WHITESTRING;
+		else
+			return Model.BlACKSTRING;
 	}
 	
 	public void setFirstPlayerType(Object b){

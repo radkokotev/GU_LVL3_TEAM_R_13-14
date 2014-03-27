@@ -9,8 +9,6 @@ import org.junit.Test;
 
 import player_utils.AlphaBetaGoSolver;
 import player_utils.BoardHistory;
-import player_utils.AlphaBetaGoSolver;
-import player_utils.MonteCarloGoSolver;
 import board_utils.GoCell;
 import board_utils.GoPlayingBoard;
 import board_utils.Stone;
@@ -101,9 +99,6 @@ public class AlphaBeta_Test1 {
 		assertEquals(new GoCell(Stone.WHITE, 7, 0), solver.decision());
 	}
 	
-	/**
-	 * This problem has two good answers.
-	 */
 	@Test
 	public void testAlphaBetaProblem_other_problem() throws FileNotFoundException, CheckFailException, InterruptedException {
 		GoPlayingBoard board = new GoPlayingBoard(workspaceDirectory +

@@ -1,13 +1,13 @@
 package player_utils;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import custom_java_utils.CheckFailException;
 import board_utils.GoCell;
 import board_utils.GoPlayingBoard;
 import board_utils.Stone;
+import custom_java_utils.CheckFailException;
 
 public class GoodMovesFinderTest {
 

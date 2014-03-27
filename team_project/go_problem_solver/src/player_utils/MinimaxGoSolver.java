@@ -159,5 +159,10 @@ public class MinimaxGoSolver implements GoSolverAlgorithm {
 		}
 		return maxValue;
 	}
+
+	@Override
+	public void setNoOfGames(int num) {
+		// Empty method
+	}
 	
 }

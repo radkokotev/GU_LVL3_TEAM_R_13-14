@@ -15,11 +15,11 @@ import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 
-import custom_java_utils.ProjectPathUtils;
 import board_utils.GoCell;
 import board_utils.GoPlayingBoard;
 import board_utils.Stone;
 import custom_java_utils.CheckFailException;
+import custom_java_utils.ProjectPathUtils;
 
 public class GuiBoardBuild extends GuiBoard implements MouseListener, 
 													   ActionListener {
