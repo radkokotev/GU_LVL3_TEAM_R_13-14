@@ -55,21 +55,19 @@ public class AlphaBetaGoSolver implements GoSolverAlgorithm{
 		LegalMovesChecker checker = new LegalMovesChecker(board);
 		ArrayList<CellValuePair> decisionMinimaxValues = 
 				new ArrayList<CellValuePair>();
-		for (int i = 0; i < board.getWidth(); i++) {
-			for (int j = 0; j < board.getHeight(); j++) {
-				GoCell cell = new GoCell(board.toPlayNext(), i, j);
-				if (checker.isMoveLegal(cell)) {
-					System.out.println(0);
-					CellValuePair cellValuePair = new CellValuePair();
-					cellValuePair.cell = cell;
-					GoPlayingBoard newBoard = checker.getNewBoard();
-					newBoard.oppositeToPlayNext();
-					cellValuePair.value = minimize(newBoard, -infinity,	infinity);
-					decisionMinimaxValues.add(cellValuePair);
-					BoardHistory.getSingleton().remove(newBoard);
-				}
-				checker.reset();
+		
+		GoodMovesFinder finder = new GoodMovesFinder(board.clone());
+		for (GoCell cell : finder.getGoodMoves()) {
+			if (checker.isMoveLegal(cell)) {
+				CellValuePair cellValuePair = new CellValuePair();
+				cellValuePair.cell = cell;
+				GoPlayingBoard newBoard = checker.getNewBoard();
+				newBoard.oppositeToPlayNext();
+				cellValuePair.value = minimize(newBoard, -infinity, infinity);
+				decisionMinimaxValues.add(cellValuePair);
+				BoardHistory.getSingleton().remove(newBoard);
 			}
+			checker.reset();
 		}
 		GoCell bestMove = null;
 		long bestValue = Long.MIN_VALUE;
