@@ -67,10 +67,12 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 	    textField = new JTextField();
 	    textField.setFocusable(false);
 	    textField.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+	    textField.setBackground(new Color(242,186,107));
 	    
 		JPanel playersPanel = new JPanel(new GridLayout(3,4,10,5));
 		JPanel randomGamePanel = new JPanel(new GridLayout(1, 3, 10, 5));
 		randomGamePanel.setBackground(Color.WHITE);
+		randomGamePanel.setBackground(new Color(242,186,107));
 		
 		noOfGamesLabel = new JLabel("No. of Random games");
 		randomGamePanel.add(noOfGamesLabel);
@@ -139,8 +141,8 @@ public class GuiBoardPlay extends GuiBoard implements ActionListener,
 		frame.getContentPane().add(textField);
 		frame.getContentPane().add(playersPanel, BorderLayout.SOUTH);
 		// TODO Windows won't accept a colour change
-		//frame.setBackground(new Color(242,186,107));
-		frame.getContentPane().setBackground(new Color(242,186,107));
+		frame.setBackground(new Color(242,186,107));
+		//frame.getContentPane().setBackground(new Color(242,186,107));
 		frame.pack();
 		frame.setVisible(true);
         frame.setSize(500, 600);
