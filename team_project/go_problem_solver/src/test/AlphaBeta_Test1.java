@@ -10,6 +10,7 @@ import org.junit.Test;
 import player_utils.AlphaBetaGoSolver;
 import player_utils.BoardHistory;
 import player_utils.AlphaBetaGoSolver;
+import player_utils.MonteCarloGoSolver;
 import board_utils.GoCell;
 import board_utils.GoPlayingBoard;
 import board_utils.Stone;
@@ -122,5 +123,4 @@ public class AlphaBeta_Test1 {
 		assertEquals(Stone.WHITE, board.getCellAt(15, 1).getContent());
 		assertEquals(new GoCell(Stone.BLACK, 14, 0), solver.decision());
 	}
-
 }
