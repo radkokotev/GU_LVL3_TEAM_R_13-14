@@ -10,11 +10,13 @@ public class MinimaxGoSolver implements GoSolverAlgorithm {
 	private GoPlayingBoard board;
 	private GoCell cellToCapture;
 	private static final long infinity = Integer.MAX_VALUE;
+	private long countLeafNodesDiscovered;
 	private int playSurviveCoef;
 	
 	public MinimaxGoSolver(GoPlayingBoard board, GoCell cell) {
 		this.board = board.clone();
 		this.cellToCapture = cell.clone();
+		this.countLeafNodesDiscovered = 0;
 		this.setPlaySurviveCoef();
 	}
 	
@@ -30,6 +32,7 @@ public class MinimaxGoSolver implements GoSolverAlgorithm {
 		if (board.getCellAt(cellToCapture.getVerticalCoordinate(), 
 				cellToCapture.getHorizontalCoordinate()).isEmpty()) {
 			// the target stone was captured
+			this.countLeafNodesDiscovered++;
 			return true;
 		}
 		LegalMovesChecker checker = new LegalMovesChecker(board);
@@ -42,6 +45,7 @@ public class MinimaxGoSolver implements GoSolverAlgorithm {
 				checker.reset();
 			}
 		}
+		this.countLeafNodesDiscovered++;
 		return true;
 	}
 	
@@ -66,14 +70,16 @@ public class MinimaxGoSolver implements GoSolverAlgorithm {
 			}
 		}
 		GoCell bestMove = null;
-		long bestValue = (-infinity);
+		double bestValue = (-infinity);
 		for (CellValuePair pair : decisionMinimaxValues) {
-			System.out.println("pair" + pair.value);
-			if (pair.value >= bestValue) {
-				bestValue = (long) pair.value;
+			System.out.println("pair" + pair.value + " (" + pair.cell.getVerticalCoordinate() +
+					"," + pair.cell.getHorizontalCoordinate());
+			if (pair.value > bestValue) {
+				bestValue = pair.value;
 				bestMove = pair.cell;
 			}
 		}
+		System.out.println("Leaf Nodes = " + this.countLeafNodesDiscovered);
 		return bestMove;
 	}
 	
@@ -83,9 +89,9 @@ public class MinimaxGoSolver implements GoSolverAlgorithm {
 		if (isPositionTerminal(board)) {
 			if (board.getCellAt(cellToCapture.getVerticalCoordinate(), 
 					cellToCapture.getHorizontalCoordinate()).isEmpty()) {
-				return infinity;
+				return playSurviveCoef * infinity;
 			}
-			return (-infinity);
+			return playSurviveCoef * (-infinity);
 		}
 		ArrayList<Long> minimaxValues = new ArrayList<Long>();
 		LegalMovesChecker checker = new LegalMovesChecker(board);
@@ -98,7 +104,7 @@ public class MinimaxGoSolver implements GoSolverAlgorithm {
 					long currMinimaxValue = minimize(newBoard, depth);
 					minimaxValues.add(currMinimaxValue);  // there is a legal move
 					if (currMinimaxValue >= infinity) {
-						foundMax = true;
+						foundMax = false;
 					}
 					BoardHistory.getSingleton().remove(newBoard);
 				}
@@ -118,11 +124,8 @@ public class MinimaxGoSolver implements GoSolverAlgorithm {
 		if(depth <= 0) System.out.println(depth);
 		depth++;
 		if (isPositionTerminal(board)) {
-			if (board.getCellAt(cellToCapture.getVerticalCoordinate(), 
-					cellToCapture.getHorizontalCoordinate()).isEmpty()) {
-				return infinity;
-			}
-			return (-infinity);
+			board.oppositeToPlayNext();
+			return maximize(board, depth);
 		}
 		ArrayList<Long> minimaxValues = new ArrayList<Long>();
 		LegalMovesChecker checker = new LegalMovesChecker(board);
@@ -135,7 +138,7 @@ public class MinimaxGoSolver implements GoSolverAlgorithm {
 					long currMinimaxValue = maximize(newBoard, depth);
 					minimaxValues.add(currMinimaxValue);  // there is a legal move
 					if (currMinimaxValue <= -infinity) {
-						foundMin = true;
+						foundMin = false;
 					}
 					BoardHistory.getSingleton().remove(newBoard);
 				}

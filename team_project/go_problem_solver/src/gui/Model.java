@@ -1,6 +1,5 @@
 package gui;
 
-import java.awt.Cursor;
 import java.io.File;
 import java.io.FileNotFoundException;
 
@@ -69,18 +68,20 @@ public class Model {
 	}
 	
 	public void addStone(int x, int y) {
-		currentBoard.setCellAt(x, y, new GoCell(currentBoard.toPlayNext(), x, y));
-		currentBoard.oppositeToPlayNext();
+		if (!checker.isMoveLegal(new GoCell(currentBoard.toPlayNext(), x,y))) {
+			return;
+		}
+		try {
+			currentBoard = checker.getNewBoard();
+			currentBoard.oppositeToPlayNext();
+		} catch (CheckFailException e) {
+			System.out.println(currentBoard);
+		}
 		checker = new LegalMovesChecker(currentBoard);
 		legalMoves = checker.getLegalityArray();
-		removeOpponent(x, y);
-		history.add(currentBoard);
-		history.deleteUndoMoves();
 		gui.paintImmediately(0, 0, gui.getSize().width, gui.getSize().height);
-		if(currentBoard.isNextPlayerComputer()) {
-			gui.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+		if(currentBoard.isNextPlayerComputer()){
 			computerMove();
-			gui.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		}
 	}
 	
@@ -129,18 +130,6 @@ public class Model {
 			return legalMoves[x][y];
 		} else 
 			return true;
-	}
-	
-	public void removeOpponent(int x, int y)  {
-		try {
-			if(checker.captureOponent(currentBoard.getCellAt(x, y)) != null) {
-				currentBoard = checker.getNewBoard();
-				checker = new LegalMovesChecker(currentBoard);
-				legalMoves = checker.getLegalityArray();
-			}
-		} catch(Exception e){
-			System.out.println("new board = old board");
-		}
 	}
 	
 	public int getTotalNumberOfStones(){
