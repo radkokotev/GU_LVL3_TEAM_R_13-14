@@ -11,7 +11,6 @@ public class MinimaxGoSolver implements GoSolverAlgorithm {
 	private GoCell cellToCapture;
 	private static final long infinity = Integer.MAX_VALUE;
 	private long countLeafNodesDiscovered;
-	private boolean debug = false;
 	private int playSurviveCoef;
 	
 	public MinimaxGoSolver(GoPlayingBoard board, GoCell cell) {
@@ -58,8 +57,6 @@ public class MinimaxGoSolver implements GoSolverAlgorithm {
 		for (int i = 0; i < board.getWidth(); i++) {
 			for (int j = 0; j < board.getHeight(); j++) {
 				GoCell cell = new GoCell(board.toPlayNext(), i, j);
-				if (i == 18 && j == 14) debug = false;
-				else debug = false;
 				if (checker.isMoveLegal(cell)) {
 					CellValuePair cellValuePair = new CellValuePair();
 					cellValuePair.cell = cell;
@@ -87,11 +84,9 @@ public class MinimaxGoSolver implements GoSolverAlgorithm {
 	}
 	
 	private long maximize(GoPlayingBoard board, int depth) throws CheckFailException {
-		if (debug) System.out.println("Max:\n" + board + "\n");
 		if(depth <= 0) System.out.println(depth);
 		depth++;
 		if (isPositionTerminal(board)) {
-			if (debug) System.out.println("Final!!!");
 			if (board.getCellAt(cellToCapture.getVerticalCoordinate(), 
 					cellToCapture.getHorizontalCoordinate()).isEmpty()) {
 				return playSurviveCoef * infinity;
@@ -126,7 +121,6 @@ public class MinimaxGoSolver implements GoSolverAlgorithm {
 	}
 	
 	private long minimize(GoPlayingBoard board, int depth) throws CheckFailException {
-		if (debug) System.out.println("Min:\n" + board + "\n");
 		if(depth <= 0) System.out.println(depth);
 		depth++;
 		if (isPositionTerminal(board)) {
